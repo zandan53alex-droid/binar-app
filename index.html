@@ -10,14 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://s3.tradingview.com/tv.js"></script>
+    <!-- Removed TradingView for Pocket Option Fidelity -->
 </head>
 
 <body>
     <div class="app-container">
-        <!-- Background Chart Layer -->
-        <div id="tv-chart-bg"></div>
-
         <!-- Header -->
         <header class="header">
             <div class="logo">
@@ -49,17 +46,17 @@
     </div>
 
     <!-- Signal Overlay -->
-    <div id="signal-overlay" class="overlay hidden">
+    <div id="signal-overlay" class="signal-overlay hidden">
         <div class="signal-card">
-            <button id="close-signal" class="close-btn">&times;</button>
-            <div id="signal-loader" class="neural-loader">
-                <div class="brain-icon"></div>
-                <p>SCANNING NEURAL NETWORK...</p>
-            </div>
-            <div id="signal-content" class="hidden">
-                <h2 id="signal-asset-name">BTC/USDT</h2>
+            <button id="close-signal" class="btn-close">×</button>
 
-                <!-- Timeframe Selection -->
+            <div class="asset-header">
+                <img id="signal-asset-icon" src="" alt="" class="signal-asset-icon">
+                <h2 id="signal-asset-name">--</h2>
+            </div>
+
+            <div class="timeframe-selection">
+                <p class="section-label" id="label-expiration">SELECT EXPIRATION:</p>
                 <div class="timeframes">
                     <button class="tf-btn" data-tf="3s">3s</button>
                     <button class="tf-btn" data-tf="5s">5s</button>
@@ -74,7 +71,18 @@
                     <button class="tf-btn" data-tf="1h">1h</button>
                     <button class="tf-btn" data-tf="4h">4h</button>
                 </div>
+            </div>
 
+            <div id="signal-init-view">
+                <button id="get-signal-btn" class="btn-primary">GET SIGNAL</button>
+            </div>
+
+            <div id="signal-loader" class="neural-loader hidden">
+                <div class="pulse-ring"></div>
+                <p id="status-text">INITIALIZING...</p>
+            </div>
+
+            <div id="signal-content" class="hidden">
                 <div class="signal-result">
                     <div id="signal-direction" class="direction">CALL</div>
                     <div class="expiration-info" id="expiration-label">EXPIRATION: 1m</div>
@@ -83,7 +91,6 @@
                     </div>
                 </div>
             </div>
-            <button id="get-signal-btn" class="action-btn">ANALYZE NOW</button>
         </div>
     </div>
 

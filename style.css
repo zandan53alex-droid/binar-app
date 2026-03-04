@@ -29,30 +29,48 @@ body {
     margin: 0 auto;
 }
 
+.hidden {
+    display: none !important;
+}
+
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
-    padding: 10px 0;
+    margin-bottom: 20px;
 }
 
 .logo {
-    font-size: 1.5rem;
-    font-weight: 800;
-    background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    font-size: 1.4rem;
+    font-weight: 900;
+    letter-spacing: -0.5px;
 }
 
-.status-badge {
-    background: rgba(0, 255, 136, 0.1);
-    color: var(--success);
-    padding: 5px 12px;
+.logo-gold {
+    color: #FFD700;
+    margin-right: 2px;
+}
+
+.logo-white {
+    color: #fff;
+}
+
+.badge {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ccc;
+    padding: 6px 14px;
     border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    border: 1px solid rgba(0, 255, 136, 0.2);
+    font-size: 0.75rem;
+    font-weight: 800;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    letter-spacing: 0.5px;
+}
+
+.badge.vip {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    border: none;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
 }
 
 /* Category Tabs */
@@ -298,6 +316,103 @@ header {
     background: rgba(255, 255, 255, 0.08);
 }
 
+/* Asset Detail View (Overlay) */
+.asset-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 12px;
+}
+
+.signal-asset-icon {
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+}
+
+.section-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.timeframe-selection {
+    margin-bottom: 30px;
+}
+
+/* Neural Loader Pulse Animation */
+.neural-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+    gap: 20px;
+}
+
+.pulse-ring {
+    width: 80px;
+    height: 80px;
+    border: 3px solid #FFD700;
+    border-radius: 50%;
+    position: relative;
+    animation: pulse-ring 1.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+.pulse-ring::before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #FFD700;
+    border-radius: 50%;
+    animation: pulse-ring-inner 1.2s cubic-bezier(0.24, 0, 0.38, 1) infinite;
+}
+
+@keyframes pulse-ring {
+    0% {
+        transform: scale(0.5);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1.2);
+        opacity: 0;
+    }
+}
+
+@keyframes pulse-ring-inner {
+    0% {
+        transform: scale(0.2);
+        opacity: 1;
+    }
+
+    80% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
+}
+
+#status-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #FFD700;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    min-height: 1.2em;
+}
+
 /* The original .assets-grid and .asset-card rules are kept as they seem to be for a different component */
 .assets-grid {
     display: grid;
@@ -381,29 +496,19 @@ header {
     height: 100%;
     background: rgba(0, 0, 0, 0.9);
     display: flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     z-index: 100;
     opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
     overflow-x: hidden;
+    background: #0d0d0d;
 }
 
-#tv-chart-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    opacity: 0.15;
-    pointer-events: none;
-    filter: grayscale(100%) invert(1);
-}
+/* Removed tv-chart-bg as we are using a cleaner dark theme for PO fidelity */
 
 .signal-overlay.active {
+    display: flex;
     opacity: 1;
     pointer-events: all;
 }
@@ -425,6 +530,18 @@ header {
     100% {
         top: 80%;
     }
+}
+
+.signal-card {
+    background: #111;
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    padding: 30px 20px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
 .signal-result {
@@ -453,11 +570,28 @@ header {
 }
 
 .btn-close {
-    margin-top: 30px;
-    padding: 12px 30px;
-    border-radius: 10px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
     border: none;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
+    color: #666;
+    font-size: 28px;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    border-radius: 12px;
+    border: none;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    font-weight: 800;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
     cursor: pointer;
 }
