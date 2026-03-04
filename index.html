@@ -10,14 +10,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://s3.tradingview.com/tv.js"></script>
 </head>
 
 <body>
     <div class="app-container">
+        <!-- Background Chart Layer -->
+        <div id="tv-chart-bg"></div>
+
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <span class="logo-gold">NEURAL</span><span class="logo-white">EDGE</span>
+                <span class="logo-gold">TURBO</span><span class="logo-white">APP</span>
             </div>
             <div class="user-status">
                 <span id="status-badge" class="badge">STANDARD</span>
@@ -31,6 +35,11 @@
             <button class="tab-btn" data-category="stocks">STOCKS</button>
             <button class="tab-btn" data-category="commodities">METALS</button>
         </nav>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="asset-search" placeholder="Search asset...">
+        </div>
 
         <!-- Asset List Container -->
         <main id="asset-list" class="asset-grid">
@@ -65,6 +74,7 @@
 
                 <div class="signal-result">
                     <div id="signal-direction" class="direction">CALL</div>
+                    <div class="expiration-info" id="expiration-label">EXPIRATION: 1m</div>
                     <div class="price-info">
                         ENTRY PRICE: <span id="entry-price">0.0000</span>
                     </div>
