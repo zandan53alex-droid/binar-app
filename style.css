@@ -1,0 +1,384 @@
+:root {
+    --bg-dark: #0a0b10;
+    --card-bg: rgba(255, 255, 255, 0.05);
+    --accent-blue: #00d2ff;
+    --accent-purple: #9d50bb;
+    --text-primary: #ffffff;
+    --text-secondary: #a0a0a0;
+    --success: #00ff88;
+    --danger: #ff4d4d;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-space: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background: var(--bg-dark);
+    color: var(--text-primary);
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+.app-container {
+    padding: 20px;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 10px 0;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    background: linear-gradient(to right, var(--accent-blue), var(--accent-purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.status-badge {
+    background: rgba(0, 255, 136, 0.1);
+    color: var(--success);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    border: 1px solid rgba(0, 255, 136, 0.2);
+}
+
+/* Category Tabs */
+.category-tabs {
+    display: flex;
+    overflow-x: auto;
+    padding: 10px 0;
+    margin-bottom: 15px;
+    gap: 8px;
+    scrollbar-width: none;
+}
+
+.category-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.tab-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #999;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.tab-btn.active {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    border-color: #FFD700;
+}
+
+/* Timeframes Selection */
+.timeframes {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+    margin: 15px 0;
+}
+
+.tf-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #ccc;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    cursor: pointer;
+}
+
+.tf-btn.active {
+    border-color: #FFD700;
+    background: rgba(255, 193, 7, 0.1);
+    color: #FFD700;
+}
+
+/* Asset Item Enhancements */
+.asset-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 12px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    transition: transform 0.2s;
+}
+
+.asset-item:active {
+    transform: scale(0.98);
+}
+
+.asset-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 12px;
+}
+
+.asset-info {
+    flex: 1;
+}
+
+.asset-name {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.asset-category {
+    font-size: 0.65rem;
+    color: #666;
+    text-transform: uppercase;
+}
+
+.asset-price-box {
+    text-align: right;
+}
+
+.asset-price {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFD700;
+}
+
+.asset-change {
+    font-size: 0.7rem;
+}
+
+.asset-change.up {
+    color: #00FF88;
+}
+
+.asset-change.down {
+    color: #FF4444;
+}
+
+/* Animations */
+@keyframes pulse-green {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px #00FF88);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 15px #00FF88);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px #00FF88);
+    }
+}
+
+@keyframes pulse-red {
+    0% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px #FF4444);
+    }
+
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 15px #FF4444);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 5px #FF4444);
+    }
+}
+
+.direction.call {
+    color: #00FF88;
+    animation: pulse-green 1.5s infinite ease-in-out;
+}
+
+.direction.put {
+    color: #FF4444;
+    animation: pulse-red 1.5s infinite ease-in-out;
+}
+
+.badge.vip {
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    color: #000;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.neural-loader {
+    text-align: center;
+    padding: 30px 0;
+}
+
+.brain-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 15px;
+    background: url('https://img.icons8.com/ios/100/FFD700/brain.png') no-repeat center;
+    background-size: contain;
+    filter: drop-shadow(0 0 8px #FFD700);
+    animation: rotate 3s infinite linear;
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.assets-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.asset-card {
+    background: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+}
+
+.asset-card:active {
+    transform: scale(0.98);
+}
+
+.asset-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    margin-right: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.asset-info {
+    flex-grow: 1;
+}
+
+.asset-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 4px;
+}
+
+.asset-category {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.asset-price-box {
+    text-align: right;
+}
+
+.asset-price {
+    font-weight: 800;
+    font-size: 1.1rem;
+}
+
+.asset-change {
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.change-up {
+    color: var(--success);
+}
+
+.change-down {
+    color: var(--danger);
+}
+
+/* Neural Edge Animation Overlay */
+.signal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.signal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.scanner-line {
+    width: 80%;
+    height: 2px;
+    background: var(--accent-blue);
+    box-shadow: 0 0 15px var(--accent-blue);
+    position: absolute;
+    animation: scan 2s linear infinite;
+}
+
+@keyframes scan {
+    0% {
+        top: 20%;
+    }
+
+    100% {
+        top: 80%;
+    }
+}
+
+.signal-result {
+    text-align: center;
+}
+
+.signal-direction {
+    font-size: 4rem;
+    font-weight: 900;
+    margin: 20px 0;
+}
+
+.btn-close {
+    margin-top: 30px;
+    padding: 12px 30px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    cursor: pointer;
+}

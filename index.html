@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeuralEdge Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-gold">NEURAL</span><span class="logo-white">EDGE</span>
+            </div>
+            <div class="user-status">
+                <span id="status-badge" class="badge">STANDARD</span>
+            </div>
+        </header>
+
+        <!-- Category Tabs -->
+        <nav class="category-tabs">
+            <button class="tab-btn active" data-category="crypto">CRYPTO</button>
+            <button class="tab-btn" data-category="forex">FOREX/OTC</button>
+            <button class="tab-btn" data-category="stocks">STOCKS</button>
+            <button class="tab-btn" data-category="commodities">METALS</button>
+        </nav>
+
+        <!-- Asset List Container -->
+        <main id="asset-list" class="asset-grid">
+            <!-- Asset cards will be injected here -->
+            <div class="loader">SYNCING REAL-TIME DATA...</div>
+        </main>
+    </div>
+
+    <!-- Signal Overlay -->
+    <div id="signal-overlay" class="overlay hidden">
+        <div class="signal-card">
+            <button id="close-signal" class="close-btn">&times;</button>
+            <div id="signal-loader" class="neural-loader">
+                <div class="brain-icon"></div>
+                <p>SCANNING NEURAL NETWORK...</p>
+            </div>
+            <div id="signal-content" class="hidden">
+                <h2 id="signal-asset-name">BTC/USDT</h2>
+
+                <!-- Timeframe Selection -->
+                <div class="timeframes">
+                    <button class="tf-btn" data-tf="3s">3s</button>
+                    <button class="tf-btn" data-tf="5s">5s</button>
+                    <button class="tf-btn" data-tf="15s">15s</button>
+                    <button class="tf-btn" data-tf="30s">30s</button>
+                    <button class="tf-btn active" data-tf="1m">1m</button>
+                    <button class="tf-btn" data-tf="2m">2m</button>
+                    <button class="tf-btn" data-tf="5m">5m</button>
+                    <button class="tf-btn" data-tf="15m">15m</button>
+                    <button class="tf-btn" data-tf="1h">1h</button>
+                </div>
+
+                <div class="signal-result">
+                    <div id="signal-direction" class="direction">CALL</div>
+                    <div class="price-info">
+                        ENTRY PRICE: <span id="entry-price">0.0000</span>
+                    </div>
+                </div>
+            </div>
+            <button id="get-signal-btn" class="action-btn">ANALYZE NOW</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
