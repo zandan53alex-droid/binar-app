@@ -10,7 +10,17 @@ const ASSETS_DB = {
         { id: 'doge', name: 'DOGE/USDT', icon: 'https://cryptologos.cc/logos/dogecoin-doge-logo.svg', category: 'Crypto' },
         { id: 'trx', name: 'TRX/USDT', icon: 'https://cryptologos.cc/logos/tron-trx-logo.svg', category: 'Crypto' },
         { id: 'dot', name: 'DOT/USDT', icon: 'https://cryptologos.cc/logos/polkadot-new-dot-logo.svg', category: 'Crypto' },
-        { id: 'matic', name: 'MATIC/USDT', icon: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', category: 'Crypto' }
+        { id: 'matic', name: 'MATIC/USDT', icon: 'https://cryptologos.cc/logos/polygon-matic-logo.svg', category: 'Crypto' },
+        { id: 'ltc', name: 'LTC/USDT', icon: 'https://cryptologos.cc/logos/litecoin-ltc-logo.svg', category: 'Crypto' },
+        { id: 'link', name: 'LINK/USDT', icon: 'https://cryptologos.cc/logos/chainlink-link-logo.svg', category: 'Crypto' },
+        { id: 'shib', name: 'SHIB/USDT', icon: 'https://cryptologos.cc/logos/shiba-inu-shib-logo.svg', category: 'Crypto' },
+        { id: 'avax', name: 'AVAX/USDT', icon: 'https://cryptologos.cc/logos/avalanche-avax-logo.svg', category: 'Crypto' },
+        { id: 'uni', name: 'UNI/USDT', icon: 'https://cryptologos.cc/logos/uniswap-uni-logo.svg', category: 'Crypto' },
+        { id: 'atom', name: 'ATOM/USDT', icon: 'https://cryptologos.cc/logos/cosmos-atom-logo.svg', category: 'Crypto' },
+        { id: 'xlm', name: 'XLM/USDT', icon: 'https://cryptologos.cc/logos/stellar-xlm-logo.svg', category: 'Crypto' },
+        { id: 'bch', name: 'BCH/USDT', icon: 'https://cryptologos.cc/logos/bitcoin-cash-bch-logo.svg', category: 'Crypto' },
+        { id: 'etc', name: 'ETC/USDT', icon: 'https://cryptologos.cc/logos/ethereum-classic-etc-logo.svg', category: 'Crypto' },
+        { id: 'eos', name: 'EOS/USDT', icon: 'https://cryptologos.cc/logos/eos-eos-logo.svg', category: 'Crypto' }
     ],
     forex: [
         { id: 'eurusd', name: 'EUR/USD (OTC)', icon: 'https://flagcdn.com/w40/eu.png', category: 'Forex' },
@@ -22,7 +32,22 @@ const ASSETS_DB = {
         { id: 'eurjpy', name: 'EUR/JPY (OTC)', icon: 'https://flagcdn.com/w40/jp.png', category: 'Forex' },
         { id: 'gbpjpy', name: 'GBP/JPY (OTC)', icon: 'https://flagcdn.com/w40/jp.png', category: 'Forex' },
         { id: 'audjpy', name: 'AUD/JPY (OTC)', icon: 'https://flagcdn.com/w40/jp.png', category: 'Forex' },
-        { id: 'nzdusd', name: 'NZD/USD (OTC)', icon: 'https://flagcdn.com/w40/nz.png', category: 'Forex' }
+        { id: 'nzdusd', name: 'NZD/USD (OTC)', icon: 'https://flagcdn.com/w40/nz.png', category: 'Forex' },
+        { id: 'eurgbp', name: 'EUR/GBP (OTC)', icon: 'https://flagcdn.com/w40/eu.png', category: 'Forex' },
+        { id: 'euraud', name: 'EUR/AUD (OTC)', icon: 'https://flagcdn.com/w40/eu.png', category: 'Forex' },
+        { id: 'gbpaud', name: 'GBP/AUD (OTC)', icon: 'https://flagcdn.com/w40/gb.png', category: 'Forex' },
+        { id: 'chfjpy', name: 'CHF/JPY (OTC)', icon: 'https://flagcdn.com/w40/ch.png', category: 'Forex' },
+        { id: 'audcad', name: 'AUD/CAD (OTC)', icon: 'https://flagcdn.com/w40/au.png', category: 'Forex' },
+        { id: 'cadjpy', name: 'CAD/JPY (OTC)', icon: 'https://flagcdn.com/w40/ca.png', category: 'Forex' },
+        { id: 'usdtry', name: 'USD/TRY (OTC)', icon: 'https://flagcdn.com/w40/tr.png', category: 'Forex' },
+        { id: 'usdzar', name: 'USD/ZAR (OTC)', icon: 'https://flagcdn.com/w40/za.png', category: 'Forex' },
+        { id: 'usdmxn', name: 'USD/MXN (OTC)', icon: 'https://flagcdn.com/w40/mx.png', category: 'Forex' },
+        { id: 'eurcad', name: 'EUR/CAD (OTC)', icon: 'https://flagcdn.com/w40/eu.png', category: 'Forex' },
+        { id: 'eurchf', name: 'EUR/CHF (OTC)', icon: 'https://flagcdn.com/w40/eu.png', category: 'Forex' },
+        { id: 'gbpchf', name: 'GBP/CHF (OTC)', icon: 'https://flagcdn.com/w40/gb.png', category: 'Forex' },
+        { id: 'cadchf', name: 'CAD/CHF (OTC)', icon: 'https://flagcdn.com/w40/ca.png', category: 'Forex' },
+        { id: 'audnzd', name: 'AUD/NZD (OTC)', icon: 'https://flagcdn.com/w40/au.png', category: 'Forex' },
+        { id: 'nzdjpy', name: 'NZD/JPY (OTC)', icon: 'https://flagcdn.com/w40/nz.png', category: 'Forex' }
     ],
     stocks: [
         { id: 'aapl', name: 'APPLE', icon: 'https://img.icons8.com/ios-filled/50/ffffff/apple-logo.png', category: 'Stocks' },
@@ -32,14 +57,38 @@ const ASSETS_DB = {
         { id: 'msft', name: 'MICROSOFT', icon: 'https://img.icons8.com/ios-filled/50/ffffff/microsoft.png', category: 'Stocks' },
         { id: 'meta', name: 'META', icon: 'https://img.icons8.com/ios-filled/50/ffffff/meta.png', category: 'Stocks' },
         { id: 'nflx', name: 'NETFLIX', icon: 'https://img.icons8.com/ios-filled/50/ffffff/netflix.png', category: 'Stocks' },
-        { id: 'nvda', name: 'NVIDIA', icon: 'https://img.icons8.com/ios-filled/100/ffffff/nvidia.png', category: 'Stocks' }
+        { id: 'nvda', name: 'NVIDIA', icon: 'https://img.icons8.com/ios-filled/100/ffffff/nvidia.png', category: 'Stocks' },
+        { id: 'baba', name: 'ALIBABA', icon: 'https://img.icons8.com/ios-filled/50/ffffff/alibaba.png', category: 'Stocks' },
+        { id: 'dis', name: 'DISNEY', icon: 'https://img.icons8.com/ios-filled/50/ffffff/disney.png', category: 'Stocks' },
+        { id: 'v', name: 'VISA', icon: 'https://img.icons8.com/ios-filled/50/ffffff/visa.png', category: 'Stocks' },
+        { id: 'mc', name: 'MASTERCARD', icon: 'https://img.icons8.com/ios-filled/50/ffffff/mastercard.png', category: 'Stocks' },
+        { id: 'pfe', name: 'PFIZER', icon: 'https://img.icons8.com/ios-filled/50/ffffff/pills.png', category: 'Stocks' },
+        { id: 'mcd', name: 'MCDONALDS', icon: 'https://img.icons8.com/ios-filled/50/ffffff/mcdonalds.png', category: 'Stocks' },
+        { id: 'sbux', name: 'STARBUCKS', icon: 'https://img.icons8.com/ios-filled/50/ffffff/starbucks.png', category: 'Stocks' },
+        { id: 'nke', name: 'NIKE', icon: 'https://img.icons8.com/ios-filled/50/ffffff/nike.png', category: 'Stocks' },
+        { id: 'ko', name: 'COCA-COLA', icon: 'https://img.icons8.com/ios-filled/50/ffffff/coca-cola.png', category: 'Stocks' },
+        { id: 'pep', name: 'PEPSICO', icon: 'https://img.icons8.com/ios-filled/50/ffffff/pepsi.png', category: 'Stocks' },
+        { id: 'wmt', name: 'WALMART', icon: 'https://img.icons8.com/ios-filled/50/ffffff/walmart.png', category: 'Stocks' },
+        { id: 'ba', name: 'BOEING', icon: 'https://img.icons8.com/ios-filled/50/ffffff/boeing.png', category: 'Stocks' },
+        { id: 'intc', name: 'INTEL', icon: 'https://img.icons8.com/ios-filled/50/ffffff/intel.png', category: 'Stocks' },
+        { id: 'csco', name: 'CISCO', icon: 'https://img.icons8.com/ios-filled/50/ffffff/cisco.png', category: 'Stocks' }
     ],
     commodities: [
         { id: 'gold', name: 'GOLD', icon: 'https://img.icons8.com/ios-filled/50/FFD700/gold-bars.png', category: 'Metals' },
         { id: 'silver', name: 'SILVER', icon: 'https://img.icons8.com/ios-filled/50/C0C0C0/silver-bars.png', category: 'Metals' },
         { id: 'oil', name: 'BRENT OIL', icon: 'https://img.icons8.com/ios-filled/50/ffffff/oil-industry.png', category: 'Commodities' },
+        { id: 'crude', name: 'CRUDE OIL', icon: 'https://img.icons8.com/ios-filled/50/ffffff/barrel.png', category: 'Commodities' },
+        { id: 'natgas', name: 'NATURAL GAS', icon: 'https://img.icons8.com/ios-filled/50/ffffff/gas.png', category: 'Commodities' },
+        { id: 'platinum', name: 'PLATINUM', icon: 'https://img.icons8.com/ios-filled/50/ffffff/ring.png', category: 'Metals' },
+        { id: 'copper', name: 'COPPER', icon: 'https://img.icons8.com/ios-filled/50/ffffff/copper.png', category: 'Metals' },
         { id: 'nas100', name: 'NAS100', icon: 'https://img.icons8.com/ios-filled/50/ffffff/line-chart.png', category: 'Indices' },
-        { id: 'spx500', name: 'SPX500', icon: 'https://img.icons8.com/ios-filled/50/ffffff/area-chart.png', category: 'Indices' }
+        { id: 'spx500', name: 'SPX500', icon: 'https://img.icons8.com/ios-filled/50/ffffff/area-chart.png', category: 'Indices' },
+        { id: 'dji30', name: 'DOW JONES 30', icon: 'https://img.icons8.com/ios-filled/50/ffffff/bullish.png', category: 'Indices' },
+        { id: 'ger40', name: 'GER40 (DAX)', icon: 'https://img.icons8.com/ios-filled/50/ffffff/generic-sorting-2.png', category: 'Indices' },
+        { id: 'uk100', name: 'UK100 (FTSE)', icon: 'https://img.icons8.com/ios-filled/50/ffffff/london-bridge.png', category: 'Indices' },
+        { id: 'fra40', name: 'FRA40 (CAC)', icon: 'https://img.icons8.com/ios-filled/50/ffffff/eiffel-tower.png', category: 'Indices' },
+        { id: 'jp225', name: 'JP225 (NIKKEI)', icon: 'https://img.icons8.com/ios-filled/50/ffffff/torii.png', category: 'Indices' },
+        { id: 'hsi50', name: 'HSI50 (HANG SENG)', icon: 'https://img.icons8.com/ios-filled/50/ffffff/china.png', category: 'Indices' }
     ]
 };
 
