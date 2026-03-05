@@ -112,12 +112,12 @@ const ASSETS_DB = {
         { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'crude.jpg', category: 'Commodities' },
         { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
         { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
-        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.png', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
         { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
-        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.png', category: 'Commodities' },
+        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.jpg', category: 'Commodities' },
         { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
         { id: 'silver', name: 'Silver', icon: 'silver.jpg', category: 'Commodities' },
-        { id: 'platinum_spot', name: 'Platinum spot', icon: 'platinum.png', category: 'Commodities' }
+        { id: 'platinum_spot', name: 'Platinum spot', icon: 'platinum.jpg', category: 'Commodities' }
     ],
     stocks: [
         { id: 'amzn_otc', name: 'Amazon OTC', icon: 'https://logo.clearbit.com/amazon.com', category: 'Stocks' },
