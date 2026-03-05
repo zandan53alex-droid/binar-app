@@ -145,10 +145,37 @@ header {
     transform: scale(0.98);
 }
 
+.asset-icon-wrapper {
+    position: relative;
+    width: 44px;
+    height: 32px;
+    margin-right: 12px;
+    display: flex;
+    align-items: center;
+}
+
 .asset-icon {
     width: 32px;
     height: 32px;
-    margin-right: 12px;
+    object-fit: contain;
+    border-radius: 4px;
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    background: #222;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.asset-icon.secondary {
+    left: 12px;
+    z-index: 1;
+    opacity: 0.8;
+}
+
+.asset-icon-wrapper.single .asset-icon {
+    position: static;
+    width: 32px;
+    height: 32px;
 }
 
 .asset-info {
@@ -325,11 +352,39 @@ header {
     gap: 12px;
 }
 
+.signal-asset-icon-wrapper {
+    position: relative;
+    width: 90px;
+    height: 64px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+
 .signal-asset-icon {
     width: 64px;
     height: 64px;
     object-fit: contain;
-    filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
+    filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+    border-radius: 8px;
+    position: absolute;
+    left: 0;
+    z-index: 2;
+    border: 2px solid rgba(255, 215, 0, 0.2);
+}
+
+.signal-asset-icon.secondary {
+    left: 26px;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.signal-asset-icon-wrapper.single {
+    width: 64px;
+}
+
+.signal-asset-icon-wrapper.single .signal-asset-icon {
+    position: static;
 }
 
 .section-label {
