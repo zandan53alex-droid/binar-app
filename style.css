@@ -12,7 +12,7 @@
 * {
     margin: 0;
     padding: 0;
-    box-space: border-box;
+    box-sizing: border-box;
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
@@ -24,8 +24,10 @@ body {
 }
 
 .app-container {
-    padding: 20px;
-    max-width: 500px;
+    padding: 10px;
+    /* Reduced padding for wider feel */
+    max-width: 100%;
+    /* Allow full width */
     margin: 0 auto;
 }
 
@@ -135,10 +137,13 @@ header {
     align-items: center;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 12px;
+    padding: 10px;
     border-radius: 12px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     transition: transform 0.2s;
+    width: 100%;
+    box-sizing: border-box;
+    /* Ensure padding doesn't add to width */
 }
 
 .asset-item:active {
@@ -147,35 +152,36 @@ header {
 
 .asset-icon-wrapper {
     position: relative;
-    width: 44px;
-    height: 32px;
-    margin-right: 12px;
+    width: 48px;
+    /* Slightly wider for better dual-flag visibility */
+    height: 28px;
+    margin-right: 15px;
     display: flex;
     align-items: center;
 }
 
 .asset-icon {
-    width: 32px;
-    height: 32px;
-    object-fit: contain;
-    border-radius: 4px;
+    width: 28px;
+    height: 28px;
+    object-fit: cover;
+    border-radius: 50%;
+    /* Rounded flags look more modern */
     position: absolute;
     left: 0;
     z-index: 2;
-    background: #222;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .asset-icon.secondary {
-    left: 12px;
+    left: 18px;
+    /* Less overlap */
     z-index: 1;
-    opacity: 0.8;
 }
 
 .asset-icon-wrapper.single .asset-icon {
     position: static;
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
 }
 
 .asset-info {
@@ -320,10 +326,12 @@ header {
 .asset-grid {
     flex: 1;
     overflow-y: auto;
-    padding: 0 20px 20px;
+    padding: 0 5px 20px;
+    /* Reduced side padding for more width */
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 8px;
+    /* Slightly smaller gap */
 }
 
 .asset-item {
@@ -354,7 +362,8 @@ header {
 
 .signal-asset-icon-wrapper {
     position: relative;
-    width: 90px;
+    width: 104px;
+    /* Wider to accommodate less overlap */
     height: 64px;
     display: flex;
     justify-content: center;
@@ -374,9 +383,10 @@ header {
 }
 
 .signal-asset-icon.secondary {
-    left: 26px;
+    left: 40px;
+    /* Much less overlap for clarity */
     z-index: 1;
-    opacity: 0.6;
+    opacity: 0.9;
 }
 
 .signal-asset-icon-wrapper.single {
