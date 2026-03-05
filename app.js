@@ -81,29 +81,29 @@ const ASSETS_DB = {
         { id: 'usddzd_otc', name: 'USD/DZD OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/dz.png'], category: 'Forex OTC' }
     ],
     crypto: [
-        { id: 'ada_otc', name: 'Cardano OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/ada.png', category: 'Crypto' },
-        { id: 'bnb_otc', name: 'BNB OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/bnb.png', category: 'Crypto' },
-        { id: 'bitcoin_etf_otc', name: 'Bitcoin ETF OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/btc.png', category: 'Crypto' },
-        { id: 'sol_otc', name: 'Solana OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/sol.png', category: 'Crypto' },
-        { id: 'bitcoin_otc', name: 'Bitcoin OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/btc.png', category: 'Crypto' },
+        { id: 'ada_otc', name: 'Cardano OTC', icon: 'https://assets.coingecko.com/coins/images/975/small/cardano.png', category: 'Crypto' },
+        { id: 'bnb_otc', name: 'BNB OTC', icon: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png', category: 'Crypto' },
+        { id: 'bitcoin_etf_otc', name: 'Bitcoin ETF OTC', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
+        { id: 'sol_otc', name: 'Solana OTC', icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png', category: 'Crypto' },
+        { id: 'bitcoin_otc', name: 'Bitcoin OTC', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
         { id: 'ton_otc', name: 'Toncoin OTC', icon: 'https://assets.coingecko.com/coins/images/17980/small/ton_symbol.png', category: 'Crypto' },
-        { id: 'avax_otc', name: 'Avalanche OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/avax.png', category: 'Crypto' },
-        { id: 'link_otc', name: 'Chainlink OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/link.png', category: 'Crypto' },
-        { id: 'matic_otc', name: 'Polygon OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/matic.png', category: 'Crypto' },
-        { id: 'trx_otc', name: 'TRON OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/trx.png', category: 'Crypto' },
-        { id: 'eth_otc', name: 'Ethereum OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/eth.png', category: 'Crypto' },
-        { id: 'ltc_otc', name: 'Litecoin OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/ltc.png', category: 'Crypto' },
-        { id: 'bitcoin', name: 'Bitcoin', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/btc.png', category: 'Crypto' },
-        { id: 'doge_otc', name: 'Dogecoin OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/doge.png', category: 'Crypto' },
-        { id: 'dash', name: 'Dash', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/dash.png', category: 'Crypto' },
-        { id: 'bcheur', name: 'BCH/EUR', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/bch.png', category: 'Crypto' },
-        { id: 'bchgbp', name: 'BCH/GBP', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/bch.png', category: 'Crypto' },
-        { id: 'bchjpy', name: 'BCH/JPY', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/bch.png', category: 'Crypto' },
-        { id: 'btcgbp', name: 'BTC/GBP', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/btc.png', category: 'Crypto' },
-        { id: 'btcjpy', name: 'BTC/JPY', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/btc.png', category: 'Crypto' },
-        { id: 'ethereum', name: 'Ethereum', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/eth.png', category: 'Crypto' },
-        { id: 'dot_otc', name: 'Polkadot OTC', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/dot.png', category: 'Crypto' },
-        { id: 'link', name: 'Chainlink', icon: 'https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/link.png', category: 'Crypto' }
+        { id: 'avax_otc', name: 'Avalanche OTC', icon: 'https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png', category: 'Crypto' },
+        { id: 'link_otc', name: 'Chainlink OTC', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' },
+        { id: 'matic_otc', name: 'Polygon OTC', icon: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png', category: 'Crypto' },
+        { id: 'trx_otc', name: 'TRON OTC', icon: 'https://assets.coingecko.com/coins/images/1094/small/tron-logo.png', category: 'Crypto' },
+        { id: 'eth_otc', name: 'Ethereum OTC', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', category: 'Crypto' },
+        { id: 'ltc_otc', name: 'Litecoin OTC', icon: 'https://assets.coingecko.com/coins/images/2/small/litecoin.png', category: 'Crypto' },
+        { id: 'bitcoin', name: 'Bitcoin', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
+        { id: 'doge_otc', name: 'Dogecoin OTC', icon: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png', category: 'Crypto' },
+        { id: 'dash', name: 'Dash', icon: 'https://assets.coingecko.com/coins/images/19/small/dash-logo.png', category: 'Crypto' },
+        { id: 'bcheur', name: 'BCH/EUR', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
+        { id: 'bchgbp', name: 'BCH/GBP', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
+        { id: 'bchjpy', name: 'BCH/JPY', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
+        { id: 'btcgbp', name: 'BTC/GBP', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
+        { id: 'btcjpy', name: 'BTC/JPY', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
+        { id: 'ethereum', name: 'Ethereum', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', category: 'Crypto' },
+        { id: 'dot_otc', name: 'Polkadot OTC', icon: 'https://assets.coingecko.com/coins/images/12171/small/polkadot.png', category: 'Crypto' },
+        { id: 'link', name: 'Chainlink', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' }
     ],
     commodities: [
         { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'https://img.icons8.com/color/100/crude-oil.png', category: 'Commodities' },
@@ -338,9 +338,21 @@ function renderAssets() {
         const icons = asset.icons || [asset.icon];
         const isMulti = icons.length > 1;
 
-        let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}">`;
+        let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}"`;
+        if (!isMulti) {
+            // For single icons, add a colored background based on category
+            const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
+            const bg = catColors[asset.category] || '#ffffff11';
+            iconsHtml += ` style="background:${bg};border-radius:50%;"`;
+        }
+        iconsHtml += `>`;
+
         icons.forEach((src, idx) => {
-            iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" onerror="this.src='https://img.icons8.com/ios/50/ffffff/financial-dynamic.png'">`;
+            // Build fallback chain for each image
+            const fallbacks = buildFallbacks(asset, src, idx);
+            iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" 
+                data-fallbacks='${JSON.stringify(fallbacks)}'
+                onerror="tryNextFallback(this)">`;
         });
         iconsHtml += `</div>`;
 
@@ -374,7 +386,9 @@ function openSignalDialog(asset) {
         const img = document.createElement('img');
         img.src = src;
         img.className = `signal-asset-icon ${idx === 1 ? 'secondary' : ''}`;
-        img.onerror = () => img.src = 'https://img.icons8.com/ios/50/ffffff/financial-dynamic.png';
+        const fallbacks = buildFallbacks(asset, src, idx);
+        img.dataset.fallbacks = JSON.stringify(fallbacks);
+        img.onerror = () => tryNextFallback(img);
         iconContainer.appendChild(img);
     });
 
@@ -442,6 +456,58 @@ function startPriceUpdates() {
             }
         });
     }, 1000);
+}
+
+// Smart fallback icon loader — tries multiple sources if primary fails
+function buildFallbacks(asset, primaryUrl, idx) {
+    const fallbacks = [];
+
+    // If crypto — add jsdelivr npm as backup
+    if (asset.category === 'Crypto') {
+        const sym = asset.id.replace(/_otc$/, '').replace('bitcoin', 'btc').replace('ethereum', 'eth').replace('dash', 'dash');
+        fallbacks.push(`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/${sym}.png`);
+        fallbacks.push(`https://s2.coinmarketcap.com/static/cloud/img/portfolio_logo.svg`);
+    }
+    // If stock — add icons8 as backup 
+    if (asset.category === 'Stocks') {
+        const domain = primaryUrl.replace('https://logo.clearbit.com/', '');
+        fallbacks.push(`https://www.google.com/s2/favicons?domain=${domain}&sz=64`);
+    }
+    // Universal fallback
+    fallbacks.push(`https://flagcdn.com/w40/un.png`);
+    return fallbacks;
+}
+
+function tryNextFallback(img) {
+    try {
+        const fallbacks = JSON.parse(img.dataset.fallbacks || '[]');
+        if (fallbacks.length > 0) {
+            img.dataset.fallbacks = JSON.stringify(fallbacks.slice(1));
+            img.src = fallbacks[0];
+        } else {
+            // Draw a colored circle with first letter as final fallback
+            img.onerror = null;
+            img.style.display = 'none';
+            const canvas = document.createElement('canvas');
+            canvas.width = 40; canvas.height = 40;
+            const ctx = canvas.getContext('2d');
+            const colors = ['#f7931a', '#627eea', '#00b4d8', '#2ecc71', '#9b59b6'];
+            const color = colors[img.closest('.asset-item') ? Array.from(img.closest('.asset-item').parentNode.children).indexOf(img.closest('.asset-item')) % colors.length : 0];
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(20, 20, 20, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 18px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            const label = (img.closest('.asset-info') ? '' : img.alt || '?').charAt(0).toUpperCase() || '?';
+            ctx.fillText(label, 20, 20);
+            const dataUrl = canvas.toDataURL();
+            img.style.display = '';
+            img.src = dataUrl;
+        }
+    } catch (e) { img.onerror = null; }
 }
 
 window.onload = initApp;
