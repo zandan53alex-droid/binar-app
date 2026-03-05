@@ -106,18 +106,18 @@ const ASSETS_DB = {
         { id: 'link', name: 'Chainlink', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' }
     ],
     commodities: [
-        { id: 'xageur', name: 'XAG/EUR', icons: ['https://img.icons8.com/color/100/silver-coins.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'xaueur', name: 'XAU/EUR', icons: ['https://img.icons8.com/fluency/100/gold-bars.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'https://img.icons8.com/fluency/100/oil-pumpjack.png', category: 'Commodities' },
-        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'https://img.icons8.com/fluency/100/oil-pumpjack.png', category: 'Commodities' },
-        { id: 'silver_otc', name: 'Silver OTC', icon: 'https://img.icons8.com/color/100/silver-coins.png', category: 'Commodities' },
-        { id: 'gold_otc', name: 'Gold OTC', icon: 'https://img.icons8.com/fluency/100/gold-bars.png', category: 'Commodities' },
-        { id: 'natural_gas', name: 'Natural Gas', icon: 'https://img.icons8.com/fluency/100/gas-industry.png', category: 'Commodities' },
-        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' },
-        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' },
-        { id: 'gold', name: 'Gold', icon: 'https://img.icons8.com/fluency/100/gold-bars.png', category: 'Commodities' },
-        { id: 'silver', name: 'Silver', icon: 'https://img.icons8.com/color/100/silver-coins.png', category: 'Commodities' },
-        { id: 'platinum_spot', name: 'Platinum spot', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' }
+        { id: 'xageur', name: 'XAG/EUR', icons: ['silver_logo.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'xaueur', name: 'XAU/EUR', icons: ['gold.jpg', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'brent.png', category: 'Commodities' },
+        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'crude.jpg', category: 'Commodities' },
+        { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
+        { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.png', category: 'Commodities' },
+        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
+        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.png', category: 'Commodities' },
+        { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
+        { id: 'silver', name: 'Silver', icon: 'silver.jpg', category: 'Commodities' },
+        { id: 'platinum_spot', name: 'Platinum spot', icon: 'platinum.png', category: 'Commodities' }
     ],
     stocks: [
         { id: 'amzn_otc', name: 'Amazon OTC', icon: 'https://logo.clearbit.com/amazon.com', category: 'Stocks' },
