@@ -81,54 +81,48 @@ const ASSETS_DB = {
         { id: 'usddzd_otc', name: 'USD/DZD OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/dz.png'], category: 'Forex OTC' }
     ],
     crypto: [
-        { id: 'ada_otc', name: 'Cardano OTC', icon: 'https://assets.coingecko.com/coins/images/975/small/cardano.png', category: 'Crypto' },
-        { id: 'bnb_otc', name: 'BNB OTC', icon: 'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png', category: 'Crypto' },
-        { id: 'bitcoin_etf_otc', name: 'Bitcoin ETF OTC', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
-        { id: 'sol_otc', name: 'Solana OTC', icon: 'https://assets.coingecko.com/coins/images/4128/small/solana.png', category: 'Crypto' },
-        { id: 'bitcoin_otc', name: 'Bitcoin OTC', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
-        { id: 'ton_otc', name: 'Toncoin OTC', icon: 'https://assets.coingecko.com/coins/images/17980/small/ton_symbol.png', category: 'Crypto' },
-        { id: 'avax_otc', name: 'Avalanche OTC', icon: 'https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png', category: 'Crypto' },
-        { id: 'link_otc', name: 'Chainlink OTC', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' },
-        { id: 'matic_otc', name: 'Polygon OTC', icon: 'https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png', category: 'Crypto' },
-        { id: 'trx_otc', name: 'TRON OTC', icon: 'https://assets.coingecko.com/coins/images/1094/small/tron-logo.png', category: 'Crypto' },
-        { id: 'eth_otc', name: 'Ethereum OTC', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', category: 'Crypto' },
-        { id: 'ltc_otc', name: 'Litecoin OTC', icon: 'https://assets.coingecko.com/coins/images/2/small/litecoin.png', category: 'Crypto' },
-        { id: 'bitcoin', name: 'Bitcoin', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
-        { id: 'doge_otc', name: 'Dogecoin OTC', icon: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png', category: 'Crypto' },
-        { id: 'dash', name: 'Dash', icon: 'https://assets.coingecko.com/coins/images/19/small/dash-logo.png', category: 'Crypto' },
-        { id: 'bcheur', name: 'BCH/EUR', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
-        { id: 'bchgbp', name: 'BCH/GBP', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
-        { id: 'bchjpy', name: 'BCH/JPY', icon: 'https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', category: 'Crypto' },
-        { id: 'btcgbp', name: 'BTC/GBP', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
-        { id: 'btcjpy', name: 'BTC/JPY', icon: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png', category: 'Crypto' },
-        { id: 'ethereum', name: 'Ethereum', icon: 'https://assets.coingecko.com/coins/images/279/small/ethereum.png', category: 'Crypto' },
-        { id: 'dot_otc', name: 'Polkadot OTC', icon: 'https://assets.coingecko.com/coins/images/12171/small/polkadot.png', category: 'Crypto' },
-        { id: 'link', name: 'Chainlink', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' }
+        { id: 'ada_otc', name: 'Cardano OTC', icons: ['https://assets.coingecko.com/coins/images/975/small/cardano.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'bnb_otc', name: 'BNB OTC', icons: ['https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'bitcoin_etf_otc', name: 'Bitcoin ETF OTC', icons: ['https://assets.coingecko.com/coins/images/1/small/bitcoin.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'sol_otc', name: 'Solana OTC', icons: ['https://assets.coingecko.com/coins/images/4128/small/solana.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'bitcoin_otc', name: 'Bitcoin OTC', icons: ['https://assets.coingecko.com/coins/images/1/small/bitcoin.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'ton_otc', name: 'Toncoin OTC', icons: ['https://assets.coingecko.com/coins/images/17980/small/ton_symbol.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'avax_otc', name: 'Avalanche OTC', icons: ['https://assets.coingecko.com/coins/images/12559/small/Avalanche_Circle_RedWhite_Trans.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'link_otc', name: 'Chainlink OTC', icons: ['https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'matic_otc', name: 'Polygon OTC', icons: ['https://assets.coingecko.com/coins/images/4713/small/matic-token-icon.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'trx_otc', name: 'TRON OTC', icons: ['https://assets.coingecko.com/coins/images/1094/small/tron-logo.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'eth_otc', name: 'Ethereum OTC', icons: ['https://assets.coingecko.com/coins/images/279/small/ethereum.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'ltc_otc', name: 'Litecoin OTC', icons: ['https://assets.coingecko.com/coins/images/2/small/litecoin.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'bitcoin', name: 'Bitcoin', icons: ['https://assets.coingecko.com/coins/images/1/small/bitcoin.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'doge_otc', name: 'Dogecoin OTC', icons: ['https://assets.coingecko.com/coins/images/5/small/dogecoin.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'dash', name: 'Dash', icons: ['https://assets.coingecko.com/coins/images/19/small/dash-logo.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'bcheur', name: 'BCH/EUR', icons: ['https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', 'https://flagcdn.com/w40/eu.png'], category: 'Crypto' },
+        { id: 'bchgbp', name: 'BCH/GBP', icons: ['https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', 'https://flagcdn.com/w40/gb.png'], category: 'Crypto' },
+        { id: 'bchjpy', name: 'BCH/JPY', icons: ['https://assets.coingecko.com/coins/images/780/small/bitcoin-cash-circle.png', 'https://flagcdn.com/w40/jp.png'], category: 'Crypto' },
+        { id: 'btcgbp', name: 'BTC/GBP', icons: ['https://assets.coingecko.com/coins/images/1/small/bitcoin.png', 'https://flagcdn.com/w40/gb.png'], category: 'Crypto' },
+        { id: 'btcjpy', name: 'BTC/JPY', icons: ['https://assets.coingecko.com/coins/images/1/small/bitcoin.png', 'https://flagcdn.com/w40/jp.png'], category: 'Crypto' },
+        { id: 'ethereum', name: 'Ethereum', icons: ['https://assets.coingecko.com/coins/images/279/small/ethereum.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'dot_otc', name: 'Polkadot OTC', icons: ['https://assets.coingecko.com/coins/images/12171/small/polkadot.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' },
+        { id: 'link', name: 'Chainlink', icons: ['https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', 'https://flagcdn.com/w40/us.png'], category: 'Crypto' }
     ],
     commodities: [
-        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'https://img.icons8.com/color/100/crude-oil.png', category: 'Commodities' },
-        { id: 'wti_crude_oil_otc', name: 'WTI Crude Oil OTC', icon: 'https://img.icons8.com/color/100/oil-pump.png', category: 'Commodities' },
-        { id: 'silver_otc', name: 'Silver OTC', icon: 'https://img.icons8.com/color/100/silver.png', category: 'Commodities' },
-        { id: 'gold_otc', name: 'Gold OTC', icon: 'https://img.icons8.com/color/100/gold-bars.png', category: 'Commodities' },
-        { id: 'natgas_otc', name: 'Natural Gas OTC', icon: 'https://img.icons8.com/color/100/natural-gas.png', category: 'Commodities' },
-        { id: 'palladium_otc', name: 'Palladium spot OTC', icon: 'https://img.icons8.com/color/100/platinum-bars.png', category: 'Commodities' },
-        { id: 'platinum_otc', name: 'Platinum spot OTC', icon: 'https://img.icons8.com/color/100/diamond.png', category: 'Commodities' },
-        { id: 'brent_oil', name: 'Brent Oil', icon: 'https://img.icons8.com/color/100/crude-oil.png', category: 'Commodities' },
-        { id: 'wti_crude_oil', name: 'WTI Crude Oil', icon: 'https://img.icons8.com/color/100/oil-pump.png', category: 'Commodities' },
-        { id: 'xageur', name: 'XAG/EUR', icon: 'https://img.icons8.com/color/100/silver.png', category: 'Commodities' },
-        { id: 'silver', name: 'Silver', icon: 'https://img.icons8.com/color/100/silver.png', category: 'Commodities' },
-        { id: 'xaueur', name: 'XAU/EUR', icon: 'https://img.icons8.com/color/100/gold-bars.png', category: 'Commodities' },
-        { id: 'gold', name: 'Gold', icon: 'https://img.icons8.com/color/100/gold-bars.png', category: 'Commodities' },
-        { id: 'natgas', name: 'Natural Gas', icon: 'https://img.icons8.com/color/100/natural-gas.png', category: 'Commodities' },
-        { id: 'palladium_spot', name: 'Palladium spot', icon: 'https://img.icons8.com/color/100/platinum-bars.png', category: 'Commodities' },
-        { id: 'platinum_spot', name: 'Platinum spot', icon: 'https://img.icons8.com/color/100/diamond.png', category: 'Commodities' }
+        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'https://img.icons8.com/fluency/100/oil-pumpjack.png', category: 'Commodities' },
+        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'https://img.icons8.com/fluency/100/oil-pumpjack.png', category: 'Commodities' },
+        { id: 'silver_otc', name: 'Silver OTC', icon: 'https://img.icons8.com/color/100/silver-coins.png', category: 'Commodities' },
+        { id: 'gold_otc', name: 'Gold OTC', icon: 'https://img.icons8.com/fluency/100/gold-bars.png', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'https://img.icons8.com/fluency/100/gas-industry.png', category: 'Commodities' },
+        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' },
+        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' },
+        { id: 'gold', name: 'Gold', icon: 'https://img.icons8.com/fluency/100/gold-bars.png', category: 'Commodities' },
+        { id: 'silver', name: 'Silver', icon: 'https://img.icons8.com/color/100/silver-coins.png', category: 'Commodities' },
+        { id: 'platinum_spot', name: 'Platinum spot', icon: 'https://img.icons8.com/fluency/100/diamond.png', category: 'Commodities' }
     ],
     stocks: [
         { id: 'amzn_otc', name: 'Amazon OTC', icon: 'https://logo.clearbit.com/amazon.com', category: 'Stocks' },
         { id: 'mara_otc', name: 'Marathon Digital Holdings OTC', icon: 'https://logo.clearbit.com/mara.com', category: 'Stocks' },
         { id: 'csco_otc', name: 'Cisco OTC', icon: 'https://logo.clearbit.com/cisco.com', category: 'Stocks' },
         { id: 'xom_otc', name: 'ExxonMobil OTC', icon: 'https://logo.clearbit.com/exxonmobil.com', category: 'Stocks' },
-        { id: 'visa_otc', name: 'VISA OTC', icon: 'https://logo.clearbit.com/visa.com', category: 'Stocks' },
+        { id: 'visa_otc', name: 'VISA OTC', icon: 'https://img.icons8.com/color/100/visa.png', category: 'Stocks' },
         { id: 'gme_otc', name: 'GameStop Corp OTC', icon: 'https://logo.clearbit.com/gamestop.com', category: 'Stocks' },
         { id: 'mcd_otc', name: "McDonald's OTC", icon: 'https://logo.clearbit.com/mcdonalds.com', category: 'Stocks' },
         { id: 'pltr_otc', name: 'Palantir Technologies OTC', icon: 'https://logo.clearbit.com/palantir.com', category: 'Stocks' },
@@ -166,26 +160,6 @@ const ASSETS_DB = {
         { id: 'intel', name: 'Intel', icon: 'https://logo.clearbit.com/intel.com', category: 'Stocks' }
     ],
     indices: [
-        { id: 'aus200_otc', name: 'AUS 200 OTC', icons: ['https://img.icons8.com/color/100/statistics.png', 'https://flagcdn.com/w40/au.png'], category: 'Indices' },
-        { id: '100gbp_otc', name: '100GBP OTC', icons: ['https://img.icons8.com/color/100/financial-growth.png', 'https://flagcdn.com/w40/gb.png'], category: 'Indices' },
-        { id: 'cac40_index', name: 'CAC 40', icons: ['https://img.icons8.com/color/100/combo-chart.png', 'https://flagcdn.com/w40/fr.png'], category: 'Indices' },
-        { id: 'd30eur_otc', name: 'D30EUR OTC', icons: ['https://img.icons8.com/color/100/area-chart.png', 'https://flagcdn.com/w40/de.png'], category: 'Indices' },
-        { id: 'dji30_otc', name: 'DJI30 OTC', icons: ['https://img.icons8.com/color/100/stocks-growth.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: 'e35eur_index', name: 'E35EUR', icons: ['https://img.icons8.com/color/100/euro.png', 'https://flagcdn.com/w40/eu.png'], category: 'Indices' },
-        { id: 'e35eur_otc', name: 'E35EUR OTC', icons: ['https://img.icons8.com/color/100/euro.png', 'https://flagcdn.com/w40/eu.png'], category: 'Indices' },
-        { id: 'e50eur_otc', name: 'E50EUR OTC', icons: ['https://img.icons8.com/color/100/euro.png', 'https://flagcdn.com/w40/eu.png'], category: 'Indices' },
-        { id: 'jpn225_otc', name: 'JPN225 OTC', icons: ['https://img.icons8.com/color/100/bar-chart.png', 'https://flagcdn.com/w40/jp.png'], category: 'Indices' },
-        { id: 'us100_index', name: 'US100', icons: ['https://img.icons8.com/color/100/nasdaq.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: 'us100_otc', name: 'US100 OTC', icons: ['https://img.icons8.com/color/100/nasdaq.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: 'smi20_index', name: 'SMI 20', icons: ['https://img.icons8.com/color/100/bonds.png', 'https://flagcdn.com/w40/ch.png'], category: 'Indices' },
-        { id: 'sp500_index', name: 'SP500', icons: ['https://img.icons8.com/color/100/us-dollar-circled.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: 'sp500_otc', name: 'SP500 OTC', icons: ['https://img.icons8.com/color/100/us-dollar-circled.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: '100gbp_index', name: '100GBP', icons: ['https://img.icons8.com/color/100/financial-growth.png', 'https://flagcdn.com/w40/gb.png'], category: 'Indices' },
-        { id: 'aex25_index', name: 'AEX 25', icons: ['https://img.icons8.com/color/100/combo-chart.png', 'https://flagcdn.com/w40/nl.png'], category: 'Indices' },
-        { id: 'd30eur_index', name: 'D30/EUR', icons: ['https://img.icons8.com/color/100/area-chart.png', 'https://flagcdn.com/w40/de.png'], category: 'Indices' },
-        { id: 'dji30_index', name: 'DJI30', icons: ['https://img.icons8.com/color/100/stocks-growth.png', 'https://flagcdn.com/w40/us.png'], category: 'Indices' },
-        { id: 'e50eur_index', name: 'E50/EUR', icons: ['https://img.icons8.com/color/100/euro.png', 'https://flagcdn.com/w40/eu.png'], category: 'Indices' },
-        { id: 'f40eur_index', name: 'F40/EUR', icons: ['https://img.icons8.com/color/100/combo-chart.png', 'https://flagcdn.com/w40/fr.png'], category: 'Indices' },
         { id: 'f40eur_otc', name: 'F40EUR OTC', icons: ['https://img.icons8.com/color/100/combo-chart.png', 'https://flagcdn.com/w40/fr.png'], category: 'Indices' },
         { id: 'hk33_index', name: 'HONG KONG 33', icons: ['https://img.icons8.com/color/100/bar-chart.png', 'https://flagcdn.com/w40/hk.png'], category: 'Indices' },
         { id: 'jpn225_index', name: 'JPN225', icons: ['https://img.icons8.com/color/100/bar-chart.png', 'https://flagcdn.com/w40/jp.png'], category: 'Indices' },
@@ -334,8 +308,11 @@ function renderAssets() {
         const card = document.createElement('div');
         card.className = 'asset-item';
 
-        // Handle single or multi-icons
-        const icons = asset.icons || [asset.icon];
+        // Handle icons array or single icon string
+        const iconsRaw = asset.icons || [asset.icon];
+        const icons = Array.isArray(iconsRaw) ? iconsRaw : [iconsRaw];
+
+        // Ensure single string if length is 1 so it triggers single mode properly
         const isMulti = icons.length > 1;
 
         let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}"`;
@@ -350,9 +327,11 @@ function renderAssets() {
         icons.forEach((src, idx) => {
             // Build fallback chain for each image
             const fallbacks = buildFallbacks(asset, src, idx);
-            iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" 
-                data-fallbacks='${JSON.stringify(fallbacks)}'
-                onerror="tryNextFallback(this)">`;
+            if (src) {
+                iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" 
+                    data-fallbacks='${JSON.stringify(fallbacks)}'
+                    onerror="tryNextFallback(this)">`;
+            }
         });
         iconsHtml += `</div>`;
 
@@ -378,11 +357,22 @@ function openSignalDialog(asset) {
 
     const iconContainer = document.getElementById('signal-asset-icons');
     iconContainer.innerHTML = '';
-    const icons = asset.icons || [asset.icon];
+    const iconsRaw = asset.icons || [asset.icon];
+    const icons = Array.isArray(iconsRaw) ? iconsRaw : [iconsRaw];
     const isMulti = icons.length > 1;
 
     iconContainer.className = `signal-asset-icon-wrapper ${isMulti ? 'multi' : 'single'}`;
+
+    if (!isMulti) {
+        const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
+        iconContainer.style.background = catColors[asset.category] || '#ffffff11';
+        iconContainer.style.borderRadius = '50%';
+    } else {
+        iconContainer.style.background = 'transparent';
+    }
+
     icons.forEach((src, idx) => {
+        if (!src) return;
         const img = document.createElement('img');
         img.src = src;
         img.className = `signal-asset-icon ${idx === 1 ? 'secondary' : ''}`;
