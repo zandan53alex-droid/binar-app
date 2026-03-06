@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=11">
+    <link rel="stylesheet" href="style.css?v=12">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -20,8 +20,22 @@
             <div class="logo">
                 <span class="logo-gold">TURBO</span><span class="logo-white">APP</span>
             </div>
-            <div class="user-status">
-                <span id="status-badge" class="badge">STANDARD</span>
+            <div class="user-controls">
+                <div class="user-status">
+                    <span id="status-badge" class="badge">STANDARD</span>
+                </div>
+                <div class="lang-selector-container">
+                    <button id="lang-toggle" class="lang-toggle-btn">
+                        <span id="current-lang-icon">🇷🇺</span>
+                    </button>
+                    <div id="lang-dropdown" class="lang-dropdown">
+                        <button class="lang-item" data-lang="ru">🇷🇺 Русский</button>
+                        <button class="lang-item" data-lang="en">🇬🇧 English</button>
+                        <button class="lang-item" data-lang="hi">🇮🇳 हिन्दी</button>
+                        <button class="lang-item" data-lang="es">🇪🇸 Español</button>
+                        <button class="lang-item" data-lang="fr">🇫🇷 Français</button>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -104,7 +118,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=13"></script>
+    <script src="app.js?v=14"></script>
 </body>
 
 </html>

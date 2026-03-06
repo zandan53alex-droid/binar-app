@@ -241,9 +241,86 @@ const TRANSLATIONS = {
             'Searching for optimal entry...',
             'Finalizing forecast...'
         ]
+    },
+    hi: {
+        syncing: 'सिंकिंग...',
+        standard: 'मानक',
+        platinum: 'वीआईपी',
+        analyze: 'सिग्नल प्राप्त करें',
+        entry: 'प्रवेश:',
+        call: 'ऊपर ↗',
+        put: 'नीचे ↘',
+        crypto: 'क्रिप्टो',
+        forex: 'मुद्राएं',
+        forex_otc: 'मुद्राएं OTC',
+        stocks: 'स्टॉक OTC',
+        commodities: 'कमोडिटीज OTC',
+        indices: 'सूचकांक',
+        assetsBtn: 'संपत्ति',
+        expiration: 'समाप्ति समय:',
+        search: 'संपत्ति खोजें...',
+        selectExp: 'समाप्ति चुनें:',
+        statuses: [
+            'न्यूरल नेटवर्क प्रारंभ करना...',
+            'वर्तमान अस्थिरता का विश्लेषण...',
+            'क्लस्टर वॉल्यूम की जाँच...',
+            'इष्टतम प्रविष्टि की खोज...',
+            'पूर्वानुमान अंतिम रूप देना...'
+        ]
+    },
+    es: {
+        syncing: 'SINCRONIZANDO...',
+        standard: 'ESTÁNDAR',
+        platinum: 'ACCESO VIP',
+        analyze: 'OBTENER SEÑAL',
+        entry: 'ENTRADA:',
+        call: 'SUBE ↗',
+        put: 'BAJA ↘',
+        crypto: 'CRIPTO',
+        forex: 'DIVISAS',
+        forex_otc: 'DIVISAS OTC',
+        stocks: 'ACCIONES OTC',
+        commodities: 'MATERIAS PRIMAS OTC',
+        indices: 'ÍNDICES',
+        assetsBtn: 'ACTIVOS',
+        expiration: 'TIEMPO DE EXPIRACIÓN:',
+        search: 'Buscar activo...',
+        selectExp: 'SELECCIONAR EXPIRACIÓN:',
+        statuses: [
+            'Inicializando red neuronal...',
+            'Analizando volatilidad actual...',
+            'Comprobando volúmenes de clústeres...',
+            'Buscando entrada óptima...',
+            'Finalizando pronóstico...'
+        ]
+    },
+    fr: {
+        syncing: 'SYNCHRONISATION...',
+        standard: 'STANDARD',
+        platinum: 'ACCÈS VIP',
+        analyze: 'OBTENIR LE SIGNAL',
+        entry: 'ENTRÉE:',
+        call: 'HAUSSE ↗',
+        put: 'BAISSE ↘',
+        crypto: 'CRYPTO',
+        forex: 'DEVISES',
+        forex_otc: 'DEVISES OTC',
+        stocks: 'ACTIONS OTC',
+        commodities: 'MATIÈRES PREMIÈRES OTC',
+        indices: 'INDICES',
+        assetsBtn: 'ACTIFS',
+        expiration: 'TEMPS D\'EXPIRATION:',
+        search: 'Rechercher actif...',
+        selectExp: 'SÉLECTIONNER EXPIRATION:',
+        statuses: [
+            'Initialisation du réseau neuronal...',
+            'Analyse de la volatilité actuelle...',
+            'Vérification des volumes...',
+            'Recherche de l\'entrée optimale...',
+            'Finalisation des prévisions...'
+        ]
     }
 };
-
 let currentLang = 'ru';
 let currentCategory = null;
 let currentAsset = null;
@@ -257,7 +334,17 @@ function initApp() {
         tg.expand();
 
         const userLang = tg.initDataUnsafe?.user?.language_code;
-        currentLang = (userLang === 'ru' || userLang === 'ru-RU') ? 'ru' : 'en';
+        const savedLang = localStorage.getItem('user_lang');
+
+        if (savedLang && TRANSLATIONS[savedLang]) {
+            currentLang = savedLang;
+        } else if (userLang && TRANSLATIONS[userLang]) {
+            currentLang = userLang;
+        } else {
+            currentLang = 'en';
+        }
+
+        updateLangIcon();
 
         const urlParams = new URLSearchParams(window.location.search);
         const isVip = urlParams.get('vip') === 'true';
@@ -272,6 +359,13 @@ function initApp() {
         renderAssets();
         startPriceUpdates(); // Try connecting to the quote server
     } catch (e) { console.error(e); }
+}
+
+const langIcons = { ru: '🇷🇺', en: '🇬🇧', hi: '🇮🇳', es: '🇪🇸', fr: '🇫🇷' };
+
+function updateLangIcon() {
+    const iconSpan = document.getElementById('current-lang-icon');
+    if (iconSpan) iconSpan.innerText = langIcons[currentLang] || '🌐';
 }
 
 function setupLocalization() {
@@ -297,16 +391,55 @@ function setupEventListeners() {
     const toggleBtn = document.getElementById('category-toggle');
     const currentCatName = document.getElementById('current-category-name');
 
-    // Toggle dropdown
+    // Toggle category dropdown
     toggleBtn.onclick = (e) => {
         e.stopPropagation();
         dropdownContainer.classList.toggle('open');
+        document.querySelector('.lang-selector-container')?.classList.remove('open');
     };
 
-    // Close dropdown when clicking outside
+    // Toggle language dropdown
+    const langContainer = document.querySelector('.lang-selector-container');
+    const langToggleBtn = document.getElementById('lang-toggle');
+    if (langToggleBtn) {
+        langToggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            langContainer.classList.toggle('open');
+            dropdownContainer.classList.remove('open');
+        };
+    }
+
+    // Language item click
+    document.querySelectorAll('.lang-item').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            const newLang = btn.dataset.lang;
+            if (TRANSLATIONS[newLang]) {
+                currentLang = newLang;
+                localStorage.setItem('user_lang', currentLang);
+                updateLangIcon();
+                setupLocalization();
+                renderAssets();
+                langContainer.classList.remove('open');
+
+                // Update VIP badge text
+                const urlParams = newSearchParams = new URLSearchParams(window.location.search);
+                const isVip = urlParams.get('vip') === 'true';
+                const badge = document.getElementById('status-badge');
+                if (badge) {
+                    badge.innerText = isVip ? TRANSLATIONS[currentLang].platinum : TRANSLATIONS[currentLang].standard;
+                }
+            }
+        };
+    });
+
+    // Close dropdowns when clicking outside
     document.addEventListener('click', (e) => {
         if (!dropdownContainer.contains(e.target)) {
             dropdownContainer.classList.remove('open');
+        }
+        if (langContainer && !langContainer.contains(e.target)) {
+            langContainer.classList.remove('open');
         }
     });
 
