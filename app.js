@@ -204,6 +204,7 @@ const TRANSLATIONS = {
         stocks: 'АКЦИИ OTC',
         commodities: 'ТОВАРЫ OTC',
         indices: 'ИНДЕКСЫ',
+        assetsBtn: 'АКТИВЫ',
         expiration: 'ВРЕМЯ ЭКСПИРАЦИИ:',
         search: 'Поиск актива...',
         selectExp: 'ВЫБЕРИТЕ ЭКСПИРАЦИЮ:',
@@ -229,6 +230,7 @@ const TRANSLATIONS = {
         stocks: 'STOCKS OTC',
         commodities: 'COMMODITIES OTC',
         indices: 'INDICES',
+        assetsBtn: 'ASSETS',
         expiration: 'EXPIRATION TIME:',
         search: 'Search asset...',
         selectExp: 'SELECT EXPIRATION:',
@@ -281,13 +283,13 @@ function setupLocalization() {
     document.getElementById('asset-search').placeholder = t.search;
     document.getElementById('label-expiration').innerText = t.selectExp;
 
+    // Set the main button text to "АКТИВЫ" or "ASSETS"
+    document.getElementById('current-category-name').innerText = t.assetsBtn || 'Активы';
+
     document.querySelectorAll('.dropdown-item').forEach(btn => {
         const cat = btn.dataset.category;
         if (t[cat]) {
             btn.innerText = t[cat];
-            if (btn.classList.contains('active')) {
-                document.getElementById('current-category-name').innerText = t[cat];
-            }
         }
     });
 }
@@ -316,12 +318,6 @@ function setupEventListeners() {
             document.querySelectorAll('.dropdown-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCategory = btn.dataset.category;
-
-            // Update button text
-            const t = TRANSLATIONS[currentLang];
-            if (t[currentCategory]) {
-                currentCatName.innerText = t[currentCategory];
-            }
 
             dropdownContainer.classList.remove('open');
             renderAssets();
