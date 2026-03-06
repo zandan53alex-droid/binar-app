@@ -486,14 +486,37 @@ function renderAssets() {
     const container = document.getElementById('asset-list');
     container.innerHTML = '';
 
-    if (!currentCategory) {
-        container.innerHTML = ``;
-        return;
+    let filtered = [];
+
+    if (searchQuery) {
+        // Global search across all categories
+        for (const cat in ASSETS_DB) {
+            const matches = ASSETS_DB[cat].filter(a =>
+                a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
+            );
+
+            // Inject the dictionary category key into the asset object so we can translate it properly later
+            matches.forEach(m => {
+                if (!m.dictCategory) m.dictCategory = cat;
+            });
+            filtered = filtered.concat(matches);
+        }
+    } else {
+        // Normal category view
+        if (!currentCategory) {
+            container.innerHTML = ``;
+            return;
+        }
+        filtered = ASSETS_DB[currentCategory].map(a => {
+            a.dictCategory = currentCategory;
+            return a;
+        });
     }
 
-    const filtered = ASSETS_DB[currentCategory].filter(a =>
-        a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
-    );
+    if (filtered.length === 0 && searchQuery) {
+        container.innerHTML = `<div class="empty-state"><p style="color:#666;">Ничего не найдено</p></div>`;
+        return;
+    }
 
     filtered.forEach(asset => {
         const card = document.createElement('div');
@@ -526,7 +549,8 @@ function renderAssets() {
         });
         iconsHtml += `</div>`;
 
-        const translatedCategory = TRANSLATIONS[currentLang][currentCategory] || asset.category;
+        const transCat = asset.dictCategory || currentCategory;
+        const translatedCategory = TRANSLATIONS[currentLang][transCat] || asset.category;
 
         card.innerHTML = `
             ${iconsHtml}
