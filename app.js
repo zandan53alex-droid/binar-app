@@ -349,13 +349,7 @@ function renderAssets() {
     container.innerHTML = '';
 
     if (!currentCategory) {
-        const t = TRANSLATIONS[currentLang];
-        container.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">📂</div>
-                <p>${currentLang === 'ru' ? 'Выберите категорию в меню выше' : 'Select a category to see assets'}</p>
-            </div>
-        `;
+        container.innerHTML = ``;
         return;
     }
 
