@@ -17,8 +17,7 @@
 }
 
 body {
-    background-color: #0a0b10;
-    /* Fallback */
+    background: transparent;
     color: var(--text-primary);
     overflow-x: hidden;
     min-height: 100vh;
