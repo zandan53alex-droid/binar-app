@@ -245,7 +245,7 @@ const TRANSLATIONS = {
 };
 
 let currentLang = 'ru';
-let currentCategory = null;
+let currentCategory = 'forex_otc'; // Default to show something
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -270,8 +270,7 @@ function initApp() {
         setupLocalization();
         setupEventListeners();
         renderAssets();
-        startSimulation(); // Start simulation immediately
-        startPriceUpdates(); // Then try to connect to real quotes
+        startPriceUpdates(); // Try connecting to the quote server
     } catch (e) { console.error(e); }
 }
 
@@ -312,6 +311,7 @@ function setupEventListeners() {
     });
 
     document.querySelectorAll('.dropdown-item').forEach(btn => {
+        if (btn.dataset.category === currentCategory) btn.classList.add('active');
         btn.onclick = (e) => {
             e.stopPropagation();
             document.querySelectorAll('.dropdown-item').forEach(b => b.classList.remove('active'));
@@ -469,38 +469,43 @@ async function generateSignal() {
     if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 }
 
-let priceSimInterval = null;
-
 function startPriceUpdates() {
-    // Подключение к нашему Python-серверу
-    // Пробуем сначала локальный IP (для телефона), если не выйдет - localhost
     const localIp = "192.168.1.8";
     const port = "8765";
     let ws = null;
 
     function connectWs(isFallback = false) {
-        const currentUrl = isFallback ? `ws://127.0.0.1:${port}` : `ws://${localIp}:${port}`;
-        console.log(`📡 Соединение с сервером котировок: ${currentUrl}...`);
+        const host = window.location.hostname;
+        const isLocalHost = host === 'localhost' || host === '127.0.0.1' || window.location.protocol === 'file:';
+
+        let targetIp = localIp;
+        if (isLocalHost) {
+            targetIp = isFallback ? localIp : '127.0.0.1';
+        } else {
+            targetIp = isFallback ? '127.0.0.1' : localIp;
+        }
+
+        const currentUrl = `ws://${targetIp}:${port}`;
+        console.log(`📡 Соединение с сервером котировок: ${currentUrl}... (${isFallback ? 'запасной' : 'основной'})`);
 
         ws = new WebSocket(currentUrl);
 
-        // Тайм-аут на подключение: если за 2 сек не открылся — пробуем другой
         const connectionTimeout = setTimeout(() => {
             if (ws.readyState !== WebSocket.OPEN) {
-                console.warn(`⏳ Тайм-аут ${currentUrl}, пробуем другой адрес...`);
+                console.warn(`⏳ Тайм-аут ${currentUrl}, пробуем другой...`);
+                ws.onclose = null;
                 ws.close();
+                connectWs(!isFallback);
             }
-        }, 2000);
+        }, 2200);
 
         ws.onopen = () => {
             clearTimeout(connectionTimeout);
             console.log(`✅ ПОДКЛЮЧЕНО К: ${currentUrl}`);
             const badge = document.getElementById('status-badge');
-            if (badge) badge.innerText = (isFallback ? 'ПОДКЛЮЧЕНО (ЛОКАЛЬНО)' : 'ПОДКЛЮЧЕНО (СЕТЬ)');
-
-            if (priceSimInterval) {
-                clearInterval(priceSimInterval);
-                priceSimInterval = null;
+            if (badge) {
+                badge.innerText = 'ЦЕНЫ: ВЫХОД В СЕТЬ';
+                badge.className = 'status-badge connected';
             }
         };
 
@@ -514,14 +519,15 @@ function startPriceUpdates() {
                         const el = document.getElementById(`price-${assetId}`);
                         if (el && !isNaN(price)) {
                             const oldPrice = parseFloat(el.innerText) || price;
-                            el.innerText = price.toFixed(assetId.includes('btc') || assetId.includes('crypto') ? 2 : 5);
+                            const decimals = (assetId.includes('btc') || assetId.includes('eth') || assetId.includes('index')) ? 2 : 5;
+                            el.innerText = price.toFixed(decimals);
 
                             const changeEl = document.getElementById(`change-${assetId}`);
                             if (changeEl) {
                                 const pct = ((price - oldPrice) / oldPrice) * 100;
                                 let currentChange = parseFloat(changeEl.innerText) || 0;
-                                currentChange += pct;
-                                if (Math.abs(currentChange) > 10) currentChange = currentChange > 0 ? 10 : -10;
+                                currentChange += (isNaN(pct) ? 0 : pct);
+                                if (Math.abs(currentChange) > 5) currentChange = currentChange > 0 ? 5 : -5;
                                 changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
                                 changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
                             }
@@ -533,64 +539,34 @@ function startPriceUpdates() {
 
         ws.onclose = () => {
             clearTimeout(connectionTimeout);
-            console.log(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
-            startSimulation();
+            console.warn(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
+            const badge = document.getElementById('status-badge');
+            if (badge) {
+                badge.innerText = 'ПОИСК СЕРВЕРА...';
+                badge.className = 'status-badge disconnected';
+            }
             setTimeout(() => connectWs(!isFallback), 3000);
         };
 
         ws.onerror = () => ws.close();
     }
 
-    connectWs(false); // Начинаем с сетевого IP 192.168.1.8
-}
-
-function startSimulation() {
-    if (priceSimInterval) return;
-    priceSimInterval = setInterval(() => {
-        const categories = Object.keys(ASSETS_DB);
-        categories.forEach(cat => {
-            ASSETS_DB[cat].forEach(asset => {
-                const el = document.getElementById(`price-${asset.id}`);
-                if (!el) return;
-
-                let price = parseFloat(el.innerText) || (Math.random() * 100 + 10);
-                const volatility = asset.id.includes('_otc') ? 0.0003 : 0.0001;
-                const move = (Math.random() - 0.5) * (price * volatility);
-                price += move;
-
-                el.innerText = price.toFixed(asset.id.includes('btc') ? 2 : 5);
-
-                const changeEl = document.getElementById(`change-${asset.id}`);
-                if (changeEl) {
-                    const change = (move / price) * 100;
-                    let currentChange = parseFloat(changeEl.innerText) || 0;
-                    currentChange += change;
-                    changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
-                    changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
-                }
-            });
-        });
-    }, 1000);
+    connectWs(false);
 }
 
 document.addEventListener('DOMContentLoaded', initApp);
 
-// Smart fallback icon loader — tries multiple sources if primary fails
 function buildFallbacks(asset, primaryUrl, idx) {
     const fallbacks = [];
-
-    // If crypto — add jsdelivr npm as backup
     if (asset.category === 'Crypto') {
         const sym = asset.id.replace(/_otc$/, '').replace('bitcoin', 'btc').replace('ethereum', 'eth').replace('dash', 'dash');
         fallbacks.push(`https://cdn.jsdelivr.net/npm/cryptocurrency-icons@0.18.1/32/color/${sym}.png`);
         fallbacks.push(`https://s2.coinmarketcap.com/static/cloud/img/portfolio_logo.svg`);
     }
-    // If stock — add icons8 as backup 
     if (asset.category === 'Stocks') {
-        const domain = primaryUrl.replace('https://logo.clearbit.com/', '');
+        const domain = (typeof primaryUrl === 'string') ? primaryUrl.replace('https://logo.clearbit.com/', '') : '';
         fallbacks.push(`https://www.google.com/s2/favicons?domain=${domain}&sz=64`);
     }
-    // Universal fallback
     fallbacks.push(`https://flagcdn.com/w40/un.png`);
     return fallbacks;
 }
@@ -602,7 +578,6 @@ function tryNextFallback(img) {
             img.dataset.fallbacks = JSON.stringify(fallbacks.slice(1));
             img.src = fallbacks[0];
         } else {
-            // Draw a colored circle with first letter as final fallback
             img.onerror = null;
             img.style.display = 'none';
             const canvas = document.createElement('canvas');
@@ -620,9 +595,8 @@ function tryNextFallback(img) {
             ctx.textBaseline = 'middle';
             const label = (img.closest('.asset-info') ? '' : img.alt || '?').charAt(0).toUpperCase() || '?';
             ctx.fillText(label, 20, 20);
-            const dataUrl = canvas.toDataURL();
             img.style.display = '';
-            img.src = dataUrl;
+            img.src = canvas.toDataURL();
         }
     } catch (e) { img.onerror = null; }
 }
