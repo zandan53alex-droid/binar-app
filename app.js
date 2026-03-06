@@ -474,7 +474,7 @@ let priceSimInterval = null;
 
 function startPriceUpdates() {
     // Подключение к нашему Python-серверу
-    const wsUrl = "ws://127.0.0.1:8765";
+    const wsUrl = "ws://192.168.1.8:8765";
     let ws = null;
 
     function connectWs() {
