@@ -281,18 +281,49 @@ function setupLocalization() {
     document.getElementById('asset-search').placeholder = t.search;
     document.getElementById('label-expiration').innerText = t.selectExp;
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
+    document.querySelectorAll('.dropdown-item').forEach(btn => {
         const cat = btn.dataset.category;
-        if (t[cat]) btn.innerText = t[cat];
+        if (t[cat]) {
+            btn.innerText = t[cat];
+            if (btn.classList.contains('active')) {
+                document.getElementById('current-category-name').innerText = t[cat];
+            }
+        }
     });
 }
 
 function setupEventListeners() {
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.onclick = () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    const dropdownContainer = document.querySelector('.category-dropdown-container');
+    const toggleBtn = document.getElementById('category-toggle');
+    const currentCatName = document.getElementById('current-category-name');
+
+    // Toggle dropdown
+    toggleBtn.onclick = (e) => {
+        e.stopPropagation();
+        dropdownContainer.classList.toggle('open');
+    };
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!dropdownContainer.contains(e.target)) {
+            dropdownContainer.classList.remove('open');
+        }
+    });
+
+    document.querySelectorAll('.dropdown-item').forEach(btn => {
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.dropdown-item').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCategory = btn.dataset.category;
+
+            // Update button text
+            const t = TRANSLATIONS[currentLang];
+            if (t[currentCategory]) {
+                currentCatName.innerText = t[currentCategory];
+            }
+
+            dropdownContainer.classList.remove('open');
             renderAssets();
         };
     });
