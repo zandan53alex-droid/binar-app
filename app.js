@@ -270,11 +270,10 @@ function initApp() {
         setupLocalization();
         setupEventListeners();
         renderAssets();
-        startPriceUpdates();
+        startSimulation(); // Start simulation immediately
+        startPriceUpdates(); // Then try to connect to real quotes
     } catch (e) { console.error(e); }
 }
-
-/* Removed TradingView Widget for Pocket Option Fidelity */
 
 function setupLocalization() {
     const t = TRANSLATIONS[currentLang];
@@ -474,15 +473,19 @@ let priceSimInterval = null;
 
 function startPriceUpdates() {
     // Подключение к нашему Python-серверу
-    const wsUrl = "ws://192.168.1.8:8765";
+    // Пробуем сначала локальный IP (для телефона), если не выйдет - localhost
+    const localIp = "192.168.1.8";
+    const port = "8765";
     let ws = null;
 
-    function connectWs() {
-        console.log("Connecting to quote server...");
-        ws = new WebSocket(wsUrl);
+    function connectWs(isFallback = false) {
+        const currentUrl = isFallback ? `ws://127.0.0.1:${port}` : `ws://${localIp}:${port}`;
+        console.log(`Connecting to quote server at ${currentUrl}...`);
+
+        ws = new WebSocket(currentUrl);
 
         ws.onopen = () => {
-            console.log("Connected to real quotes server!");
+            console.log(`Connected to real quotes server via ${currentUrl}!`);
             // Отключаем симуляцию если подключились удачно
             if (priceSimInterval) {
                 clearInterval(priceSimInterval);
@@ -531,22 +534,26 @@ function startPriceUpdates() {
         };
 
         ws.onclose = () => {
-            console.log("Quotes server disconnected. Using simulation fallback...");
+            console.log(`Connection to ${currentUrl} closed. Trying fallback in 2s...`);
             startSimulation();
-            setTimeout(connectWs, 5000); // Попытка переподключения через 5 сек
+            setTimeout(() => connectWs(!isFallback), 2000); // Пробуем другой адрес через 2 сек
         };
 
         ws.onerror = (e) => {
-            console.error("WebSocket error", e);
+            console.error("WebSocket error:", e);
             ws.close();
         };
     }
 
-    function startSimulation() {
-        if (priceSimInterval) return;
-        priceSimInterval = setInterval(() => {
-            const allAssets = Object.values(ASSETS_DB).flat();
-            allAssets.forEach(asset => {
+    connectWs(false); // Начинаем с 192.168.1.8
+}
+
+function startSimulation() {
+    if (priceSimInterval) return;
+    priceSimInterval = setInterval(() => {
+        const categories = Object.keys(ASSETS_DB);
+        categories.forEach(cat => {
+            ASSETS_DB[cat].forEach(asset => {
                 const el = document.getElementById(`price-${asset.id}`);
                 if (!el) return;
 
@@ -566,12 +573,11 @@ function startPriceUpdates() {
                     changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
                 }
             });
-        }, 1000);
-    }
-
-    connectWs();
-    startSimulation(); // Start simulation immediately until WS connects
+        });
+    }, 1000);
 }
+
+document.addEventListener('DOMContentLoaded', initApp);
 
 // Smart fallback icon loader — tries multiple sources if primary fails
 function buildFallbacks(asset, primaryUrl, idx) {
@@ -624,5 +630,3 @@ function tryNextFallback(img) {
         }
     } catch (e) { img.onerror = null; }
 }
-
-window.onload = initApp;
