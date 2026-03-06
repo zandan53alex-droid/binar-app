@@ -470,33 +470,107 @@ async function generateSignal() {
     if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
 }
 
+let priceSimInterval = null;
+
 function startPriceUpdates() {
-    setInterval(() => {
-        const allAssets = Object.values(ASSETS_DB).flat();
-        allAssets.forEach(asset => {
-            const el = document.getElementById(`price-${asset.id}`);
-            if (!el) return;
+    // Подключение к нашему Python-серверу
+    const wsUrl = "ws://127.0.0.1:8765";
+    let ws = null;
 
-            let price = parseFloat(el.innerText) || (Math.random() * 100 + 10);
+    function connectWs() {
+        console.log("Connecting to quote server...");
+        ws = new WebSocket(wsUrl);
 
-            // Smoother OTC-style movement
-            const volatility = asset.id.includes('_otc') ? 0.0003 : 0.0001;
-            const move = (Math.random() - 0.5) * (price * volatility);
-            price += move;
-
-            el.innerText = price.toFixed(asset.id.includes('btc') ? 2 : 5);
-
-            const changeEl = document.getElementById(`change-${asset.id}`);
-            if (changeEl) {
-                const change = (move / price) * 100;
-                // Accumulate change for better feel
-                let currentChange = parseFloat(changeEl.innerText) || 0;
-                currentChange += change;
-                changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
-                changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
+        ws.onopen = () => {
+            console.log("Connected to real quotes server!");
+            // Отключаем симуляцию если подключились удачно
+            if (priceSimInterval) {
+                clearInterval(priceSimInterval);
+                priceSimInterval = null;
             }
-        });
-    }, 1000);
+        };
+
+        ws.onmessage = (event) => {
+            try {
+                const msg = JSON.parse(event.data);
+                if (msg.action === 'update_quotes') {
+                    const quotes = msg.data;
+                    // quotes usually look like: [[assetId, price, timestamp], ...] or depending on PO format
+                    // PocketOption format typically dictionary or array of arrays
+                    // We'll dynamically update elements if they exist
+                    if (Array.isArray(quotes)) {
+                        quotes.forEach(q => {
+                            if (!Array.isArray(q) || q.length < 2) return;
+                            const assetId = q[0].toLowerCase();
+                            const price = parseFloat(q[1]);
+
+                            const el = document.getElementById(`price-${assetId}`);
+                            if (el && !isNaN(price)) {
+                                const oldPrice = parseFloat(el.innerText) || price;
+                                el.innerText = price.toFixed(assetId.includes('btc') ? 2 : 5);
+
+                                const changeEl = document.getElementById(`change-${assetId}`);
+                                if (changeEl) {
+                                    const diff = price - oldPrice;
+                                    const pct = (diff / oldPrice) * 100;
+                                    let currentChange = parseFloat(changeEl.innerText) || 0;
+                                    currentChange += pct;
+                                    if (currentChange > 5) currentChange = 5; // cap display
+                                    if (currentChange < -5) currentChange = -5;
+
+                                    changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
+                                    changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
+                                }
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Error parsing quote", e);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log("Quotes server disconnected. Using simulation fallback...");
+            startSimulation();
+            setTimeout(connectWs, 5000); // Попытка переподключения через 5 сек
+        };
+
+        ws.onerror = (e) => {
+            console.error("WebSocket error", e);
+            ws.close();
+        };
+    }
+
+    function startSimulation() {
+        if (priceSimInterval) return;
+        priceSimInterval = setInterval(() => {
+            const allAssets = Object.values(ASSETS_DB).flat();
+            allAssets.forEach(asset => {
+                const el = document.getElementById(`price-${asset.id}`);
+                if (!el) return;
+
+                let price = parseFloat(el.innerText) || (Math.random() * 100 + 10);
+                const volatility = asset.id.includes('_otc') ? 0.0003 : 0.0001;
+                const move = (Math.random() - 0.5) * (price * volatility);
+                price += move;
+
+                el.innerText = price.toFixed(asset.id.includes('btc') ? 2 : 5);
+
+                const changeEl = document.getElementById(`change-${asset.id}`);
+                if (changeEl) {
+                    const change = (move / price) * 100;
+                    let currentChange = parseFloat(changeEl.innerText) || 0;
+                    currentChange += change;
+                    changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
+                    changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
+                }
+            });
+        }, 1000);
+    }
+
+    connectWs();
+    startSimulation(); // Start simulation immediately until WS connects
 }
 
 // Smart fallback icon loader — tries multiple sources if primary fails
