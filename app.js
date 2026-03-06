@@ -245,7 +245,7 @@ const TRANSLATIONS = {
 };
 
 let currentLang = 'ru';
-let currentCategory = 'forex_otc'; // Default to show something
+let currentCategory = null;
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -348,7 +348,16 @@ function renderAssets() {
     const container = document.getElementById('asset-list');
     container.innerHTML = '';
 
-    if (!currentCategory) return;
+    if (!currentCategory) {
+        const t = TRANSLATIONS[currentLang];
+        container.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">📂</div>
+                <p>${currentLang === 'ru' ? 'Выберите категорию в меню выше' : 'Select a category to see assets'}</p>
+            </div>
+        `;
+        return;
+    }
 
     const filtered = ASSETS_DB[currentCategory].filter(a =>
         a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
