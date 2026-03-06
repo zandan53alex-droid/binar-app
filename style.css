@@ -800,3 +800,109 @@ header {
     padding: 80px 40px;
     text-align: center;
 }
+
+/* ── Education Button ── */
+.education-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 220, 150, 0.25);
+    color: #00dc96;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 10px;
+    transition: all 0.25s ease;
+}
+
+.education-toggle-btn:hover,
+.education-toggle-btn.active {
+    background: rgba(0, 220, 150, 0.1);
+    border-color: rgba(0, 220, 150, 0.5);
+}
+
+/* ── Education Panel ── */
+.education-panel {
+    margin-top: 10px;
+}
+
+.education-panel.hidden {
+    display: none;
+}
+
+.lesson-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── Lesson Card ── */
+.lesson-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.lesson-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 215, 0, 0.3);
+    transform: translateY(-1px);
+}
+
+.lesson-card-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(255, 215, 0, 0.07);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lesson-card-info {
+    flex: 1;
+}
+
+.lesson-card-title {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.lesson-card-desc {
+    font-size: 0.75rem;
+    color: #888;
+    line-height: 1.4;
+}
+
+.lesson-card-arrow {
+    color: #FFD700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+/* ── Lesson Detail Modal ── */
+.lesson-detail-card {
+    max-height: 85vh;
+    overflow-y: auto;
+}
+
+.lesson-detail-body {
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.7;
+    white-space: pre-wrap;
+    margin-top: 12px;
+}

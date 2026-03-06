@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=20">
+    <link rel="stylesheet" href="style.css?v=21">
     <style>
         html {
             min-height: 100%;
@@ -76,11 +76,23 @@
             </div>
         </div>
 
+        <!-- Education Button -->
+        <button id="education-btn" class="education-toggle-btn">
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span>
+        </button>
+
         <!-- Asset List Container -->
         <main id="asset-list" class="asset-grid">
             <!-- Asset cards will be injected here -->
             <div class="loader">SYNCING REAL-TIME DATA...</div>
         </main>
+
+        <!-- Education Panel -->
+        <div id="education-panel" class="education-panel hidden">
+            <div id="lesson-list" class="lesson-list">
+                <!-- Lesson cards injected via JS -->
+            </div>
+        </div>
     </div>
 
     <!-- Signal Overlay -->
@@ -134,7 +146,19 @@
         </div>
     </div>
 
-    <script src="app.js?v=16"></script>
+    <!-- Lesson Detail Overlay -->
+    <div id="lesson-overlay" class="signal-overlay hidden">
+        <div class="signal-card lesson-detail-card">
+            <button id="close-lesson" class="btn-close">×</button>
+            <div id="lesson-detail-image-wrapper" class="lesson-detail-img-wrapper">
+                <img id="lesson-detail-img" src="" alt="Lesson" style="width:100%;border-radius:12px;display:none;">
+            </div>
+            <h2 id="lesson-detail-title" style="color:#FFD700;margin:12px 0 8px;"></h2>
+            <div id="lesson-detail-body" class="lesson-detail-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js?v=17"></script>
 </body>
 
 </html>

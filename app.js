@@ -767,3 +767,155 @@ function tryNextFallback(img) {
         }
     } catch (e) { img.onerror = null; }
 }
+
+// ─────────────────────────────────────────────────
+//  EDUCATION SECTION
+// ─────────────────────────────────────────────────
+
+const LESSONS = [
+    {
+        id: 1,
+        icon: '📈',
+        title: 'Что такое бинарные опционы?',
+        desc: 'Основы торговли: как работают бинарные опционы.',
+        text: `Бинарные опционы — это финансовые инструменты, в которых вы делаете прогноз: вырастет ли цена актива (CALL) или упадёт (PUT) за определённый промежуток времени.
+
+Если прогноз верен — вы получаете фиксированную прибыль (обычно 70–95%).
+Если прогноз неверен — вы теряете вложенные средства.
+
+Это простой и понятный инструмент для тех, кто только начинает изучать финансовые рынки.`,
+        img: null
+    },
+    {
+        id: 2,
+        icon: '🕯️',
+        title: 'Японские свечи',
+        desc: 'Как читать свечной график и что значат цвета.',
+        text: `Японская свеча состоит из тела и теней (фитилей).
+
+🟢 Зелёная свеча — цена выросла за период (закрытие > открытие).
+🔴 Красная свеча — цена упала (закрытие < открытие).
+
+Тело свечи показывает диапазон между открытием и закрытием.
+Тени — максимальный и минимальный уровни за период.
+
+Анализируя форму и последовательность свечей, можно предсказывать дальнейшее движение цены.`,
+        img: null
+    },
+    {
+        id: 3,
+        icon: '📊',
+        title: 'Управление капиталом',
+        desc: 'Как правильно распределять средства в торговле.',
+        text: `Управление капиталом (мани-менеджмент) — ключевой навык успешного трейдера.
+
+Основные правила:
+• Не рискуйте более 1–5% от депозита в одной сделке.
+• Не пытайтесь "отыграться" после убытка.
+• Установите дневной лимит потерь (например, 15% от депозита).
+• Ведите журнал сделок для анализа ошибок.
+
+Помните: сохранение капитала важнее получения прибыли.`,
+        img: null
+    },
+    {
+        id: 4,
+        icon: '🎯',
+        title: 'Стратегия Поддержка/Сопротивление',
+        desc: 'Торговля от ключевых уровней цены.',
+        text: `Уровни поддержки и сопротивления — это горизонтальные зоны на графике, где цена разворачивается.
+
+📗 Поддержка — уровень, от которого цена отскакивает вверх.
+📕 Сопротивление — уровень, от которого цена разворачивается вниз.
+
+Стратегия:
+1. Найдите сильный уровень поддержки/сопротивления.
+2. Дождитесь, когда цена подойдёт к уровню.
+3. Откройте CALL от поддержки или PUT от сопротивления.`,
+        img: null
+    },
+    {
+        id: 5,
+        icon: '⏰',
+        title: 'Выбор времени экспирации',
+        desc: 'Как правильно выбрать срок сделки.',
+        text: `Экспирация — это время, через которое истекает ваша сделка.
+
+Короткие (3–30 секунд): высокий риск, нужен опыт и быстрая реакция.
+Средние (1–5 минут): баланс между скоростью и анализом.
+Длинные (15 минут и более): более предсказуемые, легче анализировать.
+
+Совет: начинающим трейдерам рекомендуется использовать экспирацию от 1 до 5 минут.`,
+        img: null
+    }
+];
+
+let educationOpen = false;
+
+function renderLessons() {
+    const list = document.getElementById('lesson-list');
+    if (!list) return;
+    list.innerHTML = '';
+    LESSONS.forEach(lesson => {
+        const card = document.createElement('div');
+        card.className = 'lesson-card';
+        card.innerHTML = `
+            <div class="lesson-card-icon">${lesson.icon}</div>
+            <div class="lesson-card-info">
+                <div class="lesson-card-title">${lesson.title}</div>
+                <div class="lesson-card-desc">${lesson.desc}</div>
+            </div>
+            <div class="lesson-card-arrow">›</div>
+        `;
+        card.onclick = () => openLesson(lesson);
+        list.appendChild(card);
+    });
+}
+
+function openLesson(lesson) {
+    document.getElementById('lesson-detail-title').innerText = lesson.title;
+    document.getElementById('lesson-detail-body').innerText = lesson.text;
+
+    const img = document.getElementById('lesson-detail-img');
+    if (lesson.img) {
+        img.src = lesson.img;
+        img.style.display = '';
+    } else {
+        img.style.display = 'none';
+    }
+
+    const overlay = document.getElementById('lesson-overlay');
+    overlay.classList.remove('hidden');
+    setTimeout(() => overlay.classList.add('active'), 10);
+}
+
+// Wire up education toggle button
+document.addEventListener('DOMContentLoaded', () => {
+    const eduBtn = document.getElementById('education-btn');
+    const eduPanel = document.getElementById('education-panel');
+    const assetList = document.getElementById('asset-list');
+    const closeLesson = document.getElementById('close-lesson');
+    const lessonOverlay = document.getElementById('lesson-overlay');
+
+    if (eduBtn) {
+        eduBtn.onclick = () => {
+            educationOpen = !educationOpen;
+            eduBtn.classList.toggle('active', educationOpen);
+            if (educationOpen) {
+                eduPanel.classList.remove('hidden');
+                assetList.style.display = 'none';
+                renderLessons();
+            } else {
+                eduPanel.classList.add('hidden');
+                assetList.style.display = '';
+            }
+        };
+    }
+
+    if (closeLesson) {
+        closeLesson.onclick = () => {
+            lessonOverlay.classList.remove('active');
+            setTimeout(() => lessonOverlay.classList.add('hidden'), 300);
+        };
+    }
+});
