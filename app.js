@@ -480,13 +480,24 @@ function startPriceUpdates() {
 
     function connectWs(isFallback = false) {
         const currentUrl = isFallback ? `ws://127.0.0.1:${port}` : `ws://${localIp}:${port}`;
-        console.log(`Connecting to quote server at ${currentUrl}...`);
+        console.log(`📡 Соединение с сервером котировок: ${currentUrl}...`);
 
         ws = new WebSocket(currentUrl);
 
+        // Тайм-аут на подключение: если за 2 сек не открылся — пробуем другой
+        const connectionTimeout = setTimeout(() => {
+            if (ws.readyState !== WebSocket.OPEN) {
+                console.warn(`⏳ Тайм-аут ${currentUrl}, пробуем другой адрес...`);
+                ws.close();
+            }
+        }, 2000);
+
         ws.onopen = () => {
-            console.log(`Connected to real quotes server via ${currentUrl}!`);
-            // Отключаем симуляцию если подключились удачно
+            clearTimeout(connectionTimeout);
+            console.log(`✅ ПОДКЛЮЧЕНО К: ${currentUrl}`);
+            const badge = document.getElementById('status-badge');
+            if (badge) badge.innerText = (isFallback ? 'ПОДКЛЮЧЕНО (ЛОКАЛЬНО)' : 'ПОДКЛЮЧЕНО (СЕТЬ)');
+
             if (priceSimInterval) {
                 clearInterval(priceSimInterval);
                 priceSimInterval = null;
@@ -496,56 +507,41 @@ function startPriceUpdates() {
         ws.onmessage = (event) => {
             try {
                 const msg = JSON.parse(event.data);
-                if (msg.action === 'update_quotes') {
-                    const quotes = msg.data;
-                    // quotes usually look like: [[assetId, price, timestamp], ...] or depending on PO format
-                    // PocketOption format typically dictionary or array of arrays
-                    // We'll dynamically update elements if they exist
-                    if (Array.isArray(quotes)) {
-                        quotes.forEach(q => {
-                            if (!Array.isArray(q) || q.length < 2) return;
-                            const assetId = q[0].toLowerCase();
-                            const price = parseFloat(q[1]);
+                if (msg.action === 'update_quotes' && Array.isArray(msg.data)) {
+                    msg.data.forEach(q => {
+                        const assetId = q[0];
+                        const price = parseFloat(q[1]);
+                        const el = document.getElementById(`price-${assetId}`);
+                        if (el && !isNaN(price)) {
+                            const oldPrice = parseFloat(el.innerText) || price;
+                            el.innerText = price.toFixed(assetId.includes('btc') || assetId.includes('crypto') ? 2 : 5);
 
-                            const el = document.getElementById(`price-${assetId}`);
-                            if (el && !isNaN(price)) {
-                                const oldPrice = parseFloat(el.innerText) || price;
-                                el.innerText = price.toFixed(assetId.includes('btc') ? 2 : 5);
-
-                                const changeEl = document.getElementById(`change-${assetId}`);
-                                if (changeEl) {
-                                    const diff = price - oldPrice;
-                                    const pct = (diff / oldPrice) * 100;
-                                    let currentChange = parseFloat(changeEl.innerText) || 0;
-                                    currentChange += pct;
-                                    if (currentChange > 5) currentChange = 5; // cap display
-                                    if (currentChange < -5) currentChange = -5;
-
-                                    changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
-                                    changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
-                                }
+                            const changeEl = document.getElementById(`change-${assetId}`);
+                            if (changeEl) {
+                                const pct = ((price - oldPrice) / oldPrice) * 100;
+                                let currentChange = parseFloat(changeEl.innerText) || 0;
+                                currentChange += pct;
+                                if (Math.abs(currentChange) > 10) currentChange = currentChange > 0 ? 10 : -10;
+                                changeEl.innerText = (currentChange >= 0 ? '+' : '') + currentChange.toFixed(3) + '%';
+                                changeEl.className = 'asset-change ' + (currentChange >= 0 ? 'up' : 'down');
                             }
-                        });
-                    }
+                        }
+                    });
                 }
-            } catch (e) {
-                console.error("Error parsing quote", e);
-            }
+            } catch (e) { }
         };
 
         ws.onclose = () => {
-            console.log(`Connection to ${currentUrl} closed. Trying fallback in 2s...`);
+            clearTimeout(connectionTimeout);
+            console.log(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
             startSimulation();
-            setTimeout(() => connectWs(!isFallback), 2000); // Пробуем другой адрес через 2 сек
+            setTimeout(() => connectWs(!isFallback), 3000);
         };
 
-        ws.onerror = (e) => {
-            console.error("WebSocket error:", e);
-            ws.close();
-        };
+        ws.onerror = () => ws.close();
     }
 
-    connectWs(false); // Начинаем с 192.168.1.8
+    connectWs(false); // Начинаем с сетевого IP 192.168.1.8
 }
 
 function startSimulation() {
