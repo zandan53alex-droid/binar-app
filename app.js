@@ -198,11 +198,11 @@ const TRANSLATIONS = {
         entry: 'ВХОД:',
         call: 'ВВЕРХ ↗',
         put: 'ВНИЗ ↘',
-        crypto: 'КРИПТО',
+        crypto: 'КРИПТОВАЛЮТЫ',
         forex: 'ВАЛЮТЫ',
         forex_otc: 'ВАЛЮТЫ OTC',
-        stocks: 'АКЦИИ OTC',
-        commodities: 'ТОВАРЫ OTC',
+        stocks: 'АКЦИИ',
+        commodities: 'СЫРЬЕВЫЕ ТОВАРЫ',
         indices: 'ИНДЕКСЫ',
         assetsBtn: 'АКТИВЫ',
         expiration: 'ВРЕМЯ ЭКСПИРАЦИИ:',
@@ -375,8 +375,13 @@ function setupLocalization() {
     document.getElementById('asset-search').placeholder = t.search;
     document.getElementById('label-expiration').innerText = t.selectExp;
 
-    // Set the main button text to "АКТИВЫ" or "ASSETS"
-    document.getElementById('current-category-name').innerText = t.assetsBtn || 'Активы';
+    // Set the main button text to the current category name, or default "ASSETS"
+    const categoryNameEl = document.getElementById('current-category-name');
+    if (currentCategory && t[currentCategory]) {
+        categoryNameEl.innerText = t[currentCategory];
+    } else {
+        categoryNameEl.innerText = t.assetsBtn || 'Активы';
+    }
 
     document.querySelectorAll('.dropdown-item').forEach(btn => {
         const cat = btn.dataset.category;
@@ -521,11 +526,13 @@ function renderAssets() {
         });
         iconsHtml += `</div>`;
 
+        const translatedCategory = TRANSLATIONS[currentLang][currentCategory] || asset.category;
+
         card.innerHTML = `
             ${iconsHtml}
             <div class="asset-info">
                 <div class="asset-name">${asset.name}</div>
-                <div class="asset-category">${asset.category}</div>
+                <div class="asset-category">${translatedCategory}</div>
             </div>
             <div class="asset-price-box">
                 <span class="asset-price" id="price-${asset.id}">--</span>
