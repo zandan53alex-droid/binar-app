@@ -245,7 +245,7 @@ const TRANSLATIONS = {
 };
 
 let currentLang = 'ru';
-let currentCategory = 'forex';
+let currentCategory = null;
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -348,6 +348,8 @@ function setupEventListeners() {
 function renderAssets() {
     const container = document.getElementById('asset-list');
     container.innerHTML = '';
+
+    if (!currentCategory) return;
 
     const filtered = ASSETS_DB[currentCategory].filter(a =>
         a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
