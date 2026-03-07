@@ -1414,35 +1414,69 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ─── News & Economic Calendar Logic ──────────────────────────
     let cachedNews = [];
-    const FLAG_MAP = {
-        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
-        'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'CNY': '🇨🇳',
-        'NZD': '🇳🇿', 'BRL': '🇧🇷', 'INR': '🇮🇳'
+    const NINJA_API_KEY = 'E91Gz9V2wAOM83Luy2m6XYIrWkRYN4pz';
+
+    // Mapping 2-letter country codes to Flags and common Currencies
+    const COUNTRY_DATA = {
+        'US': { flag: '🇺🇸', cur: 'USD' }, 'EU': { flag: '🇪🇺', cur: 'EUR' },
+        'GB': { flag: '🇬🇧', cur: 'GBP' }, 'JP': { flag: '🇯🇵', cur: 'JPY' },
+        'CA': { flag: '🇨🇦', cur: 'CAD' }, 'AU': { flag: '🇦🇺', cur: 'AUD' },
+        'CH': { flag: '🇨🇭', cur: 'CHF' }, 'CN': { flag: '🇨🇳', cur: 'CNY' },
+        'NZ': { flag: '🇳🇿', cur: 'NZD' }, 'BR': { flag: '🇧🇷', cur: 'BRL' },
+        'IN': { flag: '🇮🇳', cur: 'INR' }, 'DE': { flag: '🇩🇪', cur: 'EUR' },
+        'FR': { flag: '🇫🇷', cur: 'EUR' }, 'IT': { flag: '🇮🇹', cur: 'EUR' }
     };
 
-    function fetchEconomicNews() {
+    async function fetchEconomicNews() {
         const listContainer = document.getElementById('news-list');
-        // Using a reliable public source or proxy if possible, fallback to simulation for stability
-        // For production, you'd use: fetch('https://financialmodelingprep.com/api/v3/economic_calendar?apikey=YOUR_KEY')
+        const updateStatus = document.getElementById('news-update-time');
 
-        // Mocking real-time behavior for demonstration stability, as promised to not break things
-        setTimeout(() => {
-            const now = new Date();
-            const hour = now.getHours();
+        try {
+            // Fetching from API-Ninjas
+            const response = await fetch('https://api.api-ninjas.com/v1/economiccalendar', {
+                headers: { 'X-Api-Key': NINJA_API_KEY }
+            });
 
-            cachedNews = [
-                { time: `${hour}:00`, currency: 'USD', event: 'Non-Farm Payrolls', importance: 3, actual: '-', forecast: '210K', previous: '200K' },
-                { time: `${hour}:15`, currency: 'EUR', event: 'ECB President Lagarde Speaks', importance: 3, actual: '-', forecast: '-', previous: '-' },
-                { time: `${hour}:30`, currency: 'GBP', event: 'GDP (MoM)', importance: 2, actual: '0.2%', forecast: '0.1%', previous: '0.1%' },
-                { time: `${hour + 1}:00`, currency: 'USD', event: 'Unemployment Rate', importance: 3, actual: '-', forecast: '3.8%', previous: '3.9%' },
-                { time: `${hour + 1}:30`, currency: 'JPY', event: 'Retail Sales (YoY)', importance: 1, actual: '2.1%', forecast: '2.0%', previous: '1.8%' },
-                { time: `${hour + 2}:00`, currency: 'CAD', event: 'BoC Interest Rate Decision', importance: 3, actual: '-', forecast: '5.00%', previous: '5.00%' },
-                { time: `${hour + 2}:45`, currency: 'EUR', event: 'Consumer Confidence', importance: 2, actual: '-15.5', forecast: '-15.0', previous: '-16.1' }
-            ];
+            if (!response.ok) throw new Error('API Error');
+
+            const data = await response.json();
+
+            // Map and sort data
+            cachedNews = data.map(item => {
+                const cData = COUNTRY_DATA[item.country] || { flag: '🌐', cur: item.country };
+
+                // Convert string importance to number
+                let impNum = 1;
+                if (item.importance === 'medium') impNum = 2;
+                if (item.importance === 'high') impNum = 3;
+
+                // Format time from ISO
+                const dateObj = new Date(item.date);
+                const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                return {
+                    time: timeStr,
+                    rawDate: dateObj,
+                    currency: cData.cur,
+                    flag: cData.flag,
+                    event: item.event,
+                    importance: impNum,
+                    actual: item.actual || '-',
+                    forecast: item.forecast || '-',
+                    previous: item.previous || '-'
+                };
+            });
+
+            // Re-sort by date (API usually returns it sorted, but just in case)
+            cachedNews.sort((a, b) => a.rawDate - b.rawDate);
 
             renderNews();
-            document.getElementById('news-update-time').innerText = `Обновлено: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }, 800);
+            updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        } catch (error) {
+            console.error('News Fetch Error:', error);
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #f44336;">Ошибка загрузки новостей. Попробуйте позже.</div>';
+        }
     }
 
     function renderNews() {
@@ -1464,7 +1498,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filtered.forEach(item => {
             const stars = '⭐'.repeat(item.importance);
-            const flag = FLAG_MAP[item.currency] || '🌐';
+            const flag = item.flag || '🌐';
             const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
 
             const card = `
