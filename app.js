@@ -1253,10 +1253,11 @@ function renderBooks() {
     const panel = document.getElementById('edu-books-panel');
     if (!panel) return;
     panel.innerHTML = '';
+    const repoBase = 'https://media.githubusercontent.com/media/zandan53alex-droid/binar-app/master/webapp/books/';
     BOOKS.forEach(book => {
         const card = document.createElement('a');
         card.className = 'book-card';
-        card.href = `books/${encodeURIComponent(book.file)}`;
+        card.href = repoBase + encodeURIComponent(book.file);
         card.target = '_blank';
         card.rel = 'noopener';
         card.innerHTML = `
