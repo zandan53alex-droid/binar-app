@@ -490,27 +490,31 @@ function updateLangIcon() {
 
 function setupLocalization() {
     const t = TRANSLATIONS[currentLang];
+    if (!t) return;
 
     // Main UI Elements
-    document.querySelector('.loader').innerText = t.syncing;
-    document.getElementById('get-signal-btn').innerText = t.analyze;
-    document.getElementById('asset-search').placeholder = t.search;
-    document.getElementById('label-expiration').innerText = t.selectExp;
+    const q = (sel) => document.querySelector(sel);
+    const get = (id) => document.getElementById(id);
+
+    if (q('.loader')) q('.loader').innerText = t.syncing;
+    if (get('get-signal-btn')) get('get-signal-btn').innerText = t.analyze;
+    if (get('asset-search')) get('asset-search').placeholder = t.search;
+    if (get('label-expiration')) get('label-expiration').innerText = t.selectExp;
 
     // Toggle Buttons
-    document.getElementById('assets-btn-text').innerText = t.assetsBtn;
-    document.getElementById('education-btn-text').innerText = t.educationBtn;
-    document.getElementById('calc-btn-text').innerText = t.calcBtn;
-    document.getElementById('news-btn-text').innerText = t.newsBtn;
+    if (get('assets-btn-text')) get('assets-btn-text').innerText = t.assetsBtn;
+    if (get('education-btn-text')) get('education-btn-text').innerText = t.educationBtn;
+    if (get('calc-btn-text')) get('calc-btn-text').innerText = t.calcBtn;
+    if (get('news-btn-text')) get('news-btn-text').innerText = t.newsBtn;
 
     // Panel Headers & Tabs
-    const tabBasics = document.getElementById('tab-basics');
-    const tabBooks = document.getElementById('tab-books');
+    const tabBasics = get('tab-basics');
+    const tabBooks = get('tab-books');
     if (tabBasics) tabBasics.innerText = t.basics;
     if (tabBooks) tabBooks.innerText = t.books;
 
     // Calculator Labels
-    const setLabel = (id, text) => { if (document.getElementById(id)) document.getElementById(id).innerText = text; };
+    const setLabel = (id, text) => { const el = get(id); if (el) el.innerText = text; };
     setLabel('label-deposit', t.deposit);
     setLabel('label-first-bet', t.firstBet);
     setLabel('label-multiplier', t.multiplier);
@@ -529,11 +533,13 @@ function setupLocalization() {
     setLabel('sim-label-drawdown', t.drawdown);
 
     // Set the main button text to the current category name, or default "ASSETS"
-    const categoryNameEl = document.getElementById('current-category-name');
-    if (currentCategory && t[currentCategory]) {
-        categoryNameEl.innerText = t[currentCategory];
-    } else {
-        categoryNameEl.innerText = t.assetsBtn || 'Активы';
+    const categoryNameEl = get('current-category-name');
+    if (categoryNameEl) {
+        if (currentCategory && t[currentCategory]) {
+            categoryNameEl.innerText = t[currentCategory];
+        } else {
+            categoryNameEl.innerText = t.assetsBtn || 'Активы';
+        }
     }
 
     document.querySelectorAll('.dropdown-item').forEach(btn => {
@@ -544,9 +550,12 @@ function setupLocalization() {
     });
 
     // Re-render panels if they are open
-    if (!document.getElementById('edu-basics-panel').classList.contains('hidden')) renderBasics();
-    if (!document.getElementById('edu-books-panel').classList.contains('hidden')) renderBooks();
-    if (!document.getElementById('news-panel').classList.contains('hidden')) renderNews();
+    const eduBasics = get('edu-basics-panel');
+    const eduBooks = get('edu-books-panel');
+    const newsPanel = get('news-panel');
+    if (eduBasics && !eduBasics.classList.contains('hidden')) renderBasics();
+    if (eduBooks && !eduBooks.classList.contains('hidden')) renderBooks();
+    if (newsPanel && !newsPanel.classList.contains('hidden')) renderNews();
 }
 
 function setupEventListeners() {
@@ -586,7 +595,7 @@ function setupEventListeners() {
                 langContainer.classList.remove('open');
 
                 // Update VIP badge text
-                const urlParams = newSearchParams = new URLSearchParams(window.location.search);
+                const urlParams = new URLSearchParams(window.location.search);
                 const isVip = urlParams.get('vip') === 'true';
                 const badge = document.getElementById('status-badge');
                 if (badge) {
@@ -1704,6 +1713,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function runCalculations() {
+        const t = TRANSLATIONS[currentLang];
         const deposit = parseFloat(document.getElementById('calc-deposit').value) || 0;
         const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc').value) || 0;
         const multiplier = parseFloat(document.getElementById('calc-multiplier').value) || 0;
