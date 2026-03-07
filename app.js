@@ -196,8 +196,8 @@ const TRANSLATIONS = {
         platinum: 'VIP ДОСТУП',
         analyze: 'ПОЛУЧИТЬ ПРОГНОЗ',
         entry: 'ВХОД:',
-        call: 'ВВЕРХ ↗',
-        put: 'ВНИЗ ↘',
+        call: 'ПОКУПКА ↗',
+        put: 'ПРОДАЖА ↘',
         crypto: 'КРИПТОВАЛЮТЫ',
         forex: 'ВАЛЮТЫ',
         forex_otc: 'ВАЛЮТЫ OTC',
@@ -261,8 +261,8 @@ const TRANSLATIONS = {
         platinum: 'VIP ACCESS',
         analyze: 'GET SIGNAL',
         entry: 'ENTRY:',
-        call: 'CALL ↗',
-        put: 'PUT ↘',
+        call: 'BUY ↗',
+        put: 'SELL ↘',
         crypto: 'CRYPTO',
         forex: 'CURRENCIES',
         forex_otc: 'CURRENCIES OTC',
@@ -326,8 +326,8 @@ const TRANSLATIONS = {
         platinum: 'वीआईपी',
         analyze: 'सिग्नल प्राप्त करें',
         entry: 'प्रवेश:',
-        call: 'ऊपर ↗',
-        put: 'नीचे ↘',
+        call: 'खरीदें ↗',
+        put: 'बेचें ↘',
         crypto: 'क्रिप्टो',
         forex: 'मुद्राएं',
         forex_otc: 'मुद्राएं OTC',
@@ -391,8 +391,8 @@ const TRANSLATIONS = {
         platinum: 'ACCESO VIP',
         analyze: 'OBTENER SEÑAL',
         entry: 'ENTRADA:',
-        call: 'SUBE ↗',
-        put: 'BAJA ↘',
+        call: 'COMPRA ↗',
+        put: 'VENTA ↘',
         crypto: 'CRIPTO',
         forex: 'DIVISAS',
         forex_otc: 'DIVISAS OTC',
@@ -456,8 +456,8 @@ const TRANSLATIONS = {
         platinum: 'ACCÈS VIP',
         analyze: 'OBTENIR LE SIGNAL',
         entry: 'ENTRÉE:',
-        call: 'HAUSSE ↗',
-        put: 'BAISSE ↘',
+        call: 'ACHAT ↗',
+        put: 'VENTE ↘',
         crypto: 'CRYPTO',
         forex: 'DEVISES',
         forex_otc: 'DEVISES OTC',
@@ -640,6 +640,14 @@ function setupLocalization() {
     if (eduBasics && !eduBasics.classList.contains('hidden')) renderBasics();
     if (eduBooks && !eduBooks.classList.contains('hidden')) renderBooks();
     if (newsPanel && !newsPanel.classList.contains('hidden')) renderNews();
+
+    // v41: Clear defunct labels
+    const confLabel = get('label-confidence');
+    const accLabel = get('label-accuracy');
+    const volLabel = get('label-volume-info');
+    if (confLabel) confLabel.innerText = '';
+    if (accLabel) accLabel.innerText = '';
+    if (volLabel) volLabel.parentElement.style.display = 'none';
 }
 
 function setupEventListeners() {
@@ -883,24 +891,21 @@ async function generateSignal() {
     document.getElementById('signal-loader').classList.add('hidden');
     document.getElementById('signal-content').classList.remove('hidden');
 
-    // 1. Generate Randomized Stats
-    const confidence = 82 + Math.floor(Math.random() * 15); // 82-97%
-    const accuracy = 35 + Math.floor(Math.random() * 25);   // 35-60%
+    // 1. Removed Confidence/Accuracy/Volume (v41)
     const isCall = Math.random() > 0.5;
     const strength = Math.random() > 0.3 ? t.strong : t.moderate;
-    const volume = Math.random() > 0.4 ? t.high : t.medium;
 
     // 2. Market Detection
     const isOtc = currentAsset.id.toLowerCase().includes('otc') || currentAsset.category.toLowerCase().includes('otc');
     const marketType = isOtc ? t.otc : t.regular;
 
     // 3. Update UI
-    document.getElementById('signal-confidence').innerText = confidence + '%';
-    document.getElementById('signal-accuracy').innerText = accuracy + '%';
+    if (document.getElementById('signal-confidence')) document.getElementById('signal-confidence').innerText = '';
+    if (document.getElementById('signal-accuracy')) document.getElementById('signal-accuracy').innerText = '';
+
     document.getElementById('signal-asset-name-large').innerText = currentAsset.name;
     document.getElementById('signal-market').innerText = marketType;
     document.getElementById('signal-strength').innerText = strength;
-    document.getElementById('signal-volume').innerText = volume;
     document.getElementById('signal-timeframe-val').innerText = currentTimeframe.toUpperCase();
 
     const dirMarker = document.getElementById('signal-direction-marker');
@@ -917,10 +922,19 @@ async function generateSignal() {
         dirText.innerText = t.put.split(' ')[0];
     }
 
-    // 4. Timer Logic (3 Minutes duration)
-    startSignalTimer(180);
+    // 4. Timer Logic (Dynamic duration based on expiration v41)
+    const duration = timeframeToSeconds(currentTimeframe);
+    startSignalTimer(duration);
 
     if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+
+function timeframeToSeconds(tf) {
+    const val = parseInt(tf);
+    if (tf.includes('s')) return val;
+    if (tf.includes('m')) return val * 60;
+    if (tf.includes('h')) return val * 3600;
+    return 60; // Default
 }
 
 let signalTimerInterval = null;

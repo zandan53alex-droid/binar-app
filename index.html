@@ -7,7 +7,7 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=40">
+    <link rel="stylesheet" href="style.css?v=41">
     <style>
         html {
             min-height: 100%;
@@ -277,18 +277,6 @@
             </div>
 
             <div id="signal-content" class="hidden">
-                <!-- Confidence & Accuracy Grid -->
-                <div class="signal-stats-grid">
-                    <div class="stat-block">
-                        <span class="stat-label" id="label-confidence">CONFIDENCE</span>
-                        <span class="stat-value" id="signal-confidence">87%</span>
-                    </div>
-                    <div class="stat-block">
-                        <span class="stat-label" id="label-accuracy">ACCURACY</span>
-                        <span class="stat-value" id="signal-accuracy">43%</span>
-                    </div>
-                </div>
-
                 <!-- Signal Main Result -->
                 <div class="signal-main-result">
                     <div id="signal-direction-marker" class="direction-marker">
@@ -307,10 +295,6 @@
                     <div class="info-row">
                         <span class="info-label" id="label-strength-info">СИЛА</span>
                         <span class="info-value" id="signal-strength">Сильный</span>
-                    </div>
-                    <div class="info-row">
-                        <span class="info-label" id="label-volume-info">ОБЪЁМ</span>
-                        <span class="info-value" id="signal-volume">Высокий</span>
                     </div>
                     <div class="info-row">
                         <span class="info-label" id="label-time-info">ВРЕМЯ</span>
@@ -348,7 +332,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=40"></script>
+    <script src="app.js?v=41"></script>
 </body>
 
 </html>

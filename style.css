@@ -710,6 +710,11 @@ header {
     pointer-events: all;
 }
 
+.signal-stats-grid,
+.stat-block {
+    display: none;
+}
+
 /* Advanced Signal Overlay (v40) */
 .signal-stats-grid {
     display: grid;
@@ -745,41 +750,46 @@ header {
 
 .signal-main-result {
     text-align: center;
-    margin: 25px 0;
+    margin: 30px 0;
 }
 
 .direction-marker {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    font-size: 1.1rem;
+    gap: 8px;
+    font-size: 1.8rem;
     font-weight: 900;
-    padding: 14px 24px;
-    border-radius: 14px;
+    padding: 30px 20px;
+    border-radius: 20px;
     width: 100%;
-    margin-bottom: 12px;
+    margin-bottom: 20px;
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
 }
 
 .direction-marker.call {
     color: #fff;
-    background: #00c853;
-    /* Success Green */
-    box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+    background: linear-gradient(135deg, #00c853, #00e676);
+    box-shadow: 0 10px 30px rgba(0, 200, 83, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .direction-marker.put {
     color: #fff;
-    background: #ff3d00;
-    /* Danger Red */
-    box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
+    background: linear-gradient(135deg, #d50000, #ff1744);
+    box-shadow: 0 10px 30px rgba(213, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#signal-direction-icon {
+    font-size: 3rem;
+    line-height: 1;
 }
 
 .asset-name-large {
-    font-size: 1.6rem;
-    font-weight: 900;
     color: #fff;
     letter-spacing: -0.5px;
 }
