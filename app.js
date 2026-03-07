@@ -1430,64 +1430,41 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchEconomicNews() {
         const listContainer = document.getElementById('news-list');
         const updateStatus = document.getElementById('news-update-time');
+        const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
-        // Using Internal Trading Data Engine for 100% reliability
-        setTimeout(() => {
-            const now = new Date();
-            const currentHour = now.getHours();
+        try {
+            const response = await fetch(`https://financialmodelingprep.com/api/v3/economic_calendar?apikey=${API_KEY}`);
+            if (!response.ok) throw new Error('API Error');
 
-            // Generate a set of realistic daily events
-            const baseEvents = [
-                { h: 1, m: 30, country: 'AU', event: 'Retail Sales (MoM)', importance: 2, forecast: '0.3%', prev: '0.1%' },
-                { h: 3, m: 0, country: 'CN', event: 'Manufacturing PMI', importance: 3, forecast: '50.1', prev: '49.8' },
-                { h: 8, m: 0, country: 'DE', event: 'GDP (QoQ)', importance: 3, forecast: '0.1%', prev: '-0.1%' },
-                { h: 9, m: 30, country: 'GB', event: 'CPI (YoY)', importance: 3, forecast: '2.2%', prev: '2.0%' },
-                { h: 11, m: 0, country: 'EU', event: 'ZEW Economic Sentiment', importance: 2, forecast: '12.5', prev: '10.2' },
-                { h: 13, m: 30, country: 'US', event: 'Non-Farm Payrolls', importance: 3, forecast: '185K', prev: '170K' },
-                { h: 13, m: 30, country: 'US', event: 'Unemployment Rate', importance: 3, forecast: '3.8%', prev: '3.9%' },
-                { h: 15, m: 30, country: 'CA', event: 'BoC Press Conference', importance: 3, forecast: '-', prev: '-' },
-                { h: 17, m: 0, country: 'US', event: 'ISM Non-Manufacturing PMI', importance: 2, forecast: '52.4', prev: '52.1' },
-                { h: 19, m: 0, country: 'US', event: 'Crude Oil Inventories', importance: 2, forecast: '-1.2M', prev: '0.5M' },
-                { h: 21, m: 0, country: 'NZ', event: 'RBNZ Interest Rate Decision', importance: 3, forecast: '5.50%', prev: '5.50%' }
-            ];
+            const data = await response.json();
 
-            cachedNews = baseEvents.map(e => {
-                const cData = COUNTRY_DATA[e.country] || { flag: '🌐', cur: e.country };
-                const eventTime = new Date();
-                eventTime.setHours(e.h, e.m, 0);
+            // Map FMP data to our structure
+            cachedNews = data.slice(0, 15).map(item => {
+                // FMP impact field mapping
+                let impNum = 1;
+                if (item.impact === 'Medium') impNum = 2;
+                if (item.impact === 'High') impNum = 3;
 
-                // Logic: If event time is in the past, show a random "Actual" value close to forecast
-                let actual = '-';
-                if (now > eventTime) {
-                    if (e.forecast.includes('%')) {
-                        const val = parseFloat(e.forecast);
-                        actual = (val + (Math.random() * 0.4 - 0.2)).toFixed(1) + '%';
-                    } else if (e.forecast.includes('K') || e.forecast.includes('M')) {
-                        const unit = e.forecast.slice(-1);
-                        const val = parseFloat(e.forecast);
-                        actual = (val + (Math.random() * 20 - 10)).toFixed(0) + unit;
-                    } else if (e.forecast !== '-') {
-                        const val = parseFloat(e.forecast);
-                        actual = (val + (Math.random() * 1.2 - 0.6)).toFixed(1);
-                    }
-                }
+                // Format time (FMP provides date)
+                const dateObj = new Date(item.date);
+                const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                 return {
-                    time: `${e.h.toString().padStart(2, '0')}:${e.m.toString().padStart(2, '0')}`,
-                    rawDate: eventTime,
-                    currency: cData.cur,
-                    flag: cData.flag,
-                    event: e.event,
-                    importance: e.importance,
-                    actual: actual,
-                    forecast: e.forecast,
-                    previous: e.prev
+                    time: timeStr,
+                    rawDate: dateObj,
+                    currency: item.currency,
+                    event: item.event,
+                    importance: impNum
                 };
             });
 
             renderNews();
-            updateStatus.innerText = `Обновлено: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-        }, 600);
+            updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+        } catch (error) {
+            console.error('News Fetch Error:', error);
+            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны</div>';
+        }
     }
 
     function renderNews() {
@@ -1501,31 +1478,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         cachedNews.forEach(item => {
             const stars = '⭐'.repeat(item.importance);
-            const flag = item.flag || '🌐';
             const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
 
             const card = `
                 <div class="news-card ${impactClass}">
                     <div class="news-card-header">
                         <span class="news-time">${item.time}</span>
-                        <span class="news-currency">${flag} ${item.currency}</span>
+                        <span class="news-currency">${item.currency}</span>
                     </div>
-                    <div class="news-event-name">${item.event}</div>
-                    <div class="news-values">
-                        <div class="news-val-item">
-                            <span class="news-val-label">Факт</span>
-                            <span class="news-val-num" style="${item.actual !== '-' ? 'color:#1cc491' : ''}">${item.actual}</span>
-                        </div>
-                        <div class="news-val-item">
-                            <span class="news-val-label">Прогноз</span>
-                            <span class="news-val-num">${item.forecast}</span>
-                        </div>
-                        <div class="news-val-item">
-                            <span class="news-val-label">Пред.</span>
-                            <span class="news-val-num">${item.previous}</span>
-                        </div>
-                    </div>
-                    <div class="news-importance">${stars}</div>
+                    <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
+                    <div class="news-importance">Влияние: ${stars}</div>
                 </div>
             `;
             listContainer.innerHTML += card;
