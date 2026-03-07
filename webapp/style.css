@@ -816,6 +816,9 @@ header {
     text-align: left;
     margin-top: 10px;
     transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .education-toggle-btn:hover,
@@ -830,8 +833,203 @@ header {
 }
 
 .education-panel.hidden,
-.assets-panel.hidden {
+.assets-panel.hidden,
+.calc-panel.hidden {
     display: none;
+}
+
+/* ── Calculator Toggle Button (Orange/Amber) ── */
+.calc-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 160, 0, 0.25);
+    color: #ffa000;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.calc-toggle-btn:hover,
+.calc-toggle-btn.active {
+    background: rgba(255, 160, 0, 0.1);
+    border-color: rgba(255, 160, 0, 0.5);
+}
+
+.calc-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 5px;
+}
+
+.calc-section-title {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin: 20px 0 12px 0;
+}
+
+/* Inputs Grid */
+.calc-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.input-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: #aaa;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.input-group input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.input-group input:focus {
+    border-color: #ffa000;
+}
+
+/* Stats Cards */
+.calc-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+}
+
+.stat-label {
+    display: block;
+    font-size: 0.6rem;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.stat-card.warning .stat-value {
+    color: #ff9800;
+}
+
+.stat-card.danger .stat-value {
+    color: #f44336;
+}
+
+.stat-value.highlight {
+    color: #00dc96;
+    font-size: 1.2rem;
+}
+
+/* Table Styling */
+.calc-table-wrapper {
+    overflow-x: auto;
+}
+
+.calc-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.calc-table th {
+    text-align: left;
+    color: #666;
+    padding: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.calc-table td {
+    padding: 10px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+/* Simulation & Alerts */
+.calc-alert {
+    background: rgba(244, 67, 54, 0.1);
+    color: #f44336;
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    margin-top: 15px;
+    text-align: center;
+    border-left: 3px solid #f44336;
+}
+
+.simulation-controls {
+    display: flex;
+    gap: 12px;
+    align-items: flex-end;
+}
+
+.sim-btn {
+    background: #ffa000;
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 15px;
+    font-weight: 800;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.sim-results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.sim-chip {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    color: #ccc;
+}
+
+.sim-chip span {
+    color: #ffa000;
+    font-weight: 700;
+}
+
+.chart-container {
+    margin-top: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 10px;
 }
 
 /* ── Assets Toggle Button (Blue/Purple Accent) ── */
@@ -850,8 +1048,8 @@ header {
     margin-top: 5px;
     transition: all 0.25s ease;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
 .assets-toggle-btn:hover,
@@ -864,11 +1062,17 @@ header {
     margin-top: 10px;
 }
 
-.assets-toggle-btn .dropdown-arrow {
+.assets-toggle-btn .dropdown-arrow,
+.education-toggle-btn .dropdown-arrow {
     transition: transform 0.3s ease;
+    font-size: 0.7rem;
+    margin-left: 10px;
+    opacity: 0.8;
+    display: inline-block;
 }
 
-.assets-toggle-btn.active .dropdown-arrow {
+.assets-toggle-btn.active .dropdown-arrow,
+.education-toggle-btn.active .dropdown-arrow {
     transform: rotate(180deg);
 }
 

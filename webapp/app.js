@@ -1310,55 +1310,237 @@ function openLesson(lesson) {
 
 // Wire up education toggle button
 document.addEventListener('DOMContentLoaded', () => {
-    // ─── Toggles (Education & Assets) ──────────────────────────
+    // ─── Toggles (Education, Assets, Calculator) ──────────────────
     let assetsOpen = true; // Assets open by default
     let educationOpen = false;
+    let calculatorOpen = false;
 
     const assetsBtn = document.getElementById('assets-btn');
     const assetsPanel = document.getElementById('assets-panel');
     const educationBtn = document.getElementById('education-btn');
     const educationPanel = document.getElementById('education-panel');
+    const calcBtn = document.getElementById('calc-btn');
+    const calcPanel = document.getElementById('calc-panel');
+
+    function closeAllPanels() {
+        assetsOpen = false;
+        educationOpen = false;
+        calculatorOpen = false;
+        assetsPanel.classList.add('hidden');
+        educationPanel.classList.add('hidden');
+        calcPanel.classList.add('hidden');
+        assetsBtn.classList.remove('active');
+        educationBtn.classList.remove('active');
+        calcBtn.classList.remove('active');
+        document.getElementById('assets-arrow').style.transform = '';
+        document.getElementById('edu-arrow').style.transform = '';
+        document.getElementById('calc-arrow').style.transform = '';
+    }
 
     function toggleAssets() {
-        assetsOpen = !assetsOpen;
-        if (assetsOpen) {
-            educationOpen = false;
-            educationPanel.classList.add('hidden');
-            educationBtn.classList.remove('active');
-            document.getElementById('edu-arrow').style.transform = '';
-
+        if (!assetsOpen) {
+            closeAllPanels();
+            assetsOpen = true;
             assetsPanel.classList.remove('hidden');
             assetsBtn.classList.add('active');
         } else {
+            assetsOpen = false;
             assetsPanel.classList.add('hidden');
             assetsBtn.classList.remove('active');
         }
     }
 
     function toggleEducation() {
-        educationOpen = !educationOpen;
-        if (educationOpen) {
-            assetsOpen = false;
-            assetsPanel.classList.add('hidden');
-            assetsBtn.classList.remove('active');
-
+        if (!educationOpen) {
+            closeAllPanels();
+            educationOpen = true;
             educationPanel.classList.remove('hidden');
             educationBtn.classList.add('active');
             document.getElementById('edu-arrow').style.transform = 'rotate(180deg)';
-
-            // Render first tab if empty
             if (currentEduTab === 'basics' && !document.getElementById('edu-basics-panel').querySelector('.lesson-card')) {
                 renderBasics();
             }
         } else {
+            educationOpen = false;
             educationPanel.classList.add('hidden');
             educationBtn.classList.remove('active');
             document.getElementById('edu-arrow').style.transform = '';
         }
     }
 
+    function toggleCalculator() {
+        if (!calculatorOpen) {
+            closeAllPanels();
+            calculatorOpen = true;
+            calcPanel.classList.remove('hidden');
+            calcBtn.classList.add('active');
+            document.getElementById('calc-arrow').style.transform = 'rotate(180deg)';
+            initCalculator();
+        } else {
+            calculatorOpen = false;
+            calcPanel.classList.add('hidden');
+            calcBtn.classList.remove('active');
+            document.getElementById('calc-arrow').style.transform = '';
+        }
+    }
+
     assetsBtn.addEventListener('click', toggleAssets);
     educationBtn.addEventListener('click', toggleEducation);
+    calcBtn.addEventListener('click', toggleCalculator);
+
+    // ─── Calculator Logic ─────────────────────────────────────────
+    let growthChart = null;
+
+    function initCalculator() {
+        const inputs = ['calc-deposit', 'calc-first-bet-perc', 'calc-multiplier', 'calc-levels', 'calc-payout', 'calc-max-risk'];
+        inputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', runCalculations);
+        });
+        document.getElementById('run-sim-btn').addEventListener('click', runSimulation);
+        runCalculations();
+    }
+
+    function runCalculations() {
+        const deposit = parseFloat(document.getElementById('calc-deposit').value) || 0;
+        const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc').value) || 0;
+        const multiplier = parseFloat(document.getElementById('calc-multiplier').value) || 0;
+        const levels = parseInt(document.getElementById('calc-levels').value) || 0;
+        const payout = parseFloat(document.getElementById('calc-payout').value) / 100 || 0;
+
+        const firstBet = (deposit * (firstBetPerc / 100));
+        document.getElementById('res-first-bet').innerText = '$' + firstBet.toFixed(2);
+
+        let totalRisk = 0;
+        let currentBet = firstBet;
+        const tableBody = document.getElementById('calc-table-body');
+        tableBody.innerHTML = '';
+
+        for (let i = 1; i <= levels; i++) {
+            totalRisk += currentBet;
+            const potentialProfit = (currentBet * payout);
+
+            const row = `<tr>
+                <td>${i}</td>
+                <td>$${currentBet.toFixed(2)}</td>
+                <td style="color: #00dc96">+$${potentialProfit.toFixed(2)}</td>
+            </tr>`;
+            tableBody.innerHTML += row;
+            currentBet *= multiplier;
+        }
+
+        const riskPerc = (totalRisk / deposit) * 100;
+        document.getElementById('res-total-risk').innerText = '$' + totalRisk.toFixed(2);
+        document.getElementById('res-risk-perc').innerText = riskPerc.toFixed(1) + '%';
+
+        // Survival msg
+        let survivalCount = 0;
+        let tempRisk = 0;
+        let tempBet = firstBet;
+        while (tempRisk + tempBet <= deposit && survivalCount < 15) {
+            tempRisk += tempBet;
+            tempBet *= multiplier;
+            survivalCount++;
+        }
+        document.getElementById('calc-survival-msg').innerText = `Депозит выдержит ${survivalCount} колен подряд.`;
+        document.getElementById('calc-survival-msg').style.color = survivalCount < levels ? '#f44336' : '#00dc96';
+
+        // Safe bet calc
+        const maxRiskLimit = parseFloat(document.getElementById('calc-max-risk').value) || 10;
+        const maxAllowedMoney = deposit * (maxRiskLimit / 100);
+        // Formula: TotalRisk = FirstBet * (1 - multiplier^levels) / (1 - multiplier)
+        let sumFactor = 0;
+        for (let l = 0; l < levels; l++) sumFactor += Math.pow(multiplier, l);
+        const safeStartingBet = maxAllowedMoney / sumFactor;
+        document.getElementById('res-safe-bet').innerText = '$' + safeStartingBet.toFixed(2);
+    }
+
+    function runSimulation() {
+        const deposit = parseFloat(document.getElementById('calc-deposit').value) || 0;
+        const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc').value) || 0;
+        const multiplier = parseFloat(document.getElementById('calc-multiplier').value) || 0;
+        const levels = parseInt(document.getElementById('calc-levels').value) || 0;
+        const winrate = parseFloat(document.getElementById('calc-winrate').value) / 100 || 0;
+        const payout = parseFloat(document.getElementById('calc-payout').value) / 100 || 0;
+
+        let balance = deposit;
+        let firstBet = balance * (firstBetPerc / 100);
+        let history = [balance];
+        let maxDrawdown = 0;
+        let peak = balance;
+        let maxLossSeries = 0;
+        let currentLossSeries = 0;
+
+        for (let i = 0; i < 100; i++) {
+            let win = false;
+            let seriesCost = 0;
+            let bet = firstBet;
+
+            // Attempt levels
+            for (let l = 0; l < levels; l++) {
+                seriesCost += bet;
+                if (Math.random() < winrate) {
+                    balance += (bet * payout);
+                    win = true;
+                    currentLossSeries = 0;
+                    break;
+                } else {
+                    balance -= bet;
+                    bet *= multiplier;
+                }
+
+                if (balance <= 0) break;
+            }
+
+            if (!win) {
+                currentLossSeries++;
+                if (currentLossSeries > maxLossSeries) maxLossSeries = currentLossSeries;
+            }
+
+            if (balance > peak) peak = balance;
+            let dd = ((peak - balance) / peak) * 100;
+            if (dd > maxDrawdown) maxDrawdown = dd;
+
+            history.push(balance > 0 ? balance : 0);
+            if (balance <= 0) break;
+        }
+
+        document.getElementById('sim-results').classList.remove('hidden');
+        document.getElementById('sim-final-balance').innerText = '$' + balance.toFixed(2);
+        document.getElementById('sim-max-loss').innerText = maxLossSeries;
+        document.getElementById('sim-drawdown').innerText = maxDrawdown.toFixed(1) + '%';
+
+        updateChart(history);
+    }
+
+    function updateChart(data) {
+        const ctx = document.getElementById('growthChart').getContext('2d');
+        if (growthChart) growthChart.destroy();
+
+        growthChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map((_, i) => i),
+                datasets: [{
+                    label: 'Баланс ($)',
+                    data: data,
+                    borderColor: '#ffa000',
+                    backgroundColor: 'rgba(255, 160, 0, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    borderWidth: 2,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#666', maxTicksLimit: 10 } },
+                    y: { ticks: { color: '#666' } }
+                }
+            }
+        });
+    }
 
     const closeLesson = document.getElementById('close-lesson');
     const lessonOverlay = document.getElementById('lesson-overlay');

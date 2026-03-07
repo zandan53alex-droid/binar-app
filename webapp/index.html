@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=23">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css?v=27">
     <style>
         html {
             min-height: 100%;
@@ -55,19 +56,18 @@
             </div>
         </header>
 
+        <!-- Search Bar (Always Visible) -->
+        <div class="search-container">
+            <input type="text" id="asset-search" placeholder="Search asset...">
+        </div>
+
         <!-- Assets Toggle Button -->
         <button id="assets-btn" class="assets-toggle-btn active">
-            <span id="assets-btn-text">📈 АКТИВЫ</span>
-            <span class="dropdown-arrow" id="assets-arrow">▼</span>
+            <span id="assets-btn-text">📈 АКТИВЫ <span class="dropdown-arrow" id="assets-arrow">▼</span></span>
         </button>
 
         <!-- Assets Panel -->
         <div id="assets-panel" class="assets-panel">
-            <!-- Search Bar -->
-            <div class="search-container">
-                <input type="text" id="asset-search" placeholder="Search asset...">
-            </div>
-
             <!-- Category Select -->
             <div class="category-dropdown-container">
                 <button id="category-toggle" class="category-toggle-btn">
@@ -93,27 +93,107 @@
 
         <!-- Education Button -->
         <button id="education-btn" class="education-toggle-btn">
-            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span>
-            <span class="dropdown-arrow" id="edu-arrow">▼</span>
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ <span class="dropdown-arrow" id="edu-arrow">▼</span></span>
         </button>
 
         <!-- Education Panel -->
         <div id="education-panel" class="education-panel hidden">
-            <!-- Sub-tab pills -->
-            <div class="edu-tabs">
-                <button id="tab-basics" class="edu-tab active" onclick="switchEduTab('basics')">📖 Основа
-                    трейдинга</button>
-                <button id="tab-books" class="edu-tab" onclick="switchEduTab('books')">📚 Книги</button>
+            <!-- ... content ... -->
+        </div>
+
+        <!-- Calculator Toggle Button -->
+        <button id="calc-btn" class="calc-toggle-btn">
+            <span id="calc-btn-text">🧮 КАЛЬКУЛЯТОР <span class="dropdown-arrow" id="calc-arrow">▼</span></span>
+        </button>
+
+        <!-- Calculator Panel -->
+        <div id="calc-panel" class="calc-panel hidden">
+            <!-- Inputs -->
+            <div class="calc-inputs-grid">
+                <div class="input-group">
+                    <label>Депозит ($)</label>
+                    <input type="number" id="calc-deposit" value="100" min="50" max="100000">
+                </div>
+                <div class="input-group">
+                    <label>Первая сделка (%)</label>
+                    <input type="number" id="calc-first-bet-perc" value="1" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Коэффициент</label>
+                    <input type="number" id="calc-multiplier" value="2.2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label>Перекрытий</label>
+                    <input type="number" id="calc-levels" value="5" min="1" max="10">
+                </div>
+                <div class="input-group">
+                    <label>Выплата (%)</label>
+                    <input type="number" id="calc-payout" value="82">
+                </div>
             </div>
 
-            <!-- Basics: courses + modules -->
-            <div id="edu-basics-panel" class="lesson-list">
-                <!-- Injected via JS -->
+            <!-- Stats Cards -->
+            <div class="calc-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Первая ставка</span>
+                    <span class="stat-value" id="res-first-bet">$0</span>
+                </div>
+                <div class="stat-card warning">
+                    <span class="stat-label">Общий риск</span>
+                    <span class="stat-value" id="res-total-risk">$0</span>
+                </div>
+                <div class="stat-card danger">
+                    <span class="stat-label">Риск от депо</span>
+                    <span class="stat-value" id="res-risk-perc">0%</span>
+                </div>
             </div>
 
-            <!-- Books: PDF library -->
-            <div id="edu-books-panel" class="lesson-list hidden">
-                <!-- Injected via JS -->
+            <!-- Table -->
+            <div class="calc-section-title">Таблица перекрытий</div>
+            <div class="calc-table-wrapper">
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th>Шаг</th>
+                            <th>Ставка</th>
+                            <th>Прибыль</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calc-table-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Survival Analysis -->
+            <div class="calc-alert" id="calc-survival-msg">
+                Депозит выдержит 0 колен подряд.
+            </div>
+
+            <!-- Simulation -->
+            <div class="calc-section-title">Симуляция (100 сделок)</div>
+            <div class="simulation-controls">
+                <div class="input-group">
+                    <label>Винрейт (%)</label>
+                    <input type="number" id="calc-winrate" value="60">
+                </div>
+                <button id="run-sim-btn" class="sim-btn">ЗАПУСТИТЬ</button>
+            </div>
+            <div class="sim-results hidden" id="sim-results">
+                <div class="sim-chip">Баланс: <span id="sim-final-balance">0</span></div>
+                <div class="sim-chip">Лосс-серия: <span id="sim-max-loss">0</span></div>
+                <div class="sim-chip">Просадка: <span id="sim-drawdown">0%</span></div>
+            </div>
+
+            <!-- Chart -->
+            <div class="chart-container">
+                <canvas id="growthChart"></canvas>
+            </div>
+
+            <!-- Safe Bet -->
+            <div class="safe-bet-card">
+                <div class="calc-section-title">Рекомендация</div>
+                <p>Безопасная первая ставка при риске <input type="number" id="calc-max-risk" value="10"
+                        style="width: 50px; display: inline;">%:</p>
+                <div class="stat-value highlight" id="res-safe-bet">$0</div>
             </div>
         </div>
     </div>
@@ -181,7 +261,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=23"></script>
+    <script src="app.js?v=26"></script>
 </body>
 
 </html>
