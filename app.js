@@ -1310,29 +1310,58 @@ function openLesson(lesson) {
 
 // Wire up education toggle button
 document.addEventListener('DOMContentLoaded', () => {
-    const eduBtn = document.getElementById('education-btn');
-    const eduPanel = document.getElementById('education-panel');
-    const assetList = document.getElementById('asset-list');
+    // ─── Toggles (Education & Assets) ──────────────────────────
+    let assetsOpen = true; // Assets open by default
+    let educationOpen = false;
+
+    const assetsBtn = document.getElementById('assets-btn');
+    const assetsPanel = document.getElementById('assets-panel');
+    const educationBtn = document.getElementById('education-btn');
+    const educationPanel = document.getElementById('education-panel');
+
+    function toggleAssets() {
+        assetsOpen = !assetsOpen;
+        if (assetsOpen) {
+            educationOpen = false;
+            educationPanel.classList.add('hidden');
+            educationBtn.classList.remove('active');
+            document.getElementById('edu-arrow').style.transform = '';
+
+            assetsPanel.classList.remove('hidden');
+            assetsBtn.classList.add('active');
+        } else {
+            assetsPanel.classList.add('hidden');
+            assetsBtn.classList.remove('active');
+        }
+    }
+
+    function toggleEducation() {
+        educationOpen = !educationOpen;
+        if (educationOpen) {
+            assetsOpen = false;
+            assetsPanel.classList.add('hidden');
+            assetsBtn.classList.remove('active');
+
+            educationPanel.classList.remove('hidden');
+            educationBtn.classList.add('active');
+            document.getElementById('edu-arrow').style.transform = 'rotate(180deg)';
+
+            // Render first tab if empty
+            if (currentEduTab === 'basics' && !document.getElementById('edu-basics-panel').querySelector('.lesson-card')) {
+                renderBasics();
+            }
+        } else {
+            educationPanel.classList.add('hidden');
+            educationBtn.classList.remove('active');
+            document.getElementById('edu-arrow').style.transform = '';
+        }
+    }
+
+    assetsBtn.addEventListener('click', toggleAssets);
+    educationBtn.addEventListener('click', toggleEducation);
+
     const closeLesson = document.getElementById('close-lesson');
     const lessonOverlay = document.getElementById('lesson-overlay');
-    const arrow = document.getElementById('edu-arrow');
-
-    if (eduBtn) {
-        eduBtn.onclick = () => {
-            educationOpen = !educationOpen;
-            eduBtn.classList.toggle('active', educationOpen);
-            if (arrow) arrow.style.transform = educationOpen ? 'rotate(180deg)' : '';
-            if (educationOpen) {
-                eduPanel.classList.remove('hidden');
-                assetList.style.display = 'none';
-                // Render default tab
-                renderBasics();
-            } else {
-                eduPanel.classList.add('hidden');
-                assetList.style.display = '';
-            }
-        };
-    }
 
     if (closeLesson) {
         closeLesson.onclick = () => {

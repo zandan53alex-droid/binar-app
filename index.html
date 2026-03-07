@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=22">
+    <link rel="stylesheet" href="style.css?v=23">
     <style>
         html {
             min-height: 100%;
@@ -55,25 +55,40 @@
             </div>
         </header>
 
-        <!-- Search Bar -->
-        <div class="search-container">
-            <input type="text" id="asset-search" placeholder="Search asset...">
-        </div>
+        <!-- Assets Toggle Button -->
+        <button id="assets-btn" class="assets-toggle-btn active">
+            <span id="assets-btn-text">📈 АКТИВЫ</span>
+            <span class="dropdown-arrow" id="assets-arrow">▼</span>
+        </button>
 
-        <!-- Category Select -->
-        <div class="category-dropdown-container">
-            <button id="category-toggle" class="category-toggle-btn">
-                <span id="current-category-name">CURRENCIES</span>
-                <span class="dropdown-arrow">▼</span>
-            </button>
-            <div id="category-dropdown" class="category-dropdown">
-                <button class="dropdown-item" data-category="forex">CURRENCIES</button>
-                <button class="dropdown-item" data-category="forex_otc">CURRENCIES OTC</button>
-                <button class="dropdown-item" data-category="crypto">CRYPTO</button>
-                <button class="dropdown-item" data-category="stocks">STOCKS</button>
-                <button class="dropdown-item" data-category="commodities">COMMODITIES</button>
-                <button class="dropdown-item" data-category="indices">INDICES</button>
+        <!-- Assets Panel -->
+        <div id="assets-panel" class="assets-panel">
+            <!-- Search Bar -->
+            <div class="search-container">
+                <input type="text" id="asset-search" placeholder="Search asset...">
             </div>
+
+            <!-- Category Select -->
+            <div class="category-dropdown-container">
+                <button id="category-toggle" class="category-toggle-btn">
+                    <span id="current-category-name">CURRENCIES</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div id="category-dropdown" class="category-dropdown">
+                    <button class="dropdown-item" data-category="forex">CURRENCIES</button>
+                    <button class="dropdown-item" data-category="forex_otc">CURRENCIES OTC</button>
+                    <button class="dropdown-item" data-category="crypto">CRYPTO</button>
+                    <button class="dropdown-item" data-category="stocks">STOCKS</button>
+                    <button class="dropdown-item" data-category="commodities">COMMODITIES</button>
+                    <button class="dropdown-item" data-category="indices">INDICES</button>
+                </div>
+            </div>
+
+            <!-- Asset List Container -->
+            <main id="asset-list" class="asset-grid">
+                <!-- Asset cards will be injected here -->
+                <div class="loader">SYNCING REAL-TIME DATA...</div>
+            </main>
         </div>
 
         <!-- Education Button -->
@@ -81,12 +96,6 @@
             <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span>
             <span class="dropdown-arrow" id="edu-arrow">▼</span>
         </button>
-
-        <!-- Asset List Container -->
-        <main id="asset-list" class="asset-grid">
-            <!-- Asset cards will be injected here -->
-            <div class="loader">SYNCING REAL-TIME DATA...</div>
-        </main>
 
         <!-- Education Panel -->
         <div id="education-panel" class="education-panel hidden">

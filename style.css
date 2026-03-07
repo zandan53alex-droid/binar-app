@@ -829,8 +829,47 @@ header {
     margin-top: 10px;
 }
 
-.education-panel.hidden {
+.education-panel.hidden,
+.assets-panel.hidden {
     display: none;
+}
+
+/* ── Assets Toggle Button (Blue/Purple Accent) ── */
+.assets-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(130, 80, 255, 0.25);
+    color: #9d80ff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 5px;
+    transition: all 0.25s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.assets-toggle-btn:hover,
+.assets-toggle-btn.active {
+    background: rgba(130, 80, 255, 0.1);
+    border-color: rgba(130, 80, 255, 0.5);
+}
+
+.assets-panel {
+    margin-top: 10px;
+}
+
+.assets-toggle-btn .dropdown-arrow {
+    transition: transform 0.3s ease;
+}
+
+.assets-toggle-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
 }
 
 .lesson-list {
