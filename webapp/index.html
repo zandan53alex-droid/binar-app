@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeuralEdge Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css?v=22">
+    <style>
+        html {
+            min-height: 100%;
+            background: #0d0818;
+        }
+
+        body {
+            background-color: #0d0818 !important;
+            background-image:
+                radial-gradient(ellipse at 20% 20%, rgba(100, 40, 180, 0.35) 0%, transparent 55%),
+                radial-gradient(ellipse at 80% 70%, rgba(60, 20, 120, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 100%, rgba(80, 0, 120, 0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 90% 10%, rgba(120, 50, 200, 0.2) 0%, transparent 45%),
+                linear-gradient(160deg, #0d0818 0%, #180828 40%, #0d0818 100%) !important;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Removed TradingView for Pocket Option Fidelity -->
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-gold">TURBO</span><span class="logo-white">APP</span>
+            </div>
+            <div class="user-controls">
+                <div class="user-status">
+                    <span id="status-badge" class="badge">STANDARD</span>
+                </div>
+                <div class="lang-selector-container">
+                    <button id="lang-toggle" class="lang-toggle-btn">
+                        <span id="current-lang-icon">🇷🇺</span>
+                    </button>
+                    <div id="lang-dropdown" class="lang-dropdown">
+                        <button class="lang-item" data-lang="ru">🇷🇺 Русский</button>
+                        <button class="lang-item" data-lang="en">🇬🇧 English</button>
+                        <button class="lang-item" data-lang="hi">🇮🇳 हिन्दी</button>
+                        <button class="lang-item" data-lang="es">🇪🇸 Español</button>
+                        <button class="lang-item" data-lang="fr">🇫🇷 Français</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar -->
+        <div class="search-container">
+            <input type="text" id="asset-search" placeholder="Search asset...">
+        </div>
+
+        <!-- Category Select -->
+        <div class="category-dropdown-container">
+            <button id="category-toggle" class="category-toggle-btn">
+                <span id="current-category-name">CURRENCIES</span>
+                <span class="dropdown-arrow">▼</span>
+            </button>
+            <div id="category-dropdown" class="category-dropdown">
+                <button class="dropdown-item" data-category="forex">CURRENCIES</button>
+                <button class="dropdown-item" data-category="forex_otc">CURRENCIES OTC</button>
+                <button class="dropdown-item" data-category="crypto">CRYPTO</button>
+                <button class="dropdown-item" data-category="stocks">STOCKS</button>
+                <button class="dropdown-item" data-category="commodities">COMMODITIES</button>
+                <button class="dropdown-item" data-category="indices">INDICES</button>
+            </div>
+        </div>
+
+        <!-- Education Button -->
+        <button id="education-btn" class="education-toggle-btn">
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span>
+            <span class="dropdown-arrow" id="edu-arrow">▼</span>
+        </button>
+
+        <!-- Asset List Container -->
+        <main id="asset-list" class="asset-grid">
+            <!-- Asset cards will be injected here -->
+            <div class="loader">SYNCING REAL-TIME DATA...</div>
+        </main>
+
+        <!-- Education Panel -->
+        <div id="education-panel" class="education-panel hidden">
+            <!-- Sub-tab pills -->
+            <div class="edu-tabs">
+                <button id="tab-basics" class="edu-tab active" onclick="switchEduTab('basics')">📖 Основа
+                    трейдинга</button>
+                <button id="tab-books" class="edu-tab" onclick="switchEduTab('books')">📚 Книги</button>
+            </div>
+
+            <!-- Basics: courses + modules -->
+            <div id="edu-basics-panel" class="lesson-list">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Books: PDF library -->
+            <div id="edu-books-panel" class="lesson-list hidden">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Signal Overlay -->
+    <div id="signal-overlay" class="signal-overlay hidden">
+        <div class="signal-card">
+            <button id="close-signal" class="btn-close">×</button>
+
+            <div class="asset-header">
+                <div id="signal-asset-icons" class="signal-asset-icon-wrapper">
+                    <!-- Icons injected via JS -->
+                </div>
+                <h2 id="signal-asset-name">--</h2>
+            </div>
+
+            <div class="timeframe-selection">
+                <p class="section-label" id="label-expiration">SELECT EXPIRATION:</p>
+                <div class="timeframes">
+                    <button class="tf-btn" data-tf="3s">3s</button>
+                    <button class="tf-btn" data-tf="5s">5s</button>
+                    <button class="tf-btn" data-tf="15s">15s</button>
+                    <button class="tf-btn" data-tf="30s">30s</button>
+                    <button class="tf-btn active" data-tf="1m">1m</button>
+                    <button class="tf-btn" data-tf="2m">2m</button>
+                    <button class="tf-btn" data-tf="3m">3m</button>
+                    <button class="tf-btn" data-tf="5m">5m</button>
+                    <button class="tf-btn" data-tf="15m">15m</button>
+                    <button class="tf-btn" data-tf="30m">30m</button>
+                    <button class="tf-btn" data-tf="1h">1h</button>
+                    <button class="tf-btn" data-tf="4h">4h</button>
+                </div>
+            </div>
+
+            <div id="signal-init-view">
+                <button id="get-signal-btn" class="btn-primary">GET SIGNAL</button>
+            </div>
+
+            <div id="signal-loader" class="neural-loader hidden">
+                <div class="pulse-ring"></div>
+                <p id="status-text">INITIALIZING...</p>
+            </div>
+
+            <div id="signal-content" class="hidden">
+                <div class="signal-result">
+                    <div id="signal-direction" class="direction">CALL</div>
+                    <div class="expiration-info" id="expiration-label">EXPIRATION: 1m</div>
+                    <div class="price-info">
+                        ENTRY PRICE: <span id="entry-price">0.0000</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Detail Overlay -->
+    <div id="lesson-overlay" class="signal-overlay hidden">
+        <div class="signal-card lesson-detail-card">
+            <button id="close-lesson" class="btn-close">×</button>
+            <div id="lesson-detail-image-wrapper" class="lesson-detail-img-wrapper">
+                <img id="lesson-detail-img" src="" alt="Lesson" style="width:100%;border-radius:12px;display:none;">
+            </div>
+            <h2 id="lesson-detail-title" style="color:#FFD700;margin:12px 0 8px;"></h2>
+            <div id="lesson-detail-body" class="lesson-detail-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js?v=19"></script>
+</body>
+
+</html>

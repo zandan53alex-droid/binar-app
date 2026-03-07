@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+
+# Secrets
+.env
+
+# Browser session (Chromium)
+.chromium_session/
+
+# IDE
+.idea/
+*.iml
+
+# DB files
+*.db
+*.sqlite3
+
+# Tmp / extracted
+lessons_extracted/
+extract_lessons.py
+extract_courses.py
+
+# Nested git repos
+temp_po_api/
+
+# OS
+Thumbs.db
+.DS_Store
