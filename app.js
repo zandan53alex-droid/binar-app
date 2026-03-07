@@ -799,13 +799,7 @@ function renderAssets() {
         const icons = Array.isArray(iconsRaw) ? iconsRaw : [iconsRaw];
         const isMulti = icons.length > 1;
 
-        let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}"`;
-        if (!isMulti) {
-            const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
-            const bg = catColors[asset.category] || '#ffffff11';
-            iconsHtml += ` style="background:${bg};border-radius:50%;"`;
-        }
-        iconsHtml += `>`;
+        let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}">`;
 
         icons.forEach((src, idx) => {
             const fallbacks = buildFallbacks(asset, src, idx);
@@ -847,6 +841,7 @@ function openSignalDialog(asset) {
     const isMulti = icons.length > 1;
 
     iconContainer.className = `signal-asset-icon-wrapper ${isMulti ? 'multi' : 'single'}`;
+    iconContainer.style.background = 'none';
 
     if (!isMulti) {
         const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
