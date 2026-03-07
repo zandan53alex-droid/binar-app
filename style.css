@@ -486,11 +486,14 @@ header {
 
 .signal-asset-icon-wrapper .asset-icon {
     position: static;
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
+    width: 68px;
+    height: 44px;
+    /* Rectangular ratio for "flags" */
+    border-radius: 8px;
+    /* Slightly rounded edges as requested */
     object-fit: cover;
     border: none !important;
+    background: transparent;
 }
 
 .signal-asset-icon {
