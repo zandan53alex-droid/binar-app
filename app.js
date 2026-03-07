@@ -1433,28 +1433,55 @@ document.addEventListener('DOMContentLoaded', () => {
         const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
         try {
-            // Get today and tomorrow's date for a 48h window
             const now = new Date();
             const tomorrow = new Date(now);
             tomorrow.setDate(now.getDate() + 1);
-
             const formatDate = (d) => d.toISOString().split('T')[0];
             const from = formatDate(now);
             const to = formatDate(tomorrow);
 
-            // Use CORS proxy to bypass browser/header restrictions
-            const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`;
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            // Attempt sequence:
+            // 1. Backend Proxy (Most reliable)
+            // 2. Corsproxy.io (High quality public)
+            // 3. AllOrigins (Slow but fallback)
 
-            const response = await fetch(proxyUrl);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            const backUrl = `http://72.56.77.59:8000/news?from_date=${from}&to_date=${to}`;
+            const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`)}`;
+            const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`)}`;
 
-            const proxyRes = await response.json();
-            const data = JSON.parse(proxyRes.contents);
+            let data = null;
+            let errorMsg = '';
 
-            if (!Array.isArray(data)) {
-                if (data && data['Error Message']) throw new Error(data['Error Message']);
-                throw new Error('Invalid data format');
+            try {
+                console.log("📡 Пробуем основной proxy...");
+                const res = await fetch(backUrl);
+                if (res.ok) data = await res.json();
+            } catch (e) { console.warn("Backend Proxy failed", e); }
+
+            if (!data) {
+                try {
+                    console.log("📡 Пробуем corsproxy.io...");
+                    const res = await fetch(publicUrl);
+                    if (res.ok) data = await res.json();
+                } catch (e) { console.warn("Corsproxy.io failed", e); }
+            }
+
+            if (!data) {
+                try {
+                    console.log("📡 Пробуем AllOrigins fallback...");
+                    const res = await fetch(fallbackUrl);
+                    if (res.ok) {
+                        const json = await res.json();
+                        data = JSON.parse(json.contents);
+                    }
+                } catch (e) {
+                    console.warn("AllOrigins failed", e);
+                    errorMsg = e.message;
+                }
+            }
+
+            if (!data || !Array.isArray(data)) {
+                throw new Error(errorMsg || 'Все прокси-серверы недоступны');
             }
 
             // Map FMP data to our structure
