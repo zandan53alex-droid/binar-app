@@ -1432,14 +1432,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const updateStatus = document.getElementById('news-update-time');
 
         try {
-            // Fetching from API-Ninjas
-            const response = await fetch('https://api.api-ninjas.com/v1/economiccalendar', {
-                headers: { 'X-Api-Key': NINJA_API_KEY }
-            });
-
-            if (!response.ok) throw new Error('API Error');
-
-            const data = await response.json();
+            // Using a CORS proxy to bypass browser restrictions
+            const targetUrl = `https://api.api-ninjas.com/v1/economiccalendar?timezone=UTC`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+            const response = await fetch(proxyUrl, { headers: { 'X-Api-Key': NINJA_API_KEY } });
+            if (!response.ok) throw new Error('Proxy error');
+            const proxyRes = await response.json();
+            const data = JSON.parse(proxyRes.contents);
 
             // Map and sort data
             cachedNews = data.map(item => {
