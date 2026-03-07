@@ -204,10 +204,34 @@ const TRANSLATIONS = {
         stocks: 'АКЦИИ',
         commodities: 'СЫРЬЕВЫЕ ТОВАРЫ',
         indices: 'ИНДЕКСЫ',
-        assetsBtn: 'АКТИВЫ',
+        assetsBtn: '📈 АКТИВЫ',
+        educationBtn: '🎓 ОБУЧЕНИЕ',
+        calcBtn: '🧮 КАЛЬКУЛЯТОР',
+        newsBtn: '📰 НОВОСТИ',
         expiration: 'ВРЕМЯ ЭКСПИРАЦИИ:',
         search: 'Поиск актива...',
         selectExp: 'ВЫБЕРИТЕ ЭКСПИРАЦИЮ:',
+        notFound: 'Ничего не найдено',
+        updatedAt: 'Обновлено:',
+        loading: 'ЗАГРУЗКА...',
+        basics: 'Основа трейдинга',
+        books: 'Книги',
+        deposit: 'Депозит ($)',
+        firstBet: 'Первая сделка (%)',
+        multiplier: 'Коэффициент',
+        levels: 'Перекрытий',
+        payout: 'Выплата (%)',
+        statsFirstBet: 'Первая ставка',
+        statsRisk: 'Общий риск',
+        statsRiskPerc: 'Риск от депо',
+        survivalMsg: 'Депозит выдержит {n} колен подряд.',
+        runSim: 'ЗАПУСТИТЬ',
+        winrate: 'Винрейт (%)',
+        balance: 'Баланс:',
+        lossSeries: 'Лосс-серия:',
+        drawdown: 'Просадка:',
+        recommendation: 'Рекомендация',
+        safeBet: 'Безопасная первая ставка при риске {r}%:',
         statuses: [
             'Инициализация нейросети...',
             'Анализ текущей волатильности...',
@@ -230,10 +254,34 @@ const TRANSLATIONS = {
         stocks: 'STOCKS OTC',
         commodities: 'COMMODITIES OTC',
         indices: 'INDICES',
-        assetsBtn: 'ASSETS',
+        assetsBtn: '📈 ASSETS',
+        educationBtn: '🎓 EDUCATION',
+        calcBtn: '🧮 CALCULATOR',
+        newsBtn: '📰 NEWS',
         expiration: 'EXPIRATION TIME:',
         search: 'Search asset...',
         selectExp: 'SELECT EXPIRATION:',
+        notFound: 'Nothing found',
+        updatedAt: 'Updated:',
+        loading: 'LOADING...',
+        basics: 'Basics',
+        books: 'Books',
+        deposit: 'Deposit ($)',
+        firstBet: 'First Bet (%)',
+        multiplier: 'Multiplier',
+        levels: 'Levels',
+        payout: 'Payout (%)',
+        statsFirstBet: 'First Bet',
+        statsRisk: 'Total Risk',
+        statsRiskPerc: 'Risk of Depo',
+        survivalMsg: 'Deposit will last {n} steps in a row.',
+        runSim: 'RUN',
+        winrate: 'Winrate (%)',
+        balance: 'Balance:',
+        lossSeries: 'Loss Series:',
+        drawdown: 'Drawdown:',
+        recommendation: 'Recommendation',
+        safeBet: 'Safe first bet at {r}% risk:',
         statuses: [
             'Initializing Neural Network...',
             'Analyzing current volatility...',
@@ -256,10 +304,34 @@ const TRANSLATIONS = {
         stocks: 'स्टॉक OTC',
         commodities: 'कमोडिटीज OTC',
         indices: 'सूचकांक',
-        assetsBtn: 'संपत्ति',
+        assetsBtn: '📈 संपत्ति',
+        educationBtn: '🎓 शिक्षा',
+        calcBtn: '🧮 कैलकुलेटर',
+        newsBtn: '📰 समाचार',
         expiration: 'समाप्ति समय:',
         search: 'संपत्ति खोजें...',
         selectExp: 'समाप्ति चुनें:',
+        notFound: 'कुछ नहीं मिला',
+        updatedAt: 'अपडेट किया गया:',
+        loading: 'लोड हो रहा है...',
+        basics: 'बुनियादी बातें',
+        books: 'किताबें',
+        deposit: 'जमा ($)',
+        firstBet: 'पहली शर्त (%)',
+        multiplier: 'गुणक',
+        levels: 'स्तर',
+        payout: 'पेआउट (%)',
+        statsFirstBet: 'पहली शर्त',
+        statsRisk: 'कुल जोखिम',
+        statsRiskPerc: 'जमा का जोखिम',
+        survivalMsg: 'जमा लगातार {n} चरणों तक चलेगा।',
+        runSim: 'चलाएं',
+        winrate: 'जीत की दर (%)',
+        balance: 'शेष:',
+        lossSeries: 'नुकसान श्रृंखला:',
+        drawdown: 'गिरावट:',
+        recommendation: 'सिफारिश',
+        safeBet: '{r}% जोखिम पर सुरक्षित पहली शर्त:',
         statuses: [
             'न्यूरल नेटवर्क प्रारंभ करना...',
             'वर्तमान अस्थिरता का विश्लेषण...',
@@ -282,10 +354,34 @@ const TRANSLATIONS = {
         stocks: 'ACCIONES OTC',
         commodities: 'MATERIAS PRIMAS OTC',
         indices: 'ÍNDICES',
-        assetsBtn: 'ACTIVOS',
+        assetsBtn: '📈 ACTIVOS',
+        educationBtn: '🎓 EDUCACIÓN',
+        calcBtn: '🧮 CALCULADORA',
+        newsBtn: '📰 NOTICIAS',
         expiration: 'TIEMPO DE EXPIRACIÓN:',
         search: 'Buscar activo...',
         selectExp: 'SELECCIONAR EXPIRACIÓN:',
+        notFound: 'No se encontró nada',
+        updatedAt: 'Actualizado:',
+        loading: 'CARGANDO...',
+        basics: 'Básicos',
+        books: 'Libros',
+        deposit: 'Depósito ($)',
+        firstBet: 'Primera apuesta (%)',
+        multiplier: 'Multiplicador',
+        levels: 'Niveles',
+        payout: 'Pago (%)',
+        statsFirstBet: 'Primera apuesta',
+        statsRisk: 'Riesgo total',
+        statsRiskPerc: 'Riesgo de depósito',
+        survivalMsg: 'El depósito durará {n} pasos seguidos.',
+        runSim: 'EJECUTAR',
+        winrate: 'Tasa de ganancias (%)',
+        balance: 'Saldo:',
+        lossSeries: 'Serie de pérdidas:',
+        drawdown: 'Reducción:',
+        recommendation: 'Recomendación',
+        safeBet: 'Primera apuesta segura al {r}% de riesgo:',
         statuses: [
             'Inicializando red neuronal...',
             'Analizando volatilidad actual...',
@@ -308,10 +404,34 @@ const TRANSLATIONS = {
         stocks: 'ACTIONS OTC',
         commodities: 'MATIÈRES PREMIÈRES OTC',
         indices: 'INDICES',
-        assetsBtn: 'ACTIFS',
+        assetsBtn: '📈 ACTIFS',
+        educationBtn: '🎓 ÉDUCATION',
+        calcBtn: '🧮 CALCULATRICE',
+        newsBtn: '📰 NOUVELLES',
         expiration: 'TEMPS D\'EXPIRATION:',
         search: 'Rechercher actif...',
         selectExp: 'SÉLECTIONNER EXPIRATION:',
+        notFound: 'Rien trouvé',
+        updatedAt: 'Mis à jour:',
+        loading: 'CHARGEMENT...',
+        basics: 'Bases',
+        books: 'Livres',
+        deposit: 'Dépôt ($)',
+        firstBet: 'Premier pari (%)',
+        multiplier: 'Multiplicateur',
+        levels: 'Niveaux',
+        payout: 'Paiement (%)',
+        statsFirstBet: 'Premier pari',
+        statsRisk: 'Risque total',
+        statsRiskPerc: 'Risque de dépôt',
+        survivalMsg: 'Le dépôt durera {n} étapes de suite.',
+        runSim: 'LANCER',
+        winrate: 'Taux de réussite (%)',
+        balance: 'Solde:',
+        lossSeries: 'Série de pertes:',
+        drawdown: 'Baisse:',
+        recommendation: 'Recommandation',
+        safeBet: 'Premier pari sûr à {r}% de risque:',
         statuses: [
             'Initialisation du réseau neuronal...',
             'Analyse de la volatilité actuelle...',
@@ -370,10 +490,43 @@ function updateLangIcon() {
 
 function setupLocalization() {
     const t = TRANSLATIONS[currentLang];
+
+    // Main UI Elements
     document.querySelector('.loader').innerText = t.syncing;
     document.getElementById('get-signal-btn').innerText = t.analyze;
     document.getElementById('asset-search').placeholder = t.search;
     document.getElementById('label-expiration').innerText = t.selectExp;
+
+    // Toggle Buttons
+    document.getElementById('assets-btn-text').innerText = t.assetsBtn;
+    document.getElementById('education-btn-text').innerText = t.educationBtn;
+    document.getElementById('calc-btn-text').innerText = t.calcBtn;
+    document.getElementById('news-btn-text').innerText = t.newsBtn;
+
+    // Panel Headers & Tabs
+    const tabBasics = document.getElementById('tab-basics');
+    const tabBooks = document.getElementById('tab-books');
+    if (tabBasics) tabBasics.innerText = t.basics;
+    if (tabBooks) tabBooks.innerText = t.books;
+
+    // Calculator Labels
+    const setLabel = (id, text) => { if (document.getElementById(id)) document.getElementById(id).innerText = text; };
+    setLabel('label-deposit', t.deposit);
+    setLabel('label-first-bet', t.firstBet);
+    setLabel('label-multiplier', t.multiplier);
+    setLabel('label-levels', t.levels);
+    setLabel('label-payout', t.payout);
+    setLabel('label-winrate', t.winrate);
+    setLabel('label-max-risk', t.recommendation);
+
+    setLabel('stat-label-first-bet', t.statsFirstBet);
+    setLabel('stat-label-risk', t.statsRisk);
+    setLabel('stat-label-risk-perc', t.statsRiskPerc);
+
+    setLabel('run-sim-btn', t.runSim);
+    setLabel('sim-label-balance', t.balance);
+    setLabel('sim-label-loss', t.lossSeries);
+    setLabel('sim-label-drawdown', t.drawdown);
 
     // Set the main button text to the current category name, or default "ASSETS"
     const categoryNameEl = document.getElementById('current-category-name');
@@ -389,6 +542,11 @@ function setupLocalization() {
             btn.innerText = t[cat];
         }
     });
+
+    // Re-render panels if they are open
+    if (!document.getElementById('edu-basics-panel').classList.contains('hidden')) renderBasics();
+    if (!document.getElementById('edu-books-panel').classList.contains('hidden')) renderBooks();
+    if (!document.getElementById('news-panel').classList.contains('hidden')) renderNews();
 }
 
 function setupEventListeners() {
@@ -485,6 +643,7 @@ function setupEventListeners() {
 function renderAssets() {
     const container = document.getElementById('asset-list');
     container.innerHTML = '';
+    const t = TRANSLATIONS[currentLang];
 
     let filtered = [];
 
@@ -495,11 +654,14 @@ function renderAssets() {
                 a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
             );
 
-            // Inject the dictionary category key into the asset object so we can translate it properly later
             matches.forEach(m => {
-                if (!m.dictCategory) m.dictCategory = cat;
+                // Clone the object to avoid mutating the database with category info
+                const item = { ...m, dictCategory: cat };
+                // Avoid duplicates if an asset exists in multiple categories (unlikely but safe)
+                if (!filtered.find(f => f.id === item.id)) {
+                    filtered.push(item);
+                }
             });
-            filtered = filtered.concat(matches);
         }
     } else {
         // Normal category view
@@ -507,14 +669,11 @@ function renderAssets() {
             container.innerHTML = ``;
             return;
         }
-        filtered = ASSETS_DB[currentCategory].map(a => {
-            a.dictCategory = currentCategory;
-            return a;
-        });
+        filtered = ASSETS_DB[currentCategory].map(a => ({ ...a, dictCategory: currentCategory }));
     }
 
     if (filtered.length === 0 && searchQuery) {
-        container.innerHTML = `<div class="empty-state"><p style="color:#666;">Ничего не найдено</p></div>`;
+        container.innerHTML = `<div class="empty-state"><p style="color:#666; font-weight:700;">${t.notFound}</p></div>`;
         return;
     }
 
@@ -522,16 +681,12 @@ function renderAssets() {
         const card = document.createElement('div');
         card.className = 'asset-item';
 
-        // Handle icons array or single icon string
         const iconsRaw = asset.icons || [asset.icon];
         const icons = Array.isArray(iconsRaw) ? iconsRaw : [iconsRaw];
-
-        // Ensure single string if length is 1 so it triggers single mode properly
         const isMulti = icons.length > 1;
 
         let iconsHtml = `<div class="asset-icon-wrapper ${isMulti ? 'multi' : 'single'}"`;
         if (!isMulti) {
-            // For single icons, add a colored background based on category
             const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
             const bg = catColors[asset.category] || '#ffffff11';
             iconsHtml += ` style="background:${bg};border-radius:50%;"`;
@@ -539,7 +694,6 @@ function renderAssets() {
         iconsHtml += `>`;
 
         icons.forEach((src, idx) => {
-            // Build fallback chain for each image
             const fallbacks = buildFallbacks(asset, src, idx);
             if (src) {
                 iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" 
@@ -550,7 +704,7 @@ function renderAssets() {
         iconsHtml += `</div>`;
 
         const transCat = asset.dictCategory || currentCategory;
-        const translatedCategory = TRANSLATIONS[currentLang][transCat] || asset.category;
+        const translatedCategory = t[transCat] || asset.category;
 
         card.innerHTML = `
             ${iconsHtml}
@@ -1230,9 +1384,12 @@ function renderBasics() {
     const panel = document.getElementById('edu-basics-panel');
     if (!panel) return;
     panel.innerHTML = '';
+    const t = TRANSLATIONS[currentLang];
+
     ALL_BASICS.forEach(item => {
         const card = document.createElement('div');
         card.className = 'lesson-card';
+        // Localization logic for education could be added here if content is translated
         card.innerHTML = `
             <div class="lesson-card-icon">${item.icon}</div>
             <div class="lesson-card-info">
@@ -1430,6 +1587,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchEconomicNews() {
         const listContainer = document.getElementById('news-list');
         const updateStatus = document.getElementById('news-update-time');
+        const t = TRANSLATIONS[currentLang];
 
         const COUNTRY_MAP = {
             'United States': 'USD', 'Euro Area': 'EUR', 'United Kingdom': 'GBP', 'Japan': 'JPY',
@@ -1438,6 +1596,7 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         try {
+            updateStatus.innerText = t.loading;
             const backUrl = `http://72.56.77.59:8000/news`;
             const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
             const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
@@ -1474,7 +1633,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             if (!data || !Array.isArray(data)) {
-                throw new Error(errorMsg || 'Все прокси-серверы недоступны');
+                throw new Error(errorMsg || 'All proxies failed');
             }
 
             // Map Trading Economics data to our structure
@@ -1493,20 +1652,21 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             renderNews();
-            updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+            updateStatus.innerText = `${t.updatedAt} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
         } catch (error) {
             console.error('News Fetch Error:', error);
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">${t.notFound}<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
         }
     }
 
     function renderNews() {
         const listContainer = document.getElementById('news-list');
         listContainer.innerHTML = '';
+        const t = TRANSLATIONS[currentLang];
 
         if (cachedNews.length === 0) {
-            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #555;">Событий не найдено</div>';
+            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #555;">${t.notFound}</div>`;
             return;
         }
 
@@ -1521,7 +1681,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="news-currency">${item.currency}</span>
                     </div>
                     <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                    <div class="news-importance">Влияние: ${stars}</div>
+                    <div class="news-importance">${t.analyze}: ${stars}</div>
                 </div>
             `;
             listContainer.innerHTML += card;
@@ -1584,7 +1744,8 @@ document.addEventListener('DOMContentLoaded', () => {
             tempBet *= multiplier;
             survivalCount++;
         }
-        document.getElementById('calc-survival-msg').innerText = `Депозит выдержит ${survivalCount} колен подряд.`;
+        const survivalMsg = t.survivalMsg.replace('{n}', survivalCount);
+        document.getElementById('calc-survival-msg').innerText = survivalMsg;
         document.getElementById('calc-survival-msg').style.color = survivalCount < levels ? '#f44336' : '#00dc96';
 
         // Safe bet calc
@@ -1594,6 +1755,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let sumFactor = 0;
         for (let l = 0; l < levels; l++) sumFactor += Math.pow(multiplier, l);
         const safeStartingBet = maxAllowedMoney / sumFactor;
+
+        const safeBetLabel = t.safeBet.replace('{r}', maxRiskLimit);
+        document.getElementById('label-max-risk').innerText = safeBetLabel;
         document.getElementById('res-safe-bet').innerText = '$' + safeStartingBet.toFixed(2);
     }
 

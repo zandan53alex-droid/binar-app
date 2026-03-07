@@ -326,8 +326,10 @@ header {
 
 .asset-category {
     font-size: 0.65rem;
-    color: #666;
+    color: var(--tg-theme-hint-color, #999);
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
 .asset-price-box {

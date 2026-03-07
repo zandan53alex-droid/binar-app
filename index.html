@@ -7,7 +7,7 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=37">
+    <link rel="stylesheet" href="style.css?v=38">
     <style>
         html {
             min-height: 100%;
@@ -93,7 +93,7 @@
 
         <!-- Education Button -->
         <button id="education-btn" class="education-toggle-btn">
-            <span id="education-btn-text">🎓 ОБУЧЕНИЕ <span class="dropdown-arrow" id="edu-arrow">▼</span></span>
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span> <span class="dropdown-arrow" id="edu-arrow">▼</span>
         </button>
 
         <!-- Education Panel -->
@@ -126,40 +126,40 @@
             <!-- Inputs -->
             <div class="calc-inputs-grid">
                 <div class="input-group">
-                    <label>Депозит ($)</label>
+                    <label id="label-deposit">Депозит ($)</label>
                     <input type="number" id="calc-deposit" value="100" min="50" max="100000">
                 </div>
                 <div class="input-group">
-                    <label>Первая сделка (%)</label>
+                    <label id="label-first-bet">Первая сделка (%)</label>
                     <input type="number" id="calc-first-bet-perc" value="1" step="0.1">
                 </div>
                 <div class="input-group">
-                    <label>Коэффициент</label>
+                    <label id="label-multiplier">Коэффициент</label>
                     <input type="number" id="calc-multiplier" value="2.2" step="0.1">
                 </div>
                 <div class="input-group">
-                    <label>Перекрытий</label>
+                    <label id="label-levels">Перекрытий</label>
                     <input type="number" id="calc-levels" value="5" min="1" max="10">
                 </div>
                 <div class="input-group">
-                    <label>Выплата (%)</label>
+                    <label id="label-payout">Выплата (%)</label>
                     <input type="number" id="calc-payout" value="82">
                 </div>
             </div>
 
             <!-- Stats Cards -->
-            <div class="calc-stats">
+            <div class="calc-results">
                 <div class="stat-card">
-                    <span class="stat-label">Первая ставка</span>
-                    <span class="stat-value" id="res-first-bet">$0</span>
+                    <div class="stat-label" id="stat-label-first-bet">Первая ставка</div>
+                    <div class="stat-value" id="res-first-bet">$1.00</div>
                 </div>
-                <div class="stat-card warning">
-                    <span class="stat-label">Общий риск</span>
-                    <span class="stat-value" id="res-total-risk">$0</span>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk">Общий риск</div>
+                    <div class="stat-value" id="res-total-risk">$57.97</div>
                 </div>
-                <div class="stat-card danger">
-                    <span class="stat-label">Риск от депо</span>
-                    <span class="stat-value" id="res-risk-perc">0%</span>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk-perc">Риск от депо</div>
+                    <div class="stat-value" id="res-risk-perc">58.0%</div>
                 </div>
             </div>
 
@@ -185,19 +185,25 @@
 
             <!-- Simulation -->
             <div class="calc-section-title">Симуляция (100 сделок)</div>
-            <div class="simulation-controls">
+            <div class="sim-inputs">
                 <div class="input-group">
-                    <label>Винрейт (%)</label>
-                    <input type="number" id="calc-winrate" value="60">
+                    <label id="label-winrate">Винрейт (%)</label>
+                    <input type="number" id="calc-winrate" value="58">
                 </div>
-                <button id="run-sim-btn" class="sim-btn">ЗАПУСТИТЬ</button>
-            </div>
-            <div class="sim-results hidden" id="sim-results">
-                <div class="sim-chip">Баланс: <span id="sim-final-balance">0</span></div>
-                <div class="sim-chip">Лосс-серия: <span id="sim-max-loss">0</span></div>
-                <div class="sim-chip">Просадка: <span id="sim-drawdown">0%</span></div>
+                <button id="run-sim-btn" class="btn-primary">ЗАПУСТИТЬ</button>
             </div>
 
+            <div id="sim-results" class="sim-results-grid hidden">
+                <div class="sim-stat">
+                    <span id="sim-label-balance">Баланс:</span> <strong id="sim-final-balance">$0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-loss">Лосс-серия:</span> <strong id="sim-max-loss">0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-drawdown">Просадка:</span> <strong id="sim-drawdown">0%</strong>
+                </div>
+            </div>
             <!-- Chart -->
             <div class="chart-container">
                 <canvas id="growthChart"></canvas>
@@ -205,9 +211,9 @@
 
             <!-- Safe Bet -->
             <div class="safe-bet-card">
-                <div class="calc-section-title">Рекомендация</div>
-                <p>Безопасная первая ставка при риске <input type="number" id="calc-max-risk" value="10"
-                        style="width: 50px; display: inline;">%:</p>
+                <div class="calc-section-title" id="label-max-risk">Рекомендация</div>
+                <p id="label-max-risk-desc">Безопасная первая ставка при риске <input type="number" id="calc-max-risk"
+                        value="10" style="width: 50px; display: inline;">%:</p>
                 <div class="stat-value highlight" id="res-safe-bet">$0</div>
             </div>
         </div>
@@ -294,7 +300,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=37"></script>
+    <script src="app.js?v=38"></script>
 </body>
 
 </html>
