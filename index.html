@@ -7,7 +7,7 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=27">
+    <link rel="stylesheet" href="style.css?v=28">
     <style>
         html {
             min-height: 100%;
@@ -98,7 +98,22 @@
 
         <!-- Education Panel -->
         <div id="education-panel" class="education-panel hidden">
-            <!-- ... content ... -->
+            <!-- Sub-tab pills -->
+            <div class="edu-tabs">
+                <button id="tab-basics" class="edu-tab active" onclick="switchEduTab('basics')">📖 Основа
+                    трейдинга</button>
+                <button id="tab-books" class="edu-tab" onclick="switchEduTab('books')">📚 Книги</button>
+            </div>
+
+            <!-- Basics: courses + modules -->
+            <div id="edu-basics-panel" class="lesson-list">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Books: PDF library -->
+            <div id="edu-books-panel" class="lesson-list hidden">
+                <!-- Injected via JS -->
+            </div>
         </div>
 
         <!-- Calculator Toggle Button -->
@@ -261,7 +276,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=26"></script>
+    <script src="app.js?v=28"></script>
 </body>
 
 </html>
