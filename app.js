@@ -1283,13 +1283,13 @@ function switchEduTab(tab) {
         booksPanel.classList.add('hidden');
         tabBasics.classList.add('active');
         tabBooks.classList.remove('active');
-        if (!basicsPanel.hasChildNodes()) renderBasics();
+        if (!basicsPanel.querySelector('.lesson-card')) renderBasics();
     } else {
         booksPanel.classList.remove('hidden');
         basicsPanel.classList.add('hidden');
         tabBooks.classList.add('active');
         tabBasics.classList.remove('active');
-        if (!booksPanel.hasChildNodes()) renderBooks();
+        if (!booksPanel.querySelector('.book-card')) renderBooks();
     }
 }
 
