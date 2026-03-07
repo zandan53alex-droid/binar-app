@@ -1433,26 +1433,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
         try {
-            const response = await fetch(`https://financialmodelingprep.com/api/v3/economic_calendar?apikey=${API_KEY}`);
-            if (!response.ok) throw new Error('API Error');
+            // Get today and tomorrow's date for a 48h window
+            const now = new Date();
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
 
-            const data = await response.json();
+            const formatDate = (d) => d.toISOString().split('T')[0];
+            const from = formatDate(now);
+            const to = formatDate(tomorrow);
+
+            // Use CORS proxy to bypass browser/header restrictions
+            const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`;
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+
+            const response = await fetch(proxyUrl);
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+            const proxyRes = await response.json();
+            const data = JSON.parse(proxyRes.contents);
+
+            if (!Array.isArray(data)) {
+                if (data && data['Error Message']) throw new Error(data['Error Message']);
+                throw new Error('Invalid data format');
+            }
 
             // Map FMP data to our structure
-            cachedNews = data.slice(0, 15).map(item => {
-                // FMP impact field mapping
+            cachedNews = data.slice(0, 20).map(item => {
                 let impNum = 1;
                 if (item.impact === 'Medium') impNum = 2;
                 if (item.impact === 'High') impNum = 3;
 
-                // Format time (FMP provides date)
                 const dateObj = new Date(item.date);
                 const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
                 return {
                     time: timeStr,
                     rawDate: dateObj,
-                    currency: item.currency,
+                    currency: item.currency || '???',
                     event: item.event,
                     importance: impNum
                 };
@@ -1463,7 +1480,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('News Fetch Error:', error);
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">Error: ${error.message}</span></div>`;
+            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
         }
     }
 
