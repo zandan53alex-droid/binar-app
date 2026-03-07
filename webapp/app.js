@@ -1066,19 +1066,16 @@ let currentEduTab = 'basics';
 const BOOKS = [
     { title: 'Master the Markets', icon: '📘', size: '11.3 MB', file: 'Master the markets.pdf' },
     { title: 'Order Block', icon: '📗', size: '4.6 MB', file: 'Order Block.pdf' },
-    { title: 'SMT Дивергенция', icon: '📙', size: '5.5 MB', file: 'SMT дивергенция.pdf' },
+    { title: 'SMT Дивергенция', icon: '🧡', size: '5.5 MB', file: 'SMT дивергенция.pdf' },
     { title: 'Цель: Как определять и достигать', icon: '🎯', size: '2.6 MB', file: 'Smart_reading_Sbornikisammar_Cel_Kak_Opredelyat_I_Dost_mobi.pdf' },
     { title: 'Торговый алгоритм — А. Фомин', icon: '📕', size: '15.3 MB', file: 'Алексей_Фомин_торговый_алгоритм.pdf' },
     { title: 'Технический анализ — Дж. Швагер', icon: '📘', size: '6.5 MB', file: 'Джек_Швагер_Технический_анализ_полный_курс.pdf' },
     { title: 'Визуальный инвестор — Дж. Мэрфи', icon: '📗', size: '16.1 MB', file: 'Джон Мэрфи - Визуальный_инвестор.pdf' },
-    { title: 'Дисциплинированный трейдер', icon: '🧠', size: '1.5 MB', file: 'Дисциплинированный трейдер.pdf' },
-    { title: 'Имбаланс (Fair Value Gap)', icon: '📙', size: '4.4 MB', file: 'Имбаланс (Fair Value Gap).pdf' },
-    { title: 'Имбаланс — Все виды', icon: '📙', size: '6.0 MB', file: 'Имбаланс — Все Виды.pdf' },
+    { title: 'Имбаланс (Fair Value Gap)', icon: '🧡', size: '4.4 MB', file: 'Имбаланс (Fair Value Gap).pdf' },
+    { title: 'Имбаланс — Все виды', icon: '🧡', size: '6.0 MB', file: 'Имбаланс — Все Виды.pdf' },
     { title: 'Зональный трейдинг — М. Дуглас', icon: '🎯', size: '1.8 MB', file: 'Марк Дуглас - Зональный Трейдинг.pdf' },
     { title: 'Технический анализ фьючерсов — Мэрфи', icon: '📕', size: '9.3 MB', file: 'Мерфи_Технический_анализ_фьючерсных_рынков.pdf' },
     { title: 'Направление рынка', icon: '📈', size: '0.3 MB', file: 'Направление Рынка.pdf' },
-    { title: 'Основы криптотрейдинга', icon: '₿', size: '9.3 MB', file: 'Основы_криптотрейдинга_собрание.pdf' },
-    { title: 'Психология трейдинга', icon: '🧠', size: '0.5 MB', file: 'Психология Трейдинга .pdf' },
     { title: 'Рендж: определение и торговля', icon: '📊', size: '1.3 MB', file: 'РЕНДЖ _ Определение и Торговля.pdf' },
     { title: 'Разумный инвестор', icon: '💡', size: '8.2 MB', file: 'Разумный Инвестор.pdf' },
     { title: 'Фибоначчи — Р. Фишер', icon: '📐', size: '5.7 MB', file: 'Роберт_Фишер_Новые_методы_торговли_по_Фибоначчи.pdf' },
@@ -1313,29 +1310,58 @@ function openLesson(lesson) {
 
 // Wire up education toggle button
 document.addEventListener('DOMContentLoaded', () => {
-    const eduBtn = document.getElementById('education-btn');
-    const eduPanel = document.getElementById('education-panel');
-    const assetList = document.getElementById('asset-list');
+    // ─── Toggles (Education & Assets) ──────────────────────────
+    let assetsOpen = true; // Assets open by default
+    let educationOpen = false;
+
+    const assetsBtn = document.getElementById('assets-btn');
+    const assetsPanel = document.getElementById('assets-panel');
+    const educationBtn = document.getElementById('education-btn');
+    const educationPanel = document.getElementById('education-panel');
+
+    function toggleAssets() {
+        assetsOpen = !assetsOpen;
+        if (assetsOpen) {
+            educationOpen = false;
+            educationPanel.classList.add('hidden');
+            educationBtn.classList.remove('active');
+            document.getElementById('edu-arrow').style.transform = '';
+
+            assetsPanel.classList.remove('hidden');
+            assetsBtn.classList.add('active');
+        } else {
+            assetsPanel.classList.add('hidden');
+            assetsBtn.classList.remove('active');
+        }
+    }
+
+    function toggleEducation() {
+        educationOpen = !educationOpen;
+        if (educationOpen) {
+            assetsOpen = false;
+            assetsPanel.classList.add('hidden');
+            assetsBtn.classList.remove('active');
+
+            educationPanel.classList.remove('hidden');
+            educationBtn.classList.add('active');
+            document.getElementById('edu-arrow').style.transform = 'rotate(180deg)';
+
+            // Render first tab if empty
+            if (currentEduTab === 'basics' && !document.getElementById('edu-basics-panel').querySelector('.lesson-card')) {
+                renderBasics();
+            }
+        } else {
+            educationPanel.classList.add('hidden');
+            educationBtn.classList.remove('active');
+            document.getElementById('edu-arrow').style.transform = '';
+        }
+    }
+
+    assetsBtn.addEventListener('click', toggleAssets);
+    educationBtn.addEventListener('click', toggleEducation);
+
     const closeLesson = document.getElementById('close-lesson');
     const lessonOverlay = document.getElementById('lesson-overlay');
-    const arrow = document.getElementById('edu-arrow');
-
-    if (eduBtn) {
-        eduBtn.onclick = () => {
-            educationOpen = !educationOpen;
-            eduBtn.classList.toggle('active', educationOpen);
-            if (arrow) arrow.style.transform = educationOpen ? 'rotate(180deg)' : '';
-            if (educationOpen) {
-                eduPanel.classList.remove('hidden');
-                assetList.style.display = 'none';
-                // Render default tab
-                renderBasics();
-            } else {
-                eduPanel.classList.add('hidden');
-                assetList.style.display = '';
-            }
-        };
-    }
 
     if (closeLesson) {
         closeLesson.onclick = () => {
