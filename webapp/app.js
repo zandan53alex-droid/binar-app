@@ -1253,10 +1253,11 @@ function renderBooks() {
     const panel = document.getElementById('edu-books-panel');
     if (!panel) return;
     panel.innerHTML = '';
+    const repoBase = 'https://media.githubusercontent.com/media/zandan53alex-droid/binar-app/master/webapp/books/';
     BOOKS.forEach(book => {
         const card = document.createElement('a');
         card.className = 'book-card';
-        card.href = `books/${encodeURIComponent(book.file)}`;
+        card.href = repoBase + encodeURIComponent(book.file);
         card.target = '_blank';
         card.rel = 'noopener';
         card.innerHTML = `
@@ -1283,13 +1284,13 @@ function switchEduTab(tab) {
         booksPanel.classList.add('hidden');
         tabBasics.classList.add('active');
         tabBooks.classList.remove('active');
-        if (!basicsPanel.hasChildNodes()) renderBasics();
+        if (!basicsPanel.querySelector('.lesson-card')) renderBasics();
     } else {
         booksPanel.classList.remove('hidden');
         basicsPanel.classList.add('hidden');
         tabBooks.classList.add('active');
         tabBasics.classList.remove('active');
-        if (!booksPanel.hasChildNodes()) renderBooks();
+        if (!booksPanel.querySelector('.book-card')) renderBooks();
     }
 }
 
