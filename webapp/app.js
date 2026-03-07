@@ -1463,7 +1463,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('News Fetch Error:', error);
-            listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны</div>';
+            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">Error: ${error.message}</span></div>`;
         }
     }
 
