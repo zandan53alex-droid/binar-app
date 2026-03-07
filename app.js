@@ -1430,30 +1430,23 @@ document.addEventListener('DOMContentLoaded', () => {
     async function fetchEconomicNews() {
         const listContainer = document.getElementById('news-list');
         const updateStatus = document.getElementById('news-update-time');
-        const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
+
+        const COUNTRY_MAP = {
+            'United States': 'USD', 'Euro Area': 'EUR', 'United Kingdom': 'GBP', 'Japan': 'JPY',
+            'Canada': 'CAD', 'Australia': 'AUD', 'Switzerland': 'CHF', 'New Zealand': 'NZD',
+            'China': 'CNY', 'Russia': 'RUB', 'Germany': 'EUR', 'France': 'EUR', 'Italy': 'EUR'
+        };
 
         try {
-            const now = new Date();
-            const tomorrow = new Date(now);
-            tomorrow.setDate(now.getDate() + 1);
-            const formatDate = (d) => d.toISOString().split('T')[0];
-            const from = formatDate(now);
-            const to = formatDate(tomorrow);
-
-            // Attempt sequence:
-            // 1. Backend Proxy (Most reliable)
-            // 2. Corsproxy.io (High quality public)
-            // 3. AllOrigins (Slow but fallback)
-
-            const backUrl = `http://72.56.77.59:8000/news?from_date=${from}&to_date=${to}`;
-            const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`)}`;
-            const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`)}`;
+            const backUrl = `http://72.56.77.59:8000/news`;
+            const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
+            const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
 
             let data = null;
             let errorMsg = '';
 
             try {
-                console.log("📡 Пробуем основной proxy...");
+                console.log("📡 Пробуем основной proxy (Trading Economics)...");
                 const res = await fetch(backUrl);
                 if (res.ok) data = await res.json();
             } catch (e) { console.warn("Backend Proxy failed", e); }
@@ -1484,21 +1477,18 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorMsg || 'Все прокси-серверы недоступны');
             }
 
-            // Map FMP data to our structure
-            cachedNews = data.slice(0, 20).map(item => {
-                let impNum = 1;
-                if (item.impact === 'Medium') impNum = 2;
-                if (item.impact === 'High') impNum = 3;
-
-                const dateObj = new Date(item.date);
+            // Map Trading Economics data to our structure
+            cachedNews = data.slice(0, 30).map(item => {
+                const dateObj = new Date(item.Date);
                 const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                const currency = COUNTRY_MAP[item.Country] || item.Country.substring(0, 3).toUpperCase();
 
                 return {
                     time: timeStr,
                     rawDate: dateObj,
-                    currency: item.currency || '???',
-                    event: item.event,
-                    importance: impNum
+                    currency: currency,
+                    event: item.Event,
+                    importance: item.Importance || 1
                 };
             });
 
