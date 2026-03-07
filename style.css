@@ -834,8 +834,170 @@ header {
 
 .education-panel.hidden,
 .assets-panel.hidden,
-.calc-panel.hidden {
+.calc-panel.hidden,
+.news-panel.hidden {
     display: none;
+}
+
+/* ── News Toggle Button (Indigo/Blue) ── */
+.news-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(130, 80, 255, 0.25);
+    color: #9d80ff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 10px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.news-toggle-btn:hover,
+.news-toggle-btn.active {
+    background: rgba(130, 80, 255, 0.1);
+    border-color: rgba(130, 80, 255, 0.5);
+}
+
+.news-panel {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 18px;
+    margin-top: 5px;
+}
+
+/* News Filters */
+.news-filters {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.filter-group label {
+    display: block;
+    font-size: 0.7rem;
+    color: #888;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.filter-group select {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #fff;
+    padding: 10px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+/* News Cards */
+.news-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.news-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 14px;
+    border-left: 3px solid #666;
+    /* Default gray impact */
+}
+
+.news-card.impact-high {
+    border-left-color: #f44336;
+}
+
+.news-card.impact-med {
+    border-left-color: #ff9800;
+}
+
+.news-card.impact-low {
+    border-left-color: #4caf50;
+}
+
+.news-card-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.news-time {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.news-currency {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #888;
+}
+
+.news-event-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #ddd;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.news-values {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.news-val-item {
+    text-align: center;
+}
+
+.news-val-label {
+    display: block;
+    font-size: 0.6rem;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+}
+
+.news-val-num {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #bbb;
+}
+
+.news-importance {
+    margin-top: 10px;
+    font-size: 0.7rem;
+    color: #ffa000;
+    letter-spacing: 2px;
+}
+
+.news-update-status {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 0.65rem;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 /* ── Calculator Toggle Button (Orange/Amber) ── */
