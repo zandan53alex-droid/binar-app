@@ -804,7 +804,7 @@ function renderAssets() {
         icons.forEach((src, idx) => {
             const fallbacks = buildFallbacks(asset, src, idx);
             if (src) {
-                iconsHtml += `<img src="${src}" class="asset-icon ${idx === 1 ? 'secondary' : ''}" 
+                iconsHtml += `<img src="${src}" class="asset-icon" 
                     data-fallbacks='${JSON.stringify(fallbacks)}'
                     onerror="tryNextFallback(this)">`;
             }
@@ -843,23 +843,16 @@ function openSignalDialog(asset) {
     iconContainer.className = `signal-asset-icon-wrapper ${isMulti ? 'multi' : 'single'}`;
     iconContainer.style.background = 'none';
 
-    if (!isMulti) {
-        const catColors = { 'Crypto': '#f7931a22', 'Stocks': '#00b4d822', 'Commodities': '#ffd70022', 'Indices': '#6c63ff22' };
-        iconContainer.style.background = catColors[asset.category] || '#ffffff11';
-        iconContainer.style.borderRadius = '50%';
-    } else {
-        iconContainer.style.background = 'transparent';
-    }
-
     icons.forEach((src, idx) => {
-        if (!src) return;
-        const img = document.createElement('img');
-        img.src = src;
-        img.className = `signal-asset-icon ${idx === 1 ? 'secondary' : ''}`;
         const fallbacks = buildFallbacks(asset, src, idx);
-        img.dataset.fallbacks = JSON.stringify(fallbacks);
-        img.onerror = () => tryNextFallback(img);
-        iconContainer.appendChild(img);
+        if (src) {
+            const img = document.createElement('img');
+            img.src = src;
+            img.className = 'asset-icon';
+            img.dataset.fallbacks = JSON.stringify(fallbacks);
+            img.onerror = function () { tryNextFallback(this); };
+            iconContainer.appendChild(img);
+        }
     });
 
     document.getElementById('signal-overlay').classList.remove('hidden');

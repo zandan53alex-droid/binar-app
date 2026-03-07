@@ -283,38 +283,32 @@ header {
 }
 
 .asset-icon-wrapper {
-    position: relative;
-    width: 44px;
-    height: 32px;
-    margin-right: 12px;
     display: flex;
     align-items: center;
+    gap: 4px;
+    /* Small distance between icons per user request */
+    margin-right: 12px;
+    background: none !important;
+    /* Force removal of any boxes */
 }
 
 .asset-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     object-fit: cover;
     border-radius: 50%;
-    position: absolute;
-    left: 0;
-    z-index: 2;
     background: transparent;
-    /* No border per user request */
+    display: block;
+    border: none !important;
+    /* No borders per user request */
 }
 
-.asset-icon.secondary {
-    left: 14px;
-    /* Reduced overlap for better visibility */
-    z-index: 1;
+.asset-icon-wrapper.multi {
+    width: auto;
 }
 
 .asset-icon-wrapper.single {
-    width: 28px;
-}
-
-.asset-icon-wrapper.single .asset-icon {
-    position: static;
+    width: 26px;
 }
 
 .asset-info {
@@ -481,13 +475,22 @@ header {
 }
 
 .signal-asset-icon-wrapper {
-    position: relative;
-    width: 104px;
-    /* Wider to accommodate less overlap */
-    height: 64px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 5px;
+    gap: 8px;
+    /* Larger gap for the big detailed overlay */
+    margin-bottom: 20px;
+    background: none !important;
+}
+
+.signal-asset-icon-wrapper .asset-icon {
+    position: static;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: none !important;
 }
 
 .signal-asset-icon {
