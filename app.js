@@ -238,7 +238,22 @@ const TRANSLATIONS = {
             'Проверка кластерных объемов...',
             'Поиск оптимальной точки входа...',
             'Финализация прогноза...'
-        ]
+        ],
+        confidence: 'УВЕРЕННОСТЬ',
+        accuracy: 'ТОЧНОСТЬ',
+        market: 'РЫНОК',
+        strength: 'СИЛА',
+        volume: 'ОБЪЁМ',
+        time: 'ВРЕМЯ',
+        validUntil: 'ДЕЙСТВИТЕЛЕН ДО',
+        repeat: 'Повторить',
+        back: 'Назад',
+        strong: 'Сильный',
+        moderate: 'Средний',
+        high: 'Высокий',
+        medium: 'Умеренный',
+        otc: 'ОТС',
+        regular: 'Биржа'
     },
     en: {
         syncing: 'SYNCING...',
@@ -288,7 +303,22 @@ const TRANSLATIONS = {
             'Checking cluster volumes...',
             'Searching for optimal entry...',
             'Finalizing forecast...'
-        ]
+        ],
+        confidence: 'CONFIDENCE',
+        accuracy: 'ACCURACY',
+        market: 'MARKET',
+        strength: 'STRENGTH',
+        volume: 'VOLUME',
+        time: 'TIME',
+        validUntil: 'VALID UNTIL',
+        repeat: 'Repeat',
+        back: 'Back',
+        strong: 'Strong',
+        moderate: 'Moderate',
+        high: 'High',
+        medium: 'Medium',
+        otc: 'OTC',
+        regular: 'Regular'
     },
     hi: {
         syncing: 'सिंकिंग...',
@@ -338,7 +368,22 @@ const TRANSLATIONS = {
             'क्लस्टर वॉल्यूम की जाँच...',
             'इष्टतम प्रविष्टि की खोज...',
             'पूर्वानुमान अंतिम रूप देना...'
-        ]
+        ],
+        confidence: 'आत्मविश्वास',
+        accuracy: 'सटीकता',
+        market: 'बाजार',
+        strength: 'शक्ति',
+        volume: 'आयतन',
+        time: 'समय',
+        validUntil: 'तक मान्य',
+        repeat: 'दोहराएँ',
+        back: 'पीछे',
+        strong: 'मजबूत',
+        moderate: 'मध्यम',
+        high: 'उच्च',
+        medium: 'औसत',
+        otc: 'ओटीसी',
+        regular: 'नियमित'
     },
     es: {
         syncing: 'SINCRONIZANDO...',
@@ -388,7 +433,22 @@ const TRANSLATIONS = {
             'Comprobando volúmenes de clústeres...',
             'Buscando entrada óptima...',
             'Finalizando pronóstico...'
-        ]
+        ],
+        confidence: 'CONFIANZA',
+        accuracy: 'PRECISIÓN',
+        market: 'MERCADO',
+        strength: 'ESTABILIDAD',
+        volume: 'VOLUMEN',
+        time: 'TIEMPO',
+        validUntil: 'VÁLIDO HASTA',
+        repeat: 'Repetir',
+        back: 'Atrás',
+        strong: 'Fuerte',
+        moderate: 'Moderado',
+        high: 'Alto',
+        medium: 'Medio',
+        otc: 'OTC',
+        regular: 'Regular'
     },
     fr: {
         syncing: 'SYNCHRONISATION...',
@@ -438,7 +498,22 @@ const TRANSLATIONS = {
             'Vérification des volumes...',
             'Recherche de l\'entrée optimale...',
             'Finalisation des prévisions...'
-        ]
+        ],
+        confidence: 'CONFIANCE',
+        accuracy: 'PRÉCISION',
+        market: 'MARCHÉ',
+        strength: 'STABILITÉ',
+        volume: 'VOLUME',
+        time: 'TEMPS',
+        validUntil: 'VALIDE JUSQU\'À',
+        repeat: 'Répéter',
+        back: 'Retour',
+        strong: 'Fort',
+        moderate: 'Modéré',
+        high: 'Haut',
+        medium: 'Moyen',
+        otc: 'OTC',
+        regular: 'Régulier'
     }
 };
 let currentLang = 'ru';
@@ -531,6 +606,15 @@ function setupLocalization() {
     setLabel('sim-label-balance', t.balance);
     setLabel('sim-label-loss', t.lossSeries);
     setLabel('sim-label-drawdown', t.drawdown);
+    setLabel('label-valid-until', t.validUntil);
+    setLabel('label-confidence', t.confidence);
+    setLabel('label-accuracy', t.accuracy);
+    setLabel('label-market-info', t.market);
+    setLabel('label-strength-info', t.strength);
+    setLabel('label-volume-info', t.volume);
+    setLabel('label-time-info', t.time);
+    setLabel('repeat-signal-btn', t.repeat);
+    setLabel('back-to-assets-btn', t.back);
 
     // Set the main button text to the current category name, or default "ASSETS"
     const categoryNameEl = get('current-category-name');
@@ -644,7 +728,20 @@ function setupEventListeners() {
     document.getElementById('close-signal').onclick = () => {
         document.getElementById('signal-overlay').classList.remove('active');
         setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
+        if (signalTimerInterval) clearInterval(signalTimerInterval);
     };
+
+    const repeatBtn = document.getElementById('repeat-signal-btn');
+    if (repeatBtn) repeatBtn.onclick = generateSignal;
+
+    const backBtn = document.getElementById('back-to-assets-btn');
+    if (backBtn) {
+        backBtn.onclick = () => {
+            document.getElementById('signal-overlay').classList.remove('active');
+            setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
+            if (signalTimerInterval) clearInterval(signalTimerInterval);
+        };
+    }
 
     document.getElementById('get-signal-btn').onclick = generateSignal;
 }
@@ -786,17 +883,73 @@ async function generateSignal() {
     document.getElementById('signal-loader').classList.add('hidden');
     document.getElementById('signal-content').classList.remove('hidden');
 
-    const direction = Math.random() > 0.5 ? 'CALL' : 'PUT';
-    const dirEl = document.getElementById('signal-direction');
-    dirEl.innerText = direction === 'CALL' ? t.call : t.put;
-    dirEl.className = 'direction ' + direction.toLowerCase();
+    // 1. Generate Randomized Stats
+    const confidence = 82 + Math.floor(Math.random() * 15); // 82-97%
+    const accuracy = 35 + Math.floor(Math.random() * 25);   // 35-60%
+    const isCall = Math.random() > 0.5;
+    const strength = Math.random() > 0.3 ? t.strong : t.moderate;
+    const volume = Math.random() > 0.4 ? t.high : t.medium;
 
-    document.getElementById('expiration-label').innerText = `${t.expiration} ${currentTimeframe}`;
+    // 2. Market Detection
+    const isOtc = currentAsset.id.toLowerCase().includes('otc') || currentAsset.category.toLowerCase().includes('otc');
+    const marketType = isOtc ? t.otc : t.regular;
 
-    const currentPriceText = document.getElementById(`price-${currentAsset.id}`).innerText;
-    document.getElementById('entry-price').innerText = currentPriceText;
+    // 3. Update UI
+    document.getElementById('signal-confidence').innerText = confidence + '%';
+    document.getElementById('signal-accuracy').innerText = accuracy + '%';
+    document.getElementById('signal-asset-name-large').innerText = currentAsset.name;
+    document.getElementById('signal-market').innerText = marketType;
+    document.getElementById('signal-strength').innerText = strength;
+    document.getElementById('signal-volume').innerText = volume;
+    document.getElementById('signal-timeframe-val').innerText = currentTimeframe.toUpperCase();
+
+    const dirMarker = document.getElementById('signal-direction-marker');
+    const dirIcon = document.getElementById('signal-direction-icon');
+    const dirText = document.getElementById('signal-direction-text');
+
+    if (isCall) {
+        dirMarker.className = 'direction-marker call';
+        dirIcon.innerText = '↑';
+        dirText.innerText = t.call.split(' ')[0]; // Take only text part
+    } else {
+        dirMarker.className = 'direction-marker put';
+        dirIcon.innerText = '↓';
+        dirText.innerText = t.put.split(' ')[0];
+    }
+
+    // 4. Timer Logic (3 Minutes duration)
+    startSignalTimer(180);
 
     if (tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('success');
+}
+
+let signalTimerInterval = null;
+function startSignalTimer(durationSeconds) {
+    if (signalTimerInterval) clearInterval(signalTimerInterval);
+
+    let timeLeft = durationSeconds;
+    const timeEl = document.getElementById('signal-valid-time');
+    const progressFill = document.getElementById('timer-progress-bar');
+
+    const updateUI = () => {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timeEl.innerText = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        const progress = (timeLeft / durationSeconds) * 100;
+        progressFill.style.width = progress + '%';
+    };
+
+    updateUI();
+
+    signalTimerInterval = setInterval(() => {
+        timeLeft--;
+        if (timeLeft <= 0) {
+            clearInterval(signalTimerInterval);
+            timeLeft = 0;
+            // Optionally disable signal or show "Expired"
+        }
+        updateUI();
+    }, 1000);
 }
 
 function startPriceUpdates() {

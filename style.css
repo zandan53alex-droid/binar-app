@@ -710,54 +710,155 @@ header {
     pointer-events: all;
 }
 
-.scanner-line {
-    width: 80%;
-    height: 2px;
-    background: var(--accent-blue);
-    box-shadow: 0 0 15px var(--accent-blue);
-    position: absolute;
-    animation: scan 2s linear infinite;
+/* Advanced Signal Overlay (v40) */
+.signal-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
 }
 
-@keyframes scan {
-    0% {
-        top: 20%;
-    }
-
-    100% {
-        top: 80%;
-    }
-}
-
-.signal-card {
-    background: #111;
-    width: 90%;
-    max-width: 400px;
-    margin: auto;
-    padding: 30px 20px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
-    position: relative;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-.signal-result {
-    margin: 25px 0;
+.stat-block {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 15px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.direction {
-    font-size: 48px;
+.stat-block .stat-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stat-block .stat-value {
+    font-size: 1.4rem;
     font-weight: 900;
-    margin-bottom: 5px;
-    letter-spacing: 2px;
+    color: #fff;
 }
 
-.expiration-info {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 10px;
+.signal-main-result {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.direction-marker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.1rem;
+    font-weight: 900;
+    padding: 14px 24px;
+    border-radius: 14px;
+    width: 100%;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.direction-marker.call {
+    color: #fff;
+    background: #00c853;
+    /* Success Green */
+    box-shadow: 0 4px 15px rgba(0, 200, 83, 0.3);
+}
+
+.direction-marker.put {
+    color: #fff;
+    background: #ff3d00;
+    /* Danger Red */
+    box-shadow: 0 4px 15px rgba(255, 61, 0, 0.3);
+}
+
+.asset-name-large {
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.signal-info-rows {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #888;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.info-value {
+    color: #fff;
+    font-weight: 800;
+}
+
+.info-row.highlight {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.timer-progress-container {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.timer-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d2ff, #9d50bb);
+    width: 100%;
+    transition: width 1s linear;
+}
+
+.signal-footer-btns {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-footer-repeat,
+.btn-footer-back {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-footer-repeat:active,
+.btn-footer-back:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 .price-info {

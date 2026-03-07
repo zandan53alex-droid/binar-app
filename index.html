@@ -7,7 +7,7 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=39">
+    <link rel="stylesheet" href="style.css?v=40">
     <style>
         html {
             min-height: 100%;
@@ -277,12 +277,60 @@
             </div>
 
             <div id="signal-content" class="hidden">
-                <div class="signal-result">
-                    <div id="signal-direction" class="direction">CALL</div>
-                    <div class="expiration-info" id="expiration-label">EXPIRATION: 1m</div>
-                    <div class="price-info">
-                        ENTRY PRICE: <span id="entry-price">0.0000</span>
+                <!-- Confidence & Accuracy Grid -->
+                <div class="signal-stats-grid">
+                    <div class="stat-block">
+                        <span class="stat-label" id="label-confidence">CONFIDENCE</span>
+                        <span class="stat-value" id="signal-confidence">87%</span>
                     </div>
+                    <div class="stat-block">
+                        <span class="stat-label" id="label-accuracy">ACCURACY</span>
+                        <span class="stat-value" id="signal-accuracy">43%</span>
+                    </div>
+                </div>
+
+                <!-- Signal Main Result -->
+                <div class="signal-main-result">
+                    <div id="signal-direction-marker" class="direction-marker">
+                        <span id="signal-direction-icon">↑</span>
+                        <span id="signal-direction-text">ПОКУПКА</span>
+                    </div>
+                    <div id="signal-asset-name-large" class="asset-name-large">EUR/USD</div>
+                </div>
+
+                <!-- Info Rows -->
+                <div class="signal-info-rows">
+                    <div class="info-row">
+                        <span class="info-label" id="label-market-info">РЫНОК</span>
+                        <span class="info-value" id="signal-market">---</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-strength-info">СИЛА</span>
+                        <span class="info-value" id="signal-strength">Сильный</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-volume-info">ОБЪЁМ</span>
+                        <span class="info-value" id="signal-volume">Высокий</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-time-info">ВРЕМЯ</span>
+                        <span class="info-value" id="signal-timeframe-val">M1</span>
+                    </div>
+                    <div class="info-row highlight">
+                        <span class="info-label" id="label-valid-until">ДЕЙСТВИТЕЛЕН ДО</span>
+                        <span class="info-value" id="signal-valid-time">--:--</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="timer-progress-container">
+                    <div id="timer-progress-bar" class="timer-progress-fill"></div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="signal-footer-btns">
+                    <button id="repeat-signal-btn" class="btn-footer-repeat">Повторить</button>
+                    <button id="back-to-assets-btn" class="btn-footer-back">Назад</button>
                 </div>
             </div>
         </div>
@@ -300,7 +348,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=39"></script>
+    <script src="app.js?v=40"></script>
 </body>
 
 </html>
