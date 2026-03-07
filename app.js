@@ -1325,7 +1325,6 @@ document.addEventListener('DOMContentLoaded', () => {
             educationOpen = false;
             educationPanel.classList.add('hidden');
             educationBtn.classList.remove('active');
-            document.getElementById('edu-arrow').style.transform = '';
 
             assetsPanel.classList.remove('hidden');
             assetsBtn.classList.add('active');
@@ -1344,7 +1343,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             educationPanel.classList.remove('hidden');
             educationBtn.classList.add('active');
-            document.getElementById('edu-arrow').style.transform = 'rotate(180deg)';
 
             // Render first tab if empty
             if (currentEduTab === 'basics' && !document.getElementById('edu-basics-panel').querySelector('.lesson-card')) {
@@ -1353,7 +1351,6 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             educationPanel.classList.add('hidden');
             educationBtn.classList.remove('active');
-            document.getElementById('edu-arrow').style.transform = '';
         }
     }
 

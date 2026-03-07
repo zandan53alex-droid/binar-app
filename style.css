@@ -816,6 +816,9 @@ header {
     text-align: left;
     margin-top: 10px;
     transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .education-toggle-btn:hover,
@@ -850,8 +853,8 @@ header {
     margin-top: 5px;
     transition: all 0.25s ease;
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 8px;
 }
 
 .assets-toggle-btn:hover,
@@ -864,11 +867,17 @@ header {
     margin-top: 10px;
 }
 
-.assets-toggle-btn .dropdown-arrow {
+.assets-toggle-btn .dropdown-arrow,
+.education-toggle-btn .dropdown-arrow {
     transition: transform 0.3s ease;
+    font-size: 0.7rem;
+    margin-left: 10px;
+    opacity: 0.8;
+    display: inline-block;
 }
 
-.assets-toggle-btn.active .dropdown-arrow {
+.assets-toggle-btn.active .dropdown-arrow,
+.education-toggle-btn.active .dropdown-arrow {
     transform: rotate(180deg);
 }
 

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="style.css?v=23">
+    <link rel="stylesheet" href="style.css?v=26">
     <style>
         html {
             min-height: 100%;
@@ -55,19 +55,18 @@
             </div>
         </header>
 
+        <!-- Search Bar (Always Visible) -->
+        <div class="search-container">
+            <input type="text" id="asset-search" placeholder="Search asset...">
+        </div>
+
         <!-- Assets Toggle Button -->
         <button id="assets-btn" class="assets-toggle-btn active">
-            <span id="assets-btn-text">📈 АКТИВЫ</span>
-            <span class="dropdown-arrow" id="assets-arrow">▼</span>
+            <span id="assets-btn-text">📈 АКТИВЫ <span class="dropdown-arrow" id="assets-arrow">▼</span></span>
         </button>
 
         <!-- Assets Panel -->
         <div id="assets-panel" class="assets-panel">
-            <!-- Search Bar -->
-            <div class="search-container">
-                <input type="text" id="asset-search" placeholder="Search asset...">
-            </div>
-
             <!-- Category Select -->
             <div class="category-dropdown-container">
                 <button id="category-toggle" class="category-toggle-btn">
@@ -93,8 +92,7 @@
 
         <!-- Education Button -->
         <button id="education-btn" class="education-toggle-btn">
-            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span>
-            <span class="dropdown-arrow" id="edu-arrow">▼</span>
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ <span class="dropdown-arrow" id="edu-arrow">▼</span></span>
         </button>
 
         <!-- Education Panel -->
