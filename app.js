@@ -955,23 +955,33 @@ function startSignalTimer(durationSeconds) {
 }
 
 function startPriceUpdates() {
-    const localIp = "192.168.1.8";
-    const port = "8765";
+    // Dynamic IP detection for flexibility
     let ws = null;
 
     function connectWs(isFallback = false) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramIp = urlParams.get('ip'); // ?ip=192.168.x.x
+        const savedIp = localStorage.getItem('quote_server_ip');
+        const defaultLocalIp = "192.168.1.8"; // Saved fallback from previous session
+        const port = "8765";
+
         const host = window.location.hostname;
         const isLocalHost = host === 'localhost' || host === '127.0.0.1' || window.location.protocol === 'file:';
 
-        let targetIp = localIp;
-        if (isLocalHost) {
-            targetIp = isFallback ? localIp : '127.0.0.1';
-        } else {
-            targetIp = isFallback ? '127.0.0.1' : localIp;
+        let targetIp = paramIp || savedIp || defaultLocalIp;
+
+        if (isLocalHost && !paramIp && !isFallback) {
+            targetIp = '127.0.0.1';
+        } else if (isFallback) {
+            targetIp = (targetIp === '127.0.0.1') ? defaultLocalIp : '127.0.0.1';
         }
 
         const currentUrl = `ws://${targetIp}:${port}`;
         console.log(`📡 Соединение с сервером котировок: ${currentUrl}... (${isFallback ? 'запасной' : 'основной'})`);
+
+        if (paramIp) {
+            localStorage.setItem('quote_server_ip', paramIp);
+        }
 
         ws = new WebSocket(currentUrl);
 
@@ -982,7 +992,7 @@ function startPriceUpdates() {
                 ws.close();
                 connectWs(!isFallback);
             }
-        }, 2200);
+        }, 2500);
 
         ws.onopen = () => {
             clearTimeout(connectionTimeout);
