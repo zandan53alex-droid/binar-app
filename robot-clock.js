@@ -73,24 +73,22 @@
         const now = new Date();
         const hh = String(now.getHours()).padStart(2, '0');
         const mm = String(now.getMinutes()).padStart(2, '0');
-        const ss = String(now.getSeconds()).padStart(2, '0');
-        const timeStr = `${hh}${mm}${ss}`;
+        const timeStr = `${hh}${mm}`;
 
         const display = document.getElementById('robot-clock-display');
         if (!display) return;
 
-        // If it's the first run, create the digit slots
+        // If it's the first run, create the digit slots and clear previousTimeStr
         if (display.children.length === 0) {
             display.innerHTML = `
                 <div id="digit-h1"></div><div id="digit-h2"></div>
                 <div class="clock-separator"><div class="sep-dot"></div><div class="sep-dot"></div></div>
                 <div id="digit-m1"></div><div id="digit-m2"></div>
-                <div class="clock-separator"><div class="sep-dot"></div><div class="sep-dot"></div></div>
-                <div id="digit-s1"></div><div id="digit-s2"></div>
             `;
+            previousTimeStr = "    "; // 4 spaces for first render force
         }
 
-        const slots = ['digit-h1', 'digit-h2', 'digit-m1', 'digit-m2', 'digit-s1', 'digit-s2'];
+        const slots = ['digit-h1', 'digit-h2', 'digit-m1', 'digit-m2'];
 
         for (let i = 0; i < timeStr.length; i++) {
             const digit = timeStr[i];
