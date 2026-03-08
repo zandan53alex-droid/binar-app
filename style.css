@@ -685,16 +685,14 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
+    background: rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
     z-index: 100;
     opacity: 0;
     overflow-x: hidden;
-    background: rgba(13, 13, 13, 0.85);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(2px);
 }
 
 /* Removed tv-chart-bg as we are using a cleaner dark theme for PO fidelity */
