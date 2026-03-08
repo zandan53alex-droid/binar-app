@@ -977,9 +977,16 @@ function startPriceUpdates() {
             targetIp = (targetIp === '127.0.0.1') ? defaultLocalIp : '127.0.0.1';
         }
 
-        let currentUrl = (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://')))
-            ? paramIp
-            : `ws://${targetIp}:${port}`;
+        let currentUrl = "";
+        if (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://'))) {
+            currentUrl = paramIp;
+        } else if (paramIp && (paramIp.includes('ngrok') || paramIp.includes('cloudflare') || paramIp.includes('.app'))) {
+            // Automatic secure tunnel detection: assume wss and no port
+            const cleanIp = paramIp.replace('https://', '').replace('http://', '');
+            currentUrl = `wss://${cleanIp}`;
+        } else {
+            currentUrl = `ws://${targetIp}:${port}`;
+        }
 
         console.log(`📡 Соединение с сервером котировок: ${currentUrl}... (${isFallback ? 'запасной' : 'основной'})`);
 
