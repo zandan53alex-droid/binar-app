@@ -976,7 +976,10 @@ function startPriceUpdates() {
             targetIp = (targetIp === '127.0.0.1') ? defaultLocalIp : '127.0.0.1';
         }
 
-        const currentUrl = `ws://${targetIp}:${port}`;
+        let currentUrl = (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://')))
+            ? paramIp
+            : `ws://${targetIp}:${port}`;
+
         console.log(`📡 Соединение с сервером котировок: ${currentUrl}... (${isFallback ? 'запасной' : 'основной'})`);
 
         if (paramIp) {
