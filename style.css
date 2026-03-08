@@ -852,8 +852,8 @@ header {
 .signal-footer-btns {
     display: flex;
     justify-content: space-between;
-    gap: 60px;
-    /* Large center gap for the robot clock */
+    gap: 100px;
+    /* Even larger gap to avoid robot clock */
     margin-top: 20px;
 }
 
