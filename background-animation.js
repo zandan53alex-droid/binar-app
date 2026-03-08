@@ -4,7 +4,7 @@
  */
 
 (function () {
-    console.log("📊 Background Animation v45 loaded");
+    console.log("📊 Background Animation v46 loaded");
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
     document.body.prepend(canvas);
@@ -175,6 +175,11 @@
         updateObjects();
         drawObjects();
         drawLine();
+
+        // Debug version tag on canvas
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+        ctx.font = '10px Arial';
+        ctx.fillText('BG-ANIM V46', 10, 20);
     }
 
     requestAnimationFrame(animate);
