@@ -4,6 +4,7 @@
  */
 
 (function () {
+    console.log("📊 Background Animation v45 loaded");
     const canvas = document.createElement('canvas');
     canvas.id = 'bg-canvas';
     document.body.prepend(canvas);
