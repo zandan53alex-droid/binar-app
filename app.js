@@ -113,6 +113,7 @@ const ASSETS_DB = {
         { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
         { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
         { id: 'natural_gas', name: 'Natural Gas OTC', icon: 'natural_gas.jpg', category: 'Commodities' },
+        { id: 'natural_gas_regular', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
         { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
         { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.jpg', category: 'Commodities' },
         { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
