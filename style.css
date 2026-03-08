@@ -852,8 +852,8 @@ header {
 .signal-footer-btns {
     display: flex;
     justify-content: space-between;
-    gap: 100px;
-    /* Even larger gap to avoid robot clock */
+    gap: 140px;
+    /* Maximum gap to push buttons to the absolute edges */
     margin-top: 20px;
 }
 
