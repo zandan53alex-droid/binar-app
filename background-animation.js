@@ -175,11 +175,6 @@
         updateObjects();
         drawObjects();
         drawLine();
-
-        // Debug version tag on canvas
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-        ctx.font = '10px Arial';
-        ctx.fillText('BG-ANIM V46', 10, 20);
     }
 
     requestAnimationFrame(animate);
