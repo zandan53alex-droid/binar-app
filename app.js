@@ -1653,7 +1653,7 @@ function openLesson(lesson) {
 // Wire up education toggle button
 document.addEventListener('DOMContentLoaded', () => {
     // ─── Toggles (Education, Assets, Calculator, News) ────────────
-    let assetsOpen = true;
+    let assetsOpen = false;
     let educationOpen = false;
     let calculatorOpen = false;
     let newsOpen = false;
