@@ -23,6 +23,16 @@ body {
     min-height: 100vh;
 }
 
+body.signal-active .app-container {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.signal-active #robot-assistant-container {
+    opacity: 0;
+    pointer-events: none;
+}
+
 .app-container {
     padding: 10px;
     /* Reduced padding for wider feel */

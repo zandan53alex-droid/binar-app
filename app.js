@@ -735,6 +735,7 @@ function setupEventListeners() {
     });
 
     document.getElementById('close-signal').onclick = () => {
+        document.body.classList.remove('signal-active');
         document.getElementById('signal-overlay').classList.remove('active');
         setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
         if (signalTimerInterval) clearInterval(signalTimerInterval);
@@ -746,6 +747,7 @@ function setupEventListeners() {
     const backBtn = document.getElementById('back-to-assets-btn');
     if (backBtn) {
         backBtn.onclick = () => {
+            document.body.classList.remove('signal-active');
             document.getElementById('signal-overlay').classList.remove('active');
             setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
             if (signalTimerInterval) clearInterval(signalTimerInterval);
@@ -857,6 +859,7 @@ function openSignalDialog(asset) {
     });
 
     document.getElementById('signal-overlay').classList.remove('hidden');
+    document.body.classList.add('signal-active');
     setTimeout(() => document.getElementById('signal-overlay').classList.add('active'), 10);
 
     document.getElementById('signal-content').classList.add('hidden');
