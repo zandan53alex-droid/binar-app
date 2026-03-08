@@ -851,12 +851,16 @@ header {
 
 .signal-footer-btns {
     display: flex;
-    gap: 12px;
+    justify-content: space-between;
+    gap: 60px;
+    /* Large center gap for the robot clock */
+    margin-top: 20px;
 }
 
 .btn-footer-repeat,
 .btn-footer-back {
     flex: 1;
+    min-width: 120px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
