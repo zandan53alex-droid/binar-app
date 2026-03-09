@@ -1,21 +1,14 @@
-import json
 import codecs
 
-# We will read the EN, ES, FR, HI contents
-# Since they are written as "const enContent = {...}; module.exports = enContent;", we can just strip that part
-# or read them as plain python using some parsing or just string replacement if we are careful.
+def extract_array_string(filepath):
+    with codecs.open(filepath, 'r', 'utf-8') as f:
+        content = f.read()
+    start = content.find('[')
+    end = content.rfind(']')
+    return content[start:end+1]
 
-# Actually, it's easier to just construct the final content.js in Python since we know the exact variables.
-
-# Let's read the courses and lessons in Russian from app.js or the extracted ones
-with codecs.open('c:/binarny/webapp/courses_orig.js', 'r', 'utf-8') as f:
-    ru_courses_str = f.read()
-
-with codecs.open('c:/binarny/webapp/lessons_orig.js', 'r', 'utf-8') as f:
-    ru_lessons_str = f.read()
-
-# For Russian Books and Indicators, we can use the ones from app.js or just hardcode the known original Russian texts.
-# Wait, let's use the ones that are in the app.js or the new files we just made.
+ru_courses_str = extract_array_string('c:/binarny/webapp/courses_orig.js')
+ru_lessons_str = extract_array_string('c:/binarny/webapp/lessons_orig.js')
 
 # The existing content.js has the structure, let's read the EN, ES, FR, HI files
 def extract_object_string(filepath):
@@ -55,12 +48,12 @@ ru_books_str = """[
     ]"""
 
 ru_indicators_str = """[
-        { icon: '📈', title: 'Bollinger Bands (Линии Боллинджера)', desc: 'Показывает волатильность и возможные развороты.', text: `<b>Bollinger Bands</b>\nПоказывает волатильность рынка.\n<img src="./bollinger.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nТрейдеры используют сужение или расширение полос для поиска импульсов. Средняя линия выступает в роли скользящей средней.` },
-        { icon: '📊', title: 'MACD', desc: 'Осциллятор силы тренда.', text: `<b>MACD</b>\nИндикатор показывает схождение/расхождение скользящих средних.\n<img src="./macd.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nГистограмма выше нуля — бычий тренд, ниже нуля — медвежий.` },
-        { icon: '🔄', title: 'Stochastic Oscillator', desc: 'Поиск зон перекупленности и перепроданности.', text: `<b>Stochastic</b>\nОпределяет импульс цены.\n<img src="./stochastic.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nЗначение выше 80 = перекупленность (возможен спад). Ниже 20 = перепроданность (возможен рост).` },
-        { icon: '📉', title: 'ADX', desc: 'Индикатор силы тренда.', text: `<b>ADX</b>\nПоказывает, насколько силен текущий тренд.\n<img src="./adx.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nВыше 25 — сильный тренд, ниже 20 — флэт (слабый тренд).` },
-        { icon: '💠', title: 'Fractals (Фракталы)', desc: 'Локальные максимумы и минимумы.', text: `<b>Фракталы</b>\nПомогают находить точки разворота цены.\n<img src="./fractals.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nФрактал вниз: поддержка. Фрактал вверх: сопротивление.` },
-        { icon: '🕯️', title: 'RSI', desc: 'Индекс относительной силы.', text: `<b>RSI</b>\nОценивает состояния перекупленности и перепроданности актива.\n<img src="./rsi.png?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\nУровни 70 и 30 служат границами сигналов.` }
+        { icon: '📈', title: 'Bollinger Bands (Линии Боллинджера)', desc: 'Показывает волатильность и возможные развороты.', text: `<b>Bollinger Bands</b>\\nПоказывает волатильность рынка.\\n<img src="./bollinger.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nТрейдеры используют сужение или расширение полос для поиска импульсов. Средняя линия выступает в роли скользящей средней.` },
+        { icon: '📊', title: 'MACD', desc: 'Осциллятор силы тренда.', text: `<b>MACD</b>\\nИндикатор показывает схождение/расхождение скользящих средних.\\n<img src="./macd.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nГистограмма выше нуля — бычий тренд, ниже нуля — медвежий.` },
+        { icon: '🔄', title: 'Stochastic Oscillator', desc: 'Поиск зон перекупленности и перепроданности.', text: `<b>Stochastic</b>\\nОпределяет импульс цены.\\n<img src="./stochastic.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nЗначение выше 80 = перекупленность (возможен спад). Ниже 20 = перепроданность (возможен рост).` },
+        { icon: '📉', title: 'ADX', desc: 'Индикатор силы тренда.', text: `<b>ADX</b>\\nПоказывает, насколько силен текущий тренд.\\n<img src="./adx.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nВыше 25 — сильный тренд, ниже 20 — флэт (слабый тренд).` },
+        { icon: '💠', title: 'Fractals (Фракталы)', desc: 'Локальные максимумы и минимумы.', text: `<b>Фракталы</b>\\nПомогают находить точки разворота цены.\\n<img src="./fractals.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nФрактал вниз: поддержка. Фрактал вверх: сопротивление.` },
+        { icon: '🕯️', title: 'RSI', desc: 'Индекс относительной силы.', text: `<b>RSI</b>\\nОценивает состояния перекупленности и перепроданности актива.\\n<img src="./rsi.png?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nУровни 70 и 30 служат границами сигналов.` }
     ]"""
 
 ru_str = f"""{{
