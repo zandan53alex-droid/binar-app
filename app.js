@@ -1485,8 +1485,13 @@ async function fetchEconomicNews() {
         }
 
         const now = new Date();
-        // Option to filter past events, we show events starting from 12 hours ago
-        const filteredData = data.filter(item => new Date(item.date) >= new Date(now.getTime() - 12 * 60 * 60 * 1000));
+        // Filter events: starting from NOW up to 48 hours in the future
+        const timeNow = now.getTime();
+        const timePlus48h = now.getTime() + 48 * 60 * 60 * 1000;
+        const filteredData = data.filter(item => {
+            const eventTime = new Date(item.date).getTime();
+            return eventTime >= timeNow && eventTime <= timePlus48h;
+        });
 
         // Map Forex Factory data
         cachedNews = filteredData.slice(0, 40).map(item => {
