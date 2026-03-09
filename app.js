@@ -1788,3 +1788,11 @@ function updateChart(data) {
         }
     });
 }
+// Initialization of main get signal button
+const mainGetSignalBtn = document.getElementById('main-get-signal-btn');
+if (mainGetSignalBtn) {
+    mainGetSignalBtn.addEventListener('click', () => {
+        if (!assetsOpen) toggleAssets();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
