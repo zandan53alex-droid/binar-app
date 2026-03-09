@@ -721,10 +721,19 @@ function setupEventListeners() {
         };
     });
 
-    document.getElementById('asset-search').oninput = (e) => {
-        searchQuery = e.target.value.toLowerCase();
-        renderAssets();
-    };
+    const searchInput = document.getElementById('asset-search');
+    if (searchInput) {
+        searchInput.oninput = (e) => {
+            searchQuery = e.target.value.toLowerCase().trim();
+
+            if (searchQuery && !assetsOpen) {
+                // Auto-open assets panel when searching if it was closed
+                toggleAssets();
+            }
+
+            renderAssets();
+        };
+    }
 
     document.querySelectorAll('.tf-btn').forEach(btn => {
         btn.onclick = () => {
@@ -767,14 +776,20 @@ function renderAssets() {
     if (searchQuery) {
         // Global search across all categories
         for (const cat in ASSETS_DB) {
-            const matches = ASSETS_DB[cat].filter(a =>
-                a.name.toLowerCase().includes(searchQuery) || a.id.toLowerCase().includes(searchQuery)
-            );
+            const matches = ASSETS_DB[cat].filter(a => {
+                const nameMatch = a.name.toLowerCase().includes(searchQuery);
+                const idMatch = a.id.toLowerCase().includes(searchQuery);
+
+                // Also check translated name from the dictionary for current language
+                // We'll check the 'ru' translation specifically or whatever is currently selected
+                const t = TRANSLATIONS[currentLang];
+                const transNameMatch = (t && t[a.id]) ? t[a.id].toLowerCase().includes(searchQuery) : false;
+
+                return nameMatch || idMatch || transNameMatch;
+            });
 
             matches.forEach(m => {
-                // Clone the object to avoid mutating the database with category info
                 const item = { ...m, dictCategory: cat };
-                // Avoid duplicates if an asset exists in multiple categories (unlikely but safe)
                 if (!filtered.find(f => f.id === item.id)) {
                     filtered.push(item);
                 }
