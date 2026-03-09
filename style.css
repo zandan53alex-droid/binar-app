@@ -868,16 +868,17 @@ header {
 
 .signal-footer-btns {
     display: flex;
-    justify-content: space-between;
-    gap: 140px;
-    /* Maximum gap to push buttons to the absolute edges */
+    justify-content: center;
+    /* Center them relative to the clock */
+    gap: 146px;
+    /* 140px robot width + 3px gap on each side */
     margin-top: 20px;
 }
 
 .btn-footer-repeat,
 .btn-footer-back {
-    flex: 1;
-    min-width: 120px;
+    /* Removed flex: 1 to prevent stretching away from the clock */
+    min-width: 100px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
