@@ -1687,6 +1687,55 @@ function renderBooks() {
     });
 }
 
+const INDICATORS = [
+    {
+        title: 'Bollinger Bands',
+        desc: 'Индикатор для измерения волатильности рынка. Состоит из трех линий: средней (SMA) и двух крайних, отклонение которых зависит от волатильности.',
+        img: 'images/bollinger.jpg'
+    },
+    {
+        title: 'MACD',
+        desc: 'Трендовый осциллятор, отображающий разницу между двумя скользящими средними. Помогает определить направление и силу тренда.',
+        img: 'images/macd.jpg'
+    },
+    {
+        title: 'Stochastic Oscillator',
+        desc: 'Динамичный осциллятор, который показывает положение цены относительно ее диапазона за период. Эффективен для поиска зон перекупленности и перепроданности.',
+        img: 'images/stochastic.jpg'
+    },
+    {
+        title: 'ADX',
+        desc: 'Индикатор силы тренда. Позволяет отличить трендовое движение от флета и определить, насколько сильна текущая тенденция.',
+        img: 'images/adx.jpg'
+    },
+    {
+        title: 'Fractals',
+        desc: 'Индикатор Билла Вильямса, выявляющий локальные максимумы и минимумы (пики и впадины) на графике.',
+        img: 'images/fractals.jpg'
+    },
+    {
+        title: 'RSI',
+        desc: 'Индекс относительной силы. Оценивает скорость и изменение ценовых движений, сигнализируя о зонах 70 (перекупленность) и 30 (перепроданность).',
+        img: 'images/rsi.png'
+    }
+];
+
+function renderIndicators() {
+    const list = document.getElementById('indicators-list');
+    if (!list) return;
+    list.innerHTML = '';
+    INDICATORS.forEach(ind => {
+        const card = document.createElement('div');
+        card.className = 'indicator-card';
+        card.innerHTML = `
+            <div class="indicator-card-title">${ind.title}</div>
+            <div class="indicator-card-desc">${ind.desc}</div>
+            <img src="${ind.img}?v=59" class="indicator-card-img" alt="${ind.title}">
+        `;
+        list.appendChild(card);
+    });
+}
+
 function switchEduTab(tab) {
     currentEduTab = tab;
     const basicsPanel = document.getElementById('edu-basics-panel');
@@ -1734,6 +1783,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let educationOpen = false;
     let calculatorOpen = false;
     let newsOpen = false;
+    let indicatorsOpen = false;
 
     const assetsBtn = document.getElementById('assets-btn');
     const assetsPanel = document.getElementById('assets-panel');
@@ -1743,24 +1793,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const calcPanel = document.getElementById('calc-panel');
     const newsBtn = document.getElementById('news-btn');
     const newsPanel = document.getElementById('news-panel');
+    const indicatorsBtn = document.getElementById('indicators-toggle-btn');
+    const indicatorsPanel = document.getElementById('indicators-panel');
 
     function closeAllPanels() {
         assetsOpen = false;
         educationOpen = false;
         calculatorOpen = false;
         newsOpen = false;
+        indicatorsOpen = false;
         assetsPanel.classList.add('hidden');
         educationPanel.classList.add('hidden');
         calcPanel.classList.add('hidden');
         newsPanel.classList.add('hidden');
+        indicatorsPanel.classList.add('hidden');
         assetsBtn.classList.remove('active');
         educationBtn.classList.remove('active');
         calcBtn.classList.remove('active');
         newsBtn.classList.remove('active');
+        indicatorsBtn.classList.remove('active');
         document.getElementById('assets-arrow').style.transform = '';
         document.getElementById('edu-arrow').style.transform = '';
         document.getElementById('calc-arrow').style.transform = '';
         document.getElementById('news-arrow').style.transform = '';
+        document.getElementById('indicators-arrow').style.transform = '';
     }
 
     function toggleAssets() {
@@ -1826,10 +1882,27 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    assetsBtn.addEventListener('click', toggleAssets);
-    educationBtn.addEventListener('click', toggleEducation);
-    calcBtn.addEventListener('click', toggleCalculator);
-    newsBtn.addEventListener('click', toggleNews);
+    function toggleIndicators() {
+        if (!indicatorsOpen) {
+            closeAllPanels();
+            indicatorsOpen = true;
+            indicatorsPanel.classList.remove('hidden');
+            indicatorsBtn.classList.add('active');
+            document.getElementById('indicators-arrow').style.transform = 'rotate(180deg)';
+            renderIndicators();
+        } else {
+            indicatorsOpen = false;
+            indicatorsPanel.classList.add('hidden');
+            indicatorsBtn.classList.remove('active');
+            document.getElementById('indicators-arrow').style.transform = '';
+        }
+    }
+
+    assetsBtn.onclick = toggleAssets;
+    educationBtn.onclick = toggleEducation;
+    calcBtn.onclick = toggleCalculator;
+    newsBtn.onclick = toggleNews;
+    indicatorsBtn.onclick = toggleIndicators;
 
     // ─── News & Economic Calendar Logic ──────────────────────────
     let cachedNews = [];

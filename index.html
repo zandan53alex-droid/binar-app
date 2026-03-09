@@ -7,8 +7,8 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=58">
-    <link rel="stylesheet" href="robot-clock.css?v=58">
+    <link rel="stylesheet" href="style.css?v=59">
+    <link rel="stylesheet" href="robot-clock.css?v=59">
     <style>
         html,
         body {
@@ -228,6 +228,19 @@
                 Обновлено: --:--
             </div>
         </div>
+
+        <!-- Indicators Toggle Button -->
+        <button id="indicators-toggle-btn" class="indicators-toggle-btn">
+            <span id="indicators-btn-text">📉 ИНДИКАТОРЫ</span> <span class="dropdown-arrow"
+                id="indicators-arrow">▼</span>
+        </button>
+
+        <!-- Indicators Panel -->
+        <div id="indicators-panel" class="indicators-panel hidden">
+            <div id="indicators-list" class="indicators-list">
+                <!-- Data injected via JS -->
+            </div>
+        </div>
     </div>
 
     <!-- Signal Overlay -->
@@ -325,9 +338,9 @@
         </div>
     </div>
 
-    <script src="app.js?v=58"></script>
-    <script src="robot-clock.js?v=58"></script>
-    <script src="background-animation.js?v=58"></script>
+    <script src="app.js?v=59"></script>
+    <script src="robot-clock.js?v=59"></script>
+    <script src="background-animation.js?v=59"></script>
 </body>
 
 </html>

@@ -1363,7 +1363,8 @@ header {
 }
 
 .assets-toggle-btn .dropdown-arrow,
-.education-toggle-btn .dropdown-arrow {
+.education-toggle-btn .dropdown-arrow,
+.indicators-toggle-btn .dropdown-arrow {
     transition: transform 0.3s ease;
     font-size: 0.7rem;
     margin-left: 10px;
@@ -1529,8 +1530,87 @@ header {
     color: #666;
 }
 
-.book-card-arrow {
-    color: #00aadd;
+color: #00aadd;
+font-size: 1rem;
+flex-shrink: 0;
+}
+
+/* ── Indicators Toggle Button (Cyan/Teal Accent) ── */
+.indicators-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(0, 220, 150, 0.25);
+    color: #00dc96;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.indicators-toggle-btn .dropdown-arrow {
+    margin-left: auto;
+}
+
+.indicators-toggle-btn:hover,
+.indicators-toggle-btn.active {
+    background: rgba(0, 220, 150, 0.1);
+    border-color: rgba(0, 220, 150, 0.5);
+}
+
+.indicators-toggle-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.indicators-panel {
+    margin-top: 5px;
+}
+
+.indicators-panel.hidden {
+    display: none;
+}
+
+.indicators-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.indicator-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 18px;
+    padding: 18px;
+    transition: all 0.3s ease;
+}
+
+.indicator-card-title {
     font-size: 1rem;
-    flex-shrink: 0;
+    font-weight: 800;
+    color: #00dc96;
+    margin-bottom: 8px;
+}
+
+.indicator-card-desc {
+    font-size: 0.85rem;
+    color: #ccc;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    white-space: pre-line;
+}
+
+.indicator-card-img {
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    display: block;
 }
