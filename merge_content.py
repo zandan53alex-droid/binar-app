@@ -1,17 +1,10 @@
 import codecs
+import os
 
-def extract_array_string(filepath):
-    with codecs.open(filepath, 'r', 'utf-8') as f:
-        content = f.read()
-    start = content.find('[')
-    end = content.rfind(']')
-    return content[start:end+1]
-
-ru_courses_str = extract_array_string('c:/binarny/webapp/courses_orig.js')
-ru_lessons_str = extract_array_string('c:/binarny/webapp/lessons_orig.js')
-
-# The existing content.js has the structure, let's read the EN, ES, FR, HI files
 def extract_object_string(filepath):
+    if not os.path.exists(filepath):
+        print(f"Warning: {filepath} not found.")
+        return "{}"
     with codecs.open(filepath, 'r', 'utf-8') as f:
         content = f.read()
     start = content.find('{')
@@ -20,6 +13,32 @@ def extract_object_string(filepath):
         end = content.rfind('}')
     return content[start:end+1]
 
+def extract_array_string(filepath):
+    if not os.path.exists(filepath):
+        print(f"Warning: {filepath} not found.")
+        return "[]"
+    with codecs.open(filepath, 'r', 'utf-8') as f:
+        content = f.read()
+    start = content.find('[')
+    end = content.rfind('];')
+    if end == -1:
+        end = content.rfind(']')
+    return content[start:end+1]
+
+# Redefine Russian indicators with full text from Точки_входа.txt
+ru_indicators_str = """[
+        { icon: '📈', title: 'Bollinger Bands (Линии Боллинджера)', desc: 'Показывает волатильность и возможные развороты.', text: `<b>Bollinger Bands</b>\\nПоказывает крайние зоны — где рынок “высадил” участников.\\n<img src="./bollinger.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Настройки:</b>\\nПериод: 14, Отклонение: 2.0\\n\\n<b>Сигналы:</b>\\n1. Цена касается или выходит за верхнюю границу → ищи откат вниз (PUT).\\n2. Цена выходит за нижнюю → ищи откат вверх (CALL).\\n3. Если свечи идут “вдоль” линии — это пробой тренда, не входи против.` },
+        { icon: '📊', title: 'Moving Average (EMA)', desc: 'Показывает направление импульса.', text: `<b>Moving Average (EMA)</b>\\nПоказывает направление импульса.\\n<img src="./macd.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Настройки:</b>\\nEMA 20 — жёлтый, EMA 50 — фиолетовый\\n\\n<b>Сигналы:</b>\\n1. EMA 20 пересекает EMA 50 вверх → импульс вверх (CALL).\\n2. EMA 20 пересекает EMA 50 вниз → импульс вниз (PUT).\\n3. Если линии расходятся под углом — тренд. Если сходятся — рынок теряет силу.` },
+        { icon: '⚡', title: 'RSI (Relative Strength Index)', desc: 'Показывает силу и перегрев движения.', text: `<b>RSI</b>\\nПоказывает силу и перегрев движения.\\n<img src="./rsi.png?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Настройки:</b>\\nПериод: 6, Уровни: 80 и 20\\n\\n<b>Сигналы:</b>\\n1. RSI выше 80 → ищи вход на откат вниз (PUT).\\n2. RSI ниже 20 → ищи вход на откат вверх (CALL).\\n3. RSI выходит из зоны 80/20 → сигнал подтверждения разворота.` },
+        { icon: '🎯', title: 'Parabolic SAR', desc: 'Идеально для подтверждения направления.', text: `<b>Parabolic SAR</b>\\nИдеально для подтверждения направления.\\n<img src="./adx.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Настройки:</b>\\nStep 0.02, Maximum 0.2\\n\\n<b>Сигналы:</b>\\n1. Точки SAR под свечой — движение вверх.\\n2. Точки над свечой — движение вниз.\\n3. Когда SAR меняет позицию → подтверждение разворота.` },
+        { icon: '💠', title: 'Fractals (Фракталы)', desc: 'Локальные максимумы и минимумы.', text: `<b>Фракталы</b>\\nПомогают находить точки разворота цены.\\n<img src="./fractals.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Сигналы:</b>\\n1. Фрактал вниз: поддержка.\\n2. Фрактал вверх: сопротивление.` },
+        { icon: '🕯️', title: 'Stochastic Oscillator', desc: 'Поиск зон перекупленности и перепроданности.', text: `<b>Stochastic</b>\\nОпределяет импульс цены.\\n<img src="./stochastic.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\n<b>Настройки:</b>\\nК 14, D 3, Smooth 3\\n\\n<b>Сигналы:</b>\\nЗначение выше 80 = перекупленность (возможен спад). Ниже 20 = перепроданность (возможен рост).` }
+    ]"""
+
+ru_courses_str = extract_array_string('c:/binarny/webapp/courses_orig.js')
+ru_lessons_str = extract_array_string('c:/binarny/webapp/lessons_orig.js')
+
+# Extract multi-language strings
 en_str = extract_object_string('c:/binarny/webapp/content_en.js')
 es_str = extract_object_string('c:/binarny/webapp/content_es.js')
 fr_str = extract_object_string('c:/binarny/webapp/content_fr.js')
@@ -47,24 +66,10 @@ ru_books_str = """[
         { title: 'Энциклопедия трейдера', icon: '📚', size: '3.0 МБ', file: 'Эрик_Найман_Малая_энциклопедия_трейдера.pdf' }
     ]"""
 
-ru_indicators_str = """[
-        { icon: '📈', title: 'Bollinger Bands (Линии Боллинджера)', desc: 'Показывает волатильность и возможные развороты.', text: `<b>Bollinger Bands</b>\\nПоказывает волатильность рынка.\\n<img src="./bollinger.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nТрейдеры используют сужение или расширение полос для поиска импульсов. Средняя линия выступает в роли скользящей средней.` },
-        { icon: '📊', title: 'MACD', desc: 'Осциллятор силы тренда.', text: `<b>MACD</b>\\nИндикатор показывает схождение/расхождение скользящих средних.\\n<img src="./macd.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nГистограмма выше нуля — бычий тренд, ниже нуля — медвежий.` },
-        { icon: '🔄', title: 'Stochastic Oscillator', desc: 'Поиск зон перекупленности и перепроданности.', text: `<b>Stochastic</b>\\nОпределяет импульс цены.\\n<img src="./stochastic.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nЗначение выше 80 = перекупленность (возможен спад). Ниже 20 = перепроданность (возможен рост).` },
-        { icon: '📉', title: 'ADX', desc: 'Индикатор силы тренда.', text: `<b>ADX</b>\\nПоказывает, насколько силен текущий тренд.\\n<img src="./adx.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nВыше 25 — сильный тренд, ниже 20 — флэт (слабый тренд).` },
-        { icon: '💠', title: 'Fractals (Фракталы)', desc: 'Локальные максимумы и минимумы.', text: `<b>Фракталы</b>\\nПомогают находить точки разворота цены.\\n<img src="./fractals.jpg?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nФрактал вниз: поддержка. Фрактал вверх: сопротивление.` },
-        { icon: '🕯️', title: 'RSI', desc: 'Индекс относительной силы.', text: `<b>RSI</b>\\nОценивает состояния перекупленности и перепроданности актива.\\n<img src="./rsi.png?v=61" style="width:100%; border-radius:10px; margin:10px 0;">\\nУровни 70 и 30 служат границами сигналов.` }
-    ]"""
-
-ru_str = f"""{{
-    COURSES: {ru_courses_str},
-    LESSONS: {ru_lessons_str},
-    BOOKS: {ru_books_str},
-    INDICATORS: {ru_indicators_str}
-}}"""
+ru_obj_str = f"{{ COURSES: {ru_courses_str}, LESSONS: {ru_lessons_str}, BOOKS: {ru_books_str}, INDICATORS: {ru_indicators_str} }}"
 
 final_content = f"""const MARKET_CONTENT = {{
-    ru: {ru_str},
+    ru: {ru_obj_str},
     en: {en_str},
     es: {es_str},
     fr: {fr_str},
@@ -75,4 +80,5 @@ final_content = f"""const MARKET_CONTENT = {{
 with codecs.open('c:/binarny/webapp/content.js', 'w', 'utf-8') as f:
     f.write(final_content)
 
-print("content.js built successfully with all 5 languages and full text!")
+print("content.js built successfully with all 5 languages and clean Russian text!")
+

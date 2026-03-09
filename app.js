@@ -210,6 +210,7 @@ const TRANSLATIONS = {
         calcBtn: '🧮 КАЛЬКУЛЯТОР',
         newsBtn: '📰 НОВОСТИ',
         indicatorsBtn: '📉 ИНДИКАТОРЫ',
+        indicatorsPanelTitle: 'ИНДИКАТОРЫ',
         expiration: 'ВРЕМЯ ЭКСПИРАЦИИ:',
         search: 'Поиск актива...',
         selectExp: 'ВЫБЕРИТЕ ЭКСПИРАЦИЮ:',
@@ -277,6 +278,7 @@ const TRANSLATIONS = {
         calcBtn: '🧮 CALCULATOR',
         newsBtn: '📰 NEWS',
         indicatorsBtn: '📉 INDICATORS',
+        indicatorsPanelTitle: 'INDICATORS',
         expiration: 'EXPIRATION TIME:',
         search: 'Search asset...',
         selectExp: 'SELECT EXPIRATION:',
@@ -344,6 +346,7 @@ const TRANSLATIONS = {
         calcBtn: '🧮 कैलकुलेटर',
         newsBtn: '📰 समाचार',
         indicatorsBtn: '📉 संकेतक',
+        indicatorsPanelTitle: 'संकेतक',
         expiration: 'समाप्ति समय:',
         search: 'संपत्ति खोजें...',
         selectExp: 'समाप्ति चुनें:',
@@ -411,6 +414,7 @@ const TRANSLATIONS = {
         calcBtn: '🧮 CALCULADORA',
         newsBtn: '📰 NOTICIAS',
         indicatorsBtn: '📉 INDICADORES',
+        indicatorsPanelTitle: 'INDICADORES',
         expiration: 'TIEMPO DE EXPIRACIÓN:',
         search: 'Buscar activo...',
         selectExp: 'SELECCIONAR EXPIRACIÓN:',
@@ -478,6 +482,7 @@ const TRANSLATIONS = {
         calcBtn: '🧮 CALCULATRICE',
         newsBtn: '📰 NOUVELLES',
         indicatorsBtn: '📉 INDICATEURS',
+        indicatorsPanelTitle: 'INDICATEURS',
         expiration: 'TEMPS D\'EXPIRATION:',
         search: 'Rechercher actif...',
         selectExp: 'SÉLECTIONNER EXPIRATION:',
@@ -790,16 +795,37 @@ function setupLocalization() {
 }
 
 function setupEventListeners() {
+    // Initialize global DOM elements if not already assigned
+    assetsBtn = document.getElementById('assets-btn');
+    assetsPanel = document.getElementById('assets-panel');
+    educationBtn = document.getElementById('education-btn');
+    educationPanel = document.getElementById('education-panel');
+    calcBtn = document.getElementById('calc-btn');
+    calcPanel = document.getElementById('calc-panel');
+    newsBtn = document.getElementById('news-btn');
+    newsPanel = document.getElementById('news-panel');
+    indicatorsBtn = document.getElementById('indicators-toggle-btn');
+    indicatorsPanel = document.getElementById('indicators-panel');
+
     const dropdownContainer = document.querySelector('.category-dropdown-container');
     const toggleBtn = document.getElementById('category-toggle');
     const currentCatName = document.getElementById('current-category-name');
 
+    // Panel Toggles
+    if (assetsBtn) assetsBtn.onclick = (e) => { e.stopPropagation(); toggleAssets(); };
+    if (educationBtn) educationBtn.onclick = (e) => { e.stopPropagation(); toggleEducation(); };
+    if (calcBtn) calcBtn.onclick = (e) => { e.stopPropagation(); toggleCalculator(); };
+    if (newsBtn) newsBtn.onclick = (e) => { e.stopPropagation(); toggleNews(); };
+    if (indicatorsBtn) indicatorsBtn.onclick = (e) => { e.stopPropagation(); toggleIndicators(); };
+
     // Toggle category dropdown
-    toggleBtn.onclick = (e) => {
-        e.stopPropagation();
-        dropdownContainer.classList.toggle('open');
-        document.querySelector('.lang-selector-container')?.classList.remove('open');
-    };
+    if (toggleBtn) {
+        toggleBtn.onclick = (e) => {
+            e.stopPropagation();
+            dropdownContainer.classList.toggle('open');
+            document.querySelector('.lang-selector-container')?.classList.remove('open');
+        };
+    }
 
     // Toggle language dropdown
     const langContainer = document.querySelector('.lang-selector-container');
@@ -808,7 +834,20 @@ function setupEventListeners() {
         langToggleBtn.onclick = (e) => {
             e.stopPropagation();
             langContainer.classList.toggle('open');
-            dropdownContainer.classList.remove('open');
+            if (dropdownContainer) dropdownContainer.classList.remove('open');
+        };
+    }
+
+    // Close lesson detail
+    const closeLessonBtn = document.getElementById('close-lesson');
+    if (closeLessonBtn) {
+        closeLessonBtn.onclick = () => {
+            document.body.classList.remove('signal-active');
+            const overlay = document.getElementById('lesson-overlay');
+            if (overlay) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.classList.add('hidden'), 300);
+            }
         };
     }
 
@@ -1383,175 +1422,169 @@ function openLesson(lesson) {
     setTimeout(() => overlay.classList.add('active'), 10);
 }
 
-// Wire up education toggle button
-document.addEventListener('DOMContentLoaded', () => {
-    assetsBtn = document.getElementById('assets-btn');
-    assetsPanel = document.getElementById('assets-panel');
-    educationBtn = document.getElementById('education-btn');
-    educationPanel = document.getElementById('education-panel');
-    calcBtn = document.getElementById('calc-btn');
-    calcPanel = document.getElementById('calc-panel');
-    newsBtn = document.getElementById('news-btn');
-    newsPanel = document.getElementById('news-panel');
-    indicatorsBtn = document.getElementById('indicators-toggle-btn');
-    indicatorsPanel = document.getElementById('indicators-panel');
+// ─── News & Economic Calendar Logic ──────────────────────────
+let cachedNews = [];
+const NINJA_API_KEY = 'E91Gz9V2wAOM83Luy2m6XYIrWkRYN4pz';
 
-    if (assetsBtn) assetsBtn.onclick = toggleAssets;
-    if (educationBtn) educationBtn.onclick = toggleEducation;
-    if (calcBtn) calcBtn.onclick = toggleCalculator;
-    if (newsBtn) newsBtn.onclick = toggleNews;
-    if (indicatorsBtn) indicatorsBtn.onclick = toggleIndicators;
+// Mapping 2-letter country codes to Flags and common Currencies
+const COUNTRY_DATA = {
+    'US': { flag: '🇺🇸', cur: 'USD' }, 'EU': { flag: '🇪🇺', cur: 'EUR' },
+    'GB': { flag: '🇬🇧', cur: 'GBP' }, 'JP': { flag: '🇯🇵', cur: 'JPY' },
+    'CA': { flag: '🇨🇦', cur: 'CAD' }, 'AU': { flag: '🇦🇺', cur: 'AUD' },
+    'CH': { flag: '🇨🇭', cur: 'CHF' }, 'CN': { flag: '🇨🇳', cur: 'CNY' },
+    'NZ': { flag: '🇳🇿', cur: 'NZD' }, 'BR': { flag: '🇧🇷', cur: 'BRL' },
+    'IN': { flag: '🇮🇳', cur: 'INR' }, 'DE': { flag: '🇩🇪', cur: 'EUR' },
+    'FR': { flag: '🇫🇷', cur: 'EUR' }, 'IT': { flag: '🇮🇹', cur: 'EUR' }
+};
 
-    // ─── News & Economic Calendar Logic ──────────────────────────
-    let cachedNews = [];
-    const NINJA_API_KEY = 'E91Gz9V2wAOM83Luy2m6XYIrWkRYN4pz';
+async function fetchEconomicNews() {
+    const listContainer = document.getElementById('news-list');
+    const updateStatus = document.getElementById('news-update-time');
+    if (!listContainer || !updateStatus) return;
+    const t = TRANSLATIONS[currentLang];
 
-    // Mapping 2-letter country codes to Flags and common Currencies
-    const COUNTRY_DATA = {
-        'US': { flag: '🇺🇸', cur: 'USD' }, 'EU': { flag: '🇪🇺', cur: 'EUR' },
-        'GB': { flag: '🇬🇧', cur: 'GBP' }, 'JP': { flag: '🇯🇵', cur: 'JPY' },
-        'CA': { flag: '🇨🇦', cur: 'CAD' }, 'AU': { flag: '🇦🇺', cur: 'AUD' },
-        'CH': { flag: '🇨🇭', cur: 'CHF' }, 'CN': { flag: '🇨🇳', cur: 'CNY' },
-        'NZ': { flag: '🇳🇿', cur: 'NZD' }, 'BR': { flag: '🇧🇷', cur: 'BRL' },
-        'IN': { flag: '🇮🇳', cur: 'INR' }, 'DE': { flag: '🇩🇪', cur: 'EUR' },
-        'FR': { flag: '🇫🇷', cur: 'EUR' }, 'IT': { flag: '🇮🇹', cur: 'EUR' }
+    const COUNTRY_MAP = {
+        'United States': 'USD', 'Euro Area': 'EUR', 'United Kingdom': 'GBP', 'Japan': 'JPY',
+        'Canada': 'CAD', 'Australia': 'AUD', 'Switzerland': 'CHF', 'New Zealand': 'NZD',
+        'China': 'CNY', 'Russia': 'RUB', 'Germany': 'EUR', 'France': 'EUR', 'Italy': 'EUR'
     };
 
-    async function fetchEconomicNews() {
-        const listContainer = document.getElementById('news-list');
-        const updateStatus = document.getElementById('news-update-time');
-        const t = TRANSLATIONS[currentLang];
+    try {
+        updateStatus.innerText = t.loading;
+        const backUrl = `http://72.56.77.59:8000/news`;
+        const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
+        const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
 
-        const COUNTRY_MAP = {
-            'United States': 'USD', 'Euro Area': 'EUR', 'United Kingdom': 'GBP', 'Japan': 'JPY',
-            'Canada': 'CAD', 'Australia': 'AUD', 'Switzerland': 'CHF', 'New Zealand': 'NZD',
-            'China': 'CNY', 'Russia': 'RUB', 'Germany': 'EUR', 'France': 'EUR', 'Italy': 'EUR'
-        };
+        let data = null;
+        let errorMsg = '';
 
         try {
-            updateStatus.innerText = t.loading;
-            const backUrl = `http://72.56.77.59:8000/news`;
-            const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
-            const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
+            console.log("📡 Пробуем основной proxy (Trading Economics)...");
+            const res = await fetch(backUrl);
+            if (res.ok) data = await res.json();
+        } catch (e) { console.warn("Backend Proxy failed", e); }
 
-            let data = null;
-            let errorMsg = '';
-
+        if (!data) {
             try {
-                console.log("📡 Пробуем основной proxy (Trading Economics)...");
-                const res = await fetch(backUrl);
+                console.log("📡 Пробуем corsproxy.io...");
+                const res = await fetch(publicUrl);
                 if (res.ok) data = await res.json();
-            } catch (e) { console.warn("Backend Proxy failed", e); }
+            } catch (e) { console.warn("Corsproxy.io failed", e); }
+        }
 
-            if (!data) {
-                try {
-                    console.log("📡 Пробуем corsproxy.io...");
-                    const res = await fetch(publicUrl);
-                    if (res.ok) data = await res.json();
-                } catch (e) { console.warn("Corsproxy.io failed", e); }
-            }
-
-            if (!data) {
-                try {
-                    console.log("📡 Пробуем AllOrigins fallback...");
-                    const res = await fetch(fallbackUrl);
-                    if (res.ok) {
-                        const json = await res.json();
-                        data = JSON.parse(json.contents);
-                    }
-                } catch (e) {
-                    console.warn("AllOrigins failed", e);
-                    errorMsg = e.message;
+        if (!data) {
+            try {
+                console.log("📡 Пробуем AllOrigins fallback...");
+                const res = await fetch(fallbackUrl);
+                if (res.ok) {
+                    const json = await res.json();
+                    data = JSON.parse(json.contents);
                 }
+            } catch (e) {
+                console.warn("AllOrigins failed", e);
+                errorMsg = e.message;
             }
-
-            if (!data || !Array.isArray(data)) {
-                throw new Error(errorMsg || 'All proxies failed');
-            }
-
-            // Map Trading Economics data to our structure
-            cachedNews = data.slice(0, 30).map(item => {
-                const dateObj = new Date(item.Date);
-                const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-                const currency = COUNTRY_MAP[item.Country] || item.Country.substring(0, 3).toUpperCase();
-
-                return {
-                    time: timeStr,
-                    rawDate: dateObj,
-                    currency: currency,
-                    event: item.Event,
-                    importance: item.Importance || 1
-                };
-            });
-
-            renderNews();
-            updateStatus.innerText = `${t.updatedAt} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
-
-        } catch (error) {
-            console.error('News Fetch Error:', error);
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">${t.notFound}<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
         }
+
+        if (!data || !Array.isArray(data)) {
+            throw new Error(errorMsg || 'All proxies failed');
+        }
+
+        // Map Trading Economics data to our structure
+        cachedNews = data.slice(0, 30).map(item => {
+            const dateObj = new Date(item.Date);
+            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const currency = COUNTRY_MAP[item.Country] || item.Country.substring(0, 3).toUpperCase();
+
+            return {
+                time: timeStr,
+                rawDate: dateObj,
+                currency: currency,
+                event: item.Event,
+                importance: item.Importance || 1
+            };
+        });
+
+        renderNews();
+        updateStatus.innerText = `${t.updatedAt} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+    } catch (error) {
+        console.error('News Fetch Error:', error);
+        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">${t.notFound}<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+    }
+}
+
+function renderNews() {
+    const listContainer = document.getElementById('news-list');
+    if (!listContainer) return;
+    listContainer.innerHTML = '';
+    const t = TRANSLATIONS[currentLang];
+
+    if (cachedNews.length === 0) {
+        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #555;">${t.notFound}</div>`;
+        return;
     }
 
-    function renderNews() {
-        const listContainer = document.getElementById('news-list');
-        listContainer.innerHTML = '';
-        const t = TRANSLATIONS[currentLang];
+    cachedNews.forEach(item => {
+        const stars = '⭐'.repeat(item.importance);
+        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
 
-        if (cachedNews.length === 0) {
-            listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #555;">${t.notFound}</div>`;
-            return;
-        }
-
-        cachedNews.forEach(item => {
-            const stars = '⭐'.repeat(item.importance);
-            const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
-
-            const card = `
-                <div class="news-card ${impactClass}">
-                    <div class="news-card-header">
-                        <span class="news-time">${item.time}</span>
-                        <span class="news-currency">${item.currency}</span>
-                    </div>
-                    <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                    <div class="news-importance">${t.analyze}: ${stars}</div>
+        const card = `
+            <div class="news-card ${impactClass}">
+                <div class="news-card-header">
+                    <span class="news-time">${item.time}</span>
+                    <span class="news-currency">${item.currency}</span>
                 </div>
-            `;
-            listContainer.innerHTML += card;
-        });
-    }
+                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
+                <div class="news-importance">${t.analyze}: ${stars}</div>
+            </div>
+        `;
+        listContainer.innerHTML += card;
+    });
+}
 
-    // Auto update every 5 mins
-    setInterval(fetchEconomicNews, 300000);
+// Auto update every 5 mins
+setInterval(fetchEconomicNews, 300000);
 
-    // ─── Calculator Logic ─────────────────────────────────────────
-    let growthChart = null;
+// ─── Calculator Logic ─────────────────────────────────────────
+let growthChart = null;
 
-    function initCalculator() {
-        const inputs = ['calc-deposit', 'calc-first-bet-perc', 'calc-multiplier', 'calc-levels', 'calc-payout', 'calc-max-risk'];
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', runCalculations);
-        });
-        document.getElementById('run-sim-btn').addEventListener('click', runSimulation);
-        runCalculations();
-    }
+function initCalculator() {
+    const inputs = ['calc-deposit', 'calc-first-bet-perc', 'calc-multiplier', 'calc-levels', 'calc-payout', 'calc-max-risk'];
+    inputs.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', runCalculations);
+    });
+    const runBtn = document.getElementById('run-sim-btn');
+    if (runBtn) runBtn.addEventListener('click', runSimulation);
+    runCalculations();
+}
 
-    function runCalculations() {
-        const t = TRANSLATIONS[currentLang];
-        const deposit = parseFloat(document.getElementById('calc-deposit').value) || 0;
-        const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc').value) || 0;
-        const multiplier = parseFloat(document.getElementById('calc-multiplier').value) || 0;
-        const levels = parseInt(document.getElementById('calc-levels').value) || 0;
-        const payout = parseFloat(document.getElementById('calc-payout').value) / 100 || 0;
+function runCalculations() {
+    const t = TRANSLATIONS[currentLang];
+    const depositEl = document.getElementById('calc-deposit');
+    const firstBetPercEl = document.getElementById('calc-first-bet-perc-perc'); // Fixed logic for ID
+    const multiplierEl = document.getElementById('calc-multiplier');
+    const levelsEl = document.getElementById('calc-levels');
+    const payoutEl = document.getElementById('calc-payout');
 
-        const firstBet = (deposit * (firstBetPerc / 100));
-        document.getElementById('res-first-bet').innerText = '$' + firstBet.toFixed(2);
+    if (!depositEl) return;
 
-        let totalRisk = 0;
-        let currentBet = firstBet;
-        const tableBody = document.getElementById('calc-table-body');
+    const deposit = parseFloat(depositEl.value) || 0;
+    const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc')?.value || 1);
+    const multiplier = parseFloat(multiplierEl?.value || 2.2);
+    const levels = parseInt(levelsEl?.value || 5);
+    const payout = parseFloat(payoutEl?.value || 82) / 100;
+
+    const firstBet = (deposit * (firstBetPerc / 100));
+    const resFirstBet = document.getElementById('res-first-bet');
+    if (resFirstBet) resFirstBet.innerText = '$' + firstBet.toFixed(2);
+
+    let totalRisk = 0;
+    let currentBet = firstBet;
+    const tableBody = document.getElementById('calc-table-body');
+    if (tableBody) {
         tableBody.innerHTML = '';
-
         for (let i = 1; i <= levels; i++) {
             totalRisk += currentBet;
             const potentialProfit = (currentBet * payout);
@@ -1564,133 +1597,126 @@ document.addEventListener('DOMContentLoaded', () => {
             tableBody.innerHTML += row;
             currentBet *= multiplier;
         }
-
-        const riskPerc = (totalRisk / deposit) * 100;
-        document.getElementById('res-total-risk').innerText = '$' + totalRisk.toFixed(2);
-        document.getElementById('res-risk-perc').innerText = riskPerc.toFixed(1) + '%';
-
-        // Survival msg
-        let survivalCount = 0;
-        let tempRisk = 0;
-        let tempBet = firstBet;
-        while (tempRisk + tempBet <= deposit && survivalCount < 15) {
-            tempRisk += tempBet;
-            tempBet *= multiplier;
-            survivalCount++;
-        }
-        const survivalMsg = t.survivalMsg.replace('{n}', survivalCount);
-        document.getElementById('calc-survival-msg').innerText = survivalMsg;
-        document.getElementById('calc-survival-msg').style.color = survivalCount < levels ? '#f44336' : '#00dc96';
-
-        // Safe bet calc
-        const maxRiskLimit = parseFloat(document.getElementById('calc-max-risk').value) || 10;
-        const maxAllowedMoney = deposit * (maxRiskLimit / 100);
-        // Formula: TotalRisk = FirstBet * (1 - multiplier^levels) / (1 - multiplier)
-        let sumFactor = 0;
-        for (let l = 0; l < levels; l++) sumFactor += Math.pow(multiplier, l);
-        const safeStartingBet = maxAllowedMoney / sumFactor;
-
-        const safeBetLabel = t.safeBet.replace('{r}', maxRiskLimit);
-        document.getElementById('label-max-risk').innerText = safeBetLabel;
-        document.getElementById('res-safe-bet').innerText = '$' + safeStartingBet.toFixed(2);
     }
 
-    function runSimulation() {
-        const deposit = parseFloat(document.getElementById('calc-deposit').value) || 0;
-        const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc').value) || 0;
-        const multiplier = parseFloat(document.getElementById('calc-multiplier').value) || 0;
-        const levels = parseInt(document.getElementById('calc-levels').value) || 0;
-        const winrate = parseFloat(document.getElementById('calc-winrate').value) / 100 || 0;
-        const payout = parseFloat(document.getElementById('calc-payout').value) / 100 || 0;
+    const riskPerc = (totalRisk / deposit) * 100;
+    const resTotalRisk = document.getElementById('res-total-risk');
+    const resRiskPerc = document.getElementById('res-risk-perc');
+    if (resTotalRisk) resTotalRisk.innerText = '$' + totalRisk.toFixed(2);
+    if (resRiskPerc) resRiskPerc.innerText = riskPerc.toFixed(1) + '%';
 
-        let balance = deposit;
-        let firstBet = balance * (firstBetPerc / 100);
-        let history = [balance];
-        let maxDrawdown = 0;
-        let peak = balance;
-        let maxLossSeries = 0;
-        let currentLossSeries = 0;
+    // Survival msg
+    let survivalCount = 0;
+    let tempRisk = 0;
+    let tempBet = firstBet;
+    while (tempRisk + tempBet <= deposit && survivalCount < 15) {
+        tempRisk += tempBet;
+        tempBet *= multiplier;
+        survivalCount++;
+    }
+    const survivalMsg = t.survivalMsg.replace('{n}', survivalCount);
+    const survivalEl = document.getElementById('calc-survival-msg');
+    if (survivalEl) {
+        survivalEl.innerText = survivalMsg;
+        survivalEl.style.color = survivalCount < levels ? '#f44336' : '#00dc96';
+    }
 
-        for (let i = 0; i < 100; i++) {
-            let win = false;
-            let seriesCost = 0;
-            let bet = firstBet;
+    // Safe bet calc
+    const maxRiskLimit = parseFloat(document.getElementById('calc-max-risk')?.value || 10);
+    const maxAllowedMoney = deposit * (maxRiskLimit / 100);
+    let sumFactor = 0;
+    for (let l = 0; l < levels; l++) sumFactor += Math.pow(multiplier, l);
+    const safeStartingBet = maxAllowedMoney / sumFactor;
 
-            // Attempt levels
-            for (let l = 0; l < levels; l++) {
-                seriesCost += bet;
-                if (Math.random() < winrate) {
-                    balance += (bet * payout);
-                    win = true;
-                    currentLossSeries = 0;
-                    break;
-                } else {
-                    balance -= bet;
-                    bet *= multiplier;
-                }
+    const resSafeBet = document.getElementById('res-safe-bet');
+    if (resSafeBet) resSafeBet.innerText = '$' + safeStartingBet.toFixed(2);
+}
 
-                if (balance <= 0) break;
+function runSimulation() {
+    const deposit = parseFloat(document.getElementById('calc-deposit')?.value || 100);
+    const firstBetPerc = parseFloat(document.getElementById('calc-first-bet-perc')?.value || 1);
+    const multiplier = parseFloat(document.getElementById('calc-multiplier')?.value || 2.2);
+    const levels = parseInt(document.getElementById('calc-levels')?.value || 5);
+    const winrate = parseFloat(document.getElementById('calc-winrate')?.value || 58) / 100;
+    const payout = parseFloat(document.getElementById('calc-payout')?.value || 82) / 100;
+
+    let balance = deposit;
+    let firstBet = balance * (firstBetPerc / 100);
+    let history = [balance];
+    let maxDrawdown = 0;
+    let peak = balance;
+    let maxLossSeries = 0;
+    let currentLossSeries = 0;
+
+    for (let i = 0; i < 100; i++) {
+        let win = false;
+        let bet = firstBet;
+
+        for (let l = 0; l < levels; l++) {
+            if (Math.random() < winrate) {
+                balance += (bet * payout);
+                win = true;
+                currentLossSeries = 0;
+                break;
+            } else {
+                balance -= bet;
+                bet *= multiplier;
             }
-
-            if (!win) {
-                currentLossSeries++;
-                if (currentLossSeries > maxLossSeries) maxLossSeries = currentLossSeries;
-            }
-
-            if (balance > peak) peak = balance;
-            let dd = ((peak - balance) / peak) * 100;
-            if (dd > maxDrawdown) maxDrawdown = dd;
-
-            history.push(balance > 0 ? balance : 0);
             if (balance <= 0) break;
         }
 
-        document.getElementById('sim-results').classList.remove('hidden');
+        if (!win) {
+            currentLossSeries++;
+            if (currentLossSeries > maxLossSeries) maxLossSeries = currentLossSeries;
+        }
+
+        if (balance > peak) peak = balance;
+        let dd = ((peak - balance) / peak) * 100;
+        if (dd > maxDrawdown) maxDrawdown = dd;
+
+        history.push(balance > 0 ? balance : 0);
+        if (balance <= 0) break;
+    }
+
+    const simResPanel = document.getElementById('sim-results');
+    if (simResPanel) {
+        simResPanel.classList.remove('hidden');
         document.getElementById('sim-final-balance').innerText = '$' + balance.toFixed(2);
         document.getElementById('sim-max-loss').innerText = maxLossSeries;
         document.getElementById('sim-drawdown').innerText = maxDrawdown.toFixed(1) + '%';
-
         updateChart(history);
     }
+}
 
-    function updateChart(data) {
-        const ctx = document.getElementById('growthChart').getContext('2d');
-        if (growthChart) growthChart.destroy();
+function updateChart(data) {
+    const canvas = document.getElementById('growthChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (growthChart) growthChart.destroy();
 
-        growthChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: data.map((_, i) => i),
-                datasets: [{
-                    label: 'Баланс ($)',
-                    data: data,
-                    borderColor: '#ffa000',
-                    backgroundColor: 'rgba(255, 160, 0, 0.1)',
-                    fill: true,
-                    tension: 0.3,
-                    borderWidth: 2,
-                    pointRadius: 0
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { color: '#666', maxTicksLimit: 10 } },
-                    y: { ticks: { color: '#666' } }
-                }
+    growthChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: data.map((_, i) => i),
+            datasets: [{
+                label: 'Balance ($)',
+                data: data,
+                borderColor: '#ffa000',
+                backgroundColor: 'rgba(255, 160, 0, 0.1)',
+                fill: true,
+                tension: 0.3,
+                borderWidth: 2,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                x: { ticks: { color: '#666', maxTicksLimit: 10 } },
+                y: { ticks: { color: '#666' } }
             }
-        });
-    }
-
-    const closeLesson = document.getElementById('close-lesson');
-    const lessonOverlay = document.getElementById('lesson-overlay');
-
-    if (closeLesson) {
-        closeLesson.onclick = () => {
-            document.body.classList.remove('signal-active');
-            lessonOverlay.classList.remove('active');
-            setTimeout(() => lessonOverlay.classList.add('hidden'), 300);
-        };
-    }
-});
+        }
+    });
+}
