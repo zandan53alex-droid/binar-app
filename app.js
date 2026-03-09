@@ -1446,8 +1446,8 @@ async function fetchEconomicNews() {
     try {
         updateStatus.innerText = t.loading;
 
-        // Finnhub API for Forex News
-        const url = 'https://finnhub.io/api/v1/news?category=forex&token=d5dpk41r01qur4itq710d5dpk41r01qur4itq71g';
+        // Forex Factory Free JSON API for Economic Calendar
+        const url = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
 
         const res = await fetch(url);
         if (!res.ok) throw new Error('API request failed');
@@ -1457,24 +1457,28 @@ async function fetchEconomicNews() {
             throw new Error('Invalid data format');
         }
 
-        // Map Finnhub data
-        cachedNews = data.slice(0, 30).map(item => {
-            const dateObj = new Date(item.datetime * 1000);
+        // Get current date to filter past events optionally, but for now we'll just show the latest 30
+        // Sort by date descending to show newest first, or ascending to show upcoming
+        // The API returns the whole week. Let's filter for today and future, then take 30
+        const now = new Date();
+        const filteredData = data.filter(item => new Date(item.date) >= new Date(now.getTime() - 24 * 60 * 60 * 1000));
+
+        // Map Forex Factory data
+        cachedNews = filteredData.slice(0, 40).map(item => {
+            const dateObj = new Date(item.date);
             const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-            // Try to extract currency pair from headline (e.g. EUR/USD, GBPUSD)
-            let currency = "FX";
-            const match = item.headline.match(/[A-Z]{3}[\/|-]?[A-Z]{3}/);
-            if (match) currency = match[0].replace(/[\/|-]/, '');
+            let importance = 1;
+            if (item.impact === 'High') importance = 3;
+            else if (item.impact === 'Medium') importance = 2;
+            else if (item.impact === 'Low') importance = 1;
 
             return {
                 time: timeStr,
                 rawDate: dateObj,
-                currency: currency,
-                event: item.headline,
-                source: item.source,
-                url: item.url,
-                image: item.image
+                currency: item.country,
+                event: item.title,
+                importance: importance
             };
         });
 
@@ -1499,21 +1503,17 @@ function renderNews() {
     }
 
     cachedNews.forEach(item => {
-        // Default styling class for cards
-        const impactClass = 'impact-med';
+        const stars = '⭐'.repeat(item.importance);
+        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
 
         const card = `
-            <div class="news-card ${impactClass}" onclick="window.open('${item.url}', '_blank')" style="cursor: pointer; position: relative;">
-                <div class="news-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="news-card ${impactClass}">
+                <div class="news-card-header">
                     <span class="news-time">${item.time}</span>
-                    <span class="news-currency" style="background:#222; padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#ffd700;">${item.currency}</span>
+                    <span class="news-currency">${item.currency}</span>
                 </div>
-                <div class="news-event-name" style="margin-top: 8px; font-size:0.85rem; line-height:1.3; font-weight:600; color:#fff;">
-                    ${item.event}
-                </div>
-                <div class="news-importance" style="margin-top: 10px; font-size: 0.7rem; color: #aaa; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-                    Source: ${item.source}
-                </div>
+                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
+                <div class="news-importance">${t.analyze}: ${stars}</div>
             </div>
         `;
         listContainer.innerHTML += card;
