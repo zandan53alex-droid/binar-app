@@ -1443,65 +1443,38 @@ async function fetchEconomicNews() {
     if (!listContainer || !updateStatus) return;
     const t = TRANSLATIONS[currentLang];
 
-    const COUNTRY_MAP = {
-        'United States': 'USD', 'Euro Area': 'EUR', 'United Kingdom': 'GBP', 'Japan': 'JPY',
-        'Canada': 'CAD', 'Australia': 'AUD', 'Switzerland': 'CHF', 'New Zealand': 'NZD',
-        'China': 'CNY', 'Russia': 'RUB', 'Germany': 'EUR', 'France': 'EUR', 'Italy': 'EUR'
-    };
-
     try {
         updateStatus.innerText = t.loading;
-        const backUrl = `http://72.56.77.59:8000/news`;
-        const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
-        const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://api.tradingeconomics.com/calendar?c=guest:guest&f=json`)}`;
 
-        let data = null;
-        let errorMsg = '';
+        // Finnhub API for Forex News
+        const url = 'https://finnhub.io/api/v1/news?category=forex&token=d5dpk41r01qur4itq710d5dpk41r01qur4itq71g';
 
-        try {
-            console.log("📡 Пробуем основной proxy (Trading Economics)...");
-            const res = await fetch(backUrl);
-            if (res.ok) data = await res.json();
-        } catch (e) { console.warn("Backend Proxy failed", e); }
-
-        if (!data) {
-            try {
-                console.log("📡 Пробуем corsproxy.io...");
-                const res = await fetch(publicUrl);
-                if (res.ok) data = await res.json();
-            } catch (e) { console.warn("Corsproxy.io failed", e); }
-        }
-
-        if (!data) {
-            try {
-                console.log("📡 Пробуем AllOrigins fallback...");
-                const res = await fetch(fallbackUrl);
-                if (res.ok) {
-                    const json = await res.json();
-                    data = JSON.parse(json.contents);
-                }
-            } catch (e) {
-                console.warn("AllOrigins failed", e);
-                errorMsg = e.message;
-            }
-        }
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('API request failed');
+        const data = await res.json();
 
         if (!data || !Array.isArray(data)) {
-            throw new Error(errorMsg || 'All proxies failed');
+            throw new Error('Invalid data format');
         }
 
-        // Map Trading Economics data to our structure
+        // Map Finnhub data
         cachedNews = data.slice(0, 30).map(item => {
-            const dateObj = new Date(item.Date);
+            const dateObj = new Date(item.datetime * 1000);
             const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            const currency = COUNTRY_MAP[item.Country] || item.Country.substring(0, 3).toUpperCase();
+
+            // Try to extract currency pair from headline (e.g. EUR/USD, GBPUSD)
+            let currency = "FX";
+            const match = item.headline.match(/[A-Z]{3}[\/|-]?[A-Z]{3}/);
+            if (match) currency = match[0].replace(/[\/|-]/, '');
 
             return {
                 time: timeStr,
                 rawDate: dateObj,
                 currency: currency,
-                event: item.Event,
-                importance: item.Importance || 1
+                event: item.headline,
+                source: item.source,
+                url: item.url,
+                image: item.image
             };
         });
 
@@ -1526,19 +1499,23 @@ function renderNews() {
     }
 
     cachedNews.forEach(item => {
-        const stars = '⭐'.repeat(item.importance);
-        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
+        // Default styling class for cards
+        const impactClass = 'impact-med';
 
-        const card = `
-            <div class="news-card ${impactClass}">
-                <div class="news-card-header">
-                    <span class="news-time">${item.time}</span>
-                    <span class="news-currency">${item.currency}</span>
+        const card = \`
+            <div class="news-card \${impactClass}" onclick="window.open('\${item.url}', '_blank')" style="cursor: pointer; position: relative;">
+                <div class="news-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="news-time">\${item.time}</span>
+                    <span class="news-currency" style="background:#222; padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#ffd700;">\${item.currency}</span>
                 </div>
-                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                <div class="news-importance">${t.analyze}: ${stars}</div>
+                <div class="news-event-name" style="margin-top: 8px; font-size:0.85rem; line-height:1.3; font-weight:600; color:#fff;">
+                    \${item.event}
+                </div>
+                <div class="news-importance" style="margin-top: 10px; font-size: 0.7rem; color: #aaa; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
+                    Source: \${item.source}
+                </div>
             </div>
-        `;
+        \`;
         listContainer.innerHTML += card;
     });
 }
@@ -1589,11 +1566,11 @@ function runCalculations() {
             totalRisk += currentBet;
             const potentialProfit = (currentBet * payout);
 
-            const row = `<tr>
+            const row = `< tr >
                 <td>${i}</td>
                 <td>$${currentBet.toFixed(2)}</td>
                 <td style="color: #00dc96">+$${potentialProfit.toFixed(2)}</td>
-            </tr>`;
+            </tr > `;
             tableBody.innerHTML += row;
             currentBet *= multiplier;
         }
