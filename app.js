@@ -1446,22 +1446,47 @@ async function fetchEconomicNews() {
     try {
         updateStatus.innerText = t.loading;
 
-        // Forex Factory Free JSON API for Economic Calendar
-        const url = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+        // Forex Factory Free JSON API for Economic Calendar wrapped in CORS Proxies
+        const rawUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
+        const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(rawUrl)}`;
+        const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rawUrl)}`;
 
-        const res = await fetch(url);
-        if (!res.ok) throw new Error('API request failed');
-        const data = await res.json();
+        let data = null;
+        let errorMsg = '';
 
-        if (!data || !Array.isArray(data)) {
-            throw new Error('Invalid data format');
+        try {
+            console.log("📡 Пробуем corsproxy.io...");
+            const res = await fetch(publicUrl);
+            if (res.ok) data = await res.json();
+        } catch (e) { console.warn("Corsproxy.io failed", e); }
+
+        if (!data) {
+            try {
+                console.log("📡 Пробуем AllOrigins fallback...");
+                const res = await fetch(fallbackUrl);
+                if (res.ok) {
+                    const json = await res.json();
+                    data = JSON.parse(json.contents);
+                }
+            } catch (e) {
+                console.warn("AllOrigins failed", e);
+                errorMsg = e.message;
+            }
         }
 
-        // Get current date to filter past events optionally, but for now we'll just show the latest 30
-        // Sort by date descending to show newest first, or ascending to show upcoming
-        // The API returns the whole week. Let's filter for today and future, then take 30
+        if (!data || !Array.isArray(data)) {
+            // Also try direct fetch as absolute last resort
+            try {
+                const res = await fetch(rawUrl);
+                if (res.ok) data = await res.json();
+            } catch (e) {
+                throw new Error(errorMsg || 'All proxies failed to load calendar data');
+            }
+        }
+
         const now = new Date();
-        const filteredData = data.filter(item => new Date(item.date) >= new Date(now.getTime() - 24 * 60 * 60 * 1000));
+        // Option to filter past events, we show events starting from 12 hours ago
+        const filteredData = data.filter(item => new Date(item.date) >= new Date(now.getTime() - 12 * 60 * 60 * 1000));
 
         // Map Forex Factory data
         cachedNews = filteredData.slice(0, 40).map(item => {
@@ -1469,16 +1494,39 @@ async function fetchEconomicNews() {
             const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             let importance = 1;
-            if (item.impact === 'High') importance = 3;
-            else if (item.impact === 'Medium') importance = 2;
-            else if (item.impact === 'Low') importance = 1;
+            let impactName = 'Низкий';
+            let dotColor = '#ffb300';
+
+            if (item.impact === 'High') {
+                importance = 3;
+                impactName = 'Высокий';
+                dotColor = '#f44336';
+            } else if (item.impact === 'Medium') {
+                importance = 2;
+                impactName = 'Средний';
+                dotColor = '#ff9800';
+            }
+
+            // Calculate time left
+            const diffMs = dateObj - now;
+            let timeLeftStr = '-';
+            if (diffMs > 0) {
+                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+                const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+                timeLeftStr = `${String(diffHours).padStart(2, '0')}h. ${String(diffMins).padStart(2, '0')}m.`;
+            }
 
             return {
                 time: timeStr,
                 rawDate: dateObj,
                 currency: item.country,
                 event: item.title,
-                importance: importance
+                importance: importance,
+                impactName: impactName,
+                dotColor: dotColor,
+                timeLeft: timeLeftStr,
+                forecast: item.forecast || '-',
+                previous: item.previous || '-'
             };
         });
 
@@ -1502,22 +1550,56 @@ function renderNews() {
         return;
     }
 
-    cachedNews.forEach(item => {
-        const stars = '⭐'.repeat(item.importance);
-        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
+    const FLAG_MAP = {
+        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
+        'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'NZD': '🇳🇿',
+        'CNY': '🇨🇳'
+    };
 
-        const card = `
-            <div class="news-card ${impactClass}">
-                <div class="news-card-header">
-                    <span class="news-time">${item.time}</span>
-                    <span class="news-currency">${item.currency}</span>
-                </div>
-                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                <div class="news-importance">${t.analyze}: ${stars}</div>
-            </div>
+    let tableHTML = `
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #d1d5db; min-width: 500px;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #888; text-align: left;">
+                        <th style="padding: 12px 8px; font-weight: 600;">Время</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">Приоритет</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">Осталось<br>времени</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">Событие</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">Пред.</th>
+                        <th style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">Прогноз</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    cachedNews.forEach(item => {
+        const flag = FLAG_MAP[item.currency] || '🌐';
+        const dots = `<span style="color: ${item.dotColor}; font-size: 0.9rem;">${'●'.repeat(item.importance)}</span>`;
+
+        tableHTML += `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.time}</td>
+                <td style="padding: 12px 8px;">
+                    <div>${dots}</div>
+                    <div style="font-size: 0.65rem; color: #aaa; margin-top: 2px;">${item.impactName}</div>
+                </td>
+                <td style="padding: 12px 8px; color: #aaa;">${item.timeLeft}</td>
+                <td style="padding: 12px 8px; font-weight: 500;">
+                    <span style="margin-right: 5px;">${flag}</span> ${item.event}
+                </td>
+                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.previous}</td>
+                <td style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${item.forecast}</td>
+            </tr>
         `;
-        listContainer.innerHTML += card;
     });
+
+    tableHTML += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    listContainer.innerHTML = tableHTML;
 }
 
 // Auto update every 5 mins
