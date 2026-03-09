@@ -209,6 +209,7 @@ const TRANSLATIONS = {
         educationBtn: '🎓 ОБУЧЕНИЕ',
         calcBtn: '🧮 КАЛЬКУЛЯТОР',
         newsBtn: '📰 НОВОСТИ',
+        indicatorsBtn: '📉 ИНДИКАТОРЫ',
         expiration: 'ВРЕМЯ ЭКСПИРАЦИИ:',
         search: 'Поиск актива...',
         selectExp: 'ВЫБЕРИТЕ ЭКСПИРАЦИЮ:',
@@ -275,6 +276,7 @@ const TRANSLATIONS = {
         educationBtn: '🎓 EDUCATION',
         calcBtn: '🧮 CALCULATOR',
         newsBtn: '📰 NEWS',
+        indicatorsBtn: '📉 INDICATORS',
         expiration: 'EXPIRATION TIME:',
         search: 'Search asset...',
         selectExp: 'SELECT EXPIRATION:',
@@ -341,6 +343,7 @@ const TRANSLATIONS = {
         educationBtn: '🎓 शिक्षा',
         calcBtn: '🧮 कैलकुलेटर',
         newsBtn: '📰 समाचार',
+        indicatorsBtn: '📉 संकेतक',
         expiration: 'समाप्ति समय:',
         search: 'संपत्ति खोजें...',
         selectExp: 'समाप्ति चुनें:',
@@ -407,6 +410,7 @@ const TRANSLATIONS = {
         educationBtn: '🎓 EDUCACIÓN',
         calcBtn: '🧮 CALCULADORA',
         newsBtn: '📰 NOTICIAS',
+        indicatorsBtn: '📉 INDICADORES',
         expiration: 'TIEMPO DE EXPIRACIÓN:',
         search: 'Buscar activo...',
         selectExp: 'SELECCIONAR EXPIRACIÓN:',
@@ -473,6 +477,7 @@ const TRANSLATIONS = {
         educationBtn: '🎓 ÉDUCATION',
         calcBtn: '🧮 CALCULATRICE',
         newsBtn: '📰 NOUVELLES',
+        indicatorsBtn: '📉 INDICATEURS',
         expiration: 'TEMPS D\'EXPIRATION:',
         search: 'Rechercher actif...',
         selectExp: 'SÉLECTIONNER EXPIRATION:',
@@ -712,6 +717,7 @@ function setupLocalization() {
     if (get('education-btn-text')) get('education-btn-text').innerText = t.educationBtn;
     if (get('calc-btn-text')) get('calc-btn-text').innerText = t.calcBtn;
     if (get('news-btn-text')) get('news-btn-text').innerText = t.newsBtn;
+    if (get('indicators-btn-text')) get('indicators-btn-text').innerText = t.indicatorsBtn;
 
     // Panel Headers & Tabs
     const tabBasics = get('tab-basics');
