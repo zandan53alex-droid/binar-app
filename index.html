@@ -7,8 +7,8 @@
     <title>NeuralEdge Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=63">
-    <link rel="stylesheet" href="robot-clock.css?v=63">
+    <link rel="stylesheet" href="style.css?v=64">
+    <link rel="stylesheet" href="robot-clock.css?v=64">
     <style>
         html,
         body {
@@ -205,8 +205,9 @@
             <!-- Safe Bet -->
             <div class="safe-bet-card">
                 <div class="calc-section-title" id="label-max-risk">Рекомендация</div>
-                <p id="label-max-risk-desc">Безопасная первая ставка при риске <input type="number" id="calc-max-risk"
-                        value="10" style="width: 50px; display: inline;">%:</p>
+                <p id="label-max-risk-desc"><span id="label-safe-bet-prefix">Безопасная первая ставка при риске</span>
+                    <input type="number" id="calc-max-risk" value="10" style="width: 50px; display: inline;"><span
+                        id="label-safe-bet-suffix">%:</span></p>
                 <div class="stat-value highlight" id="res-safe-bet">$0</div>
             </div>
         </div>
@@ -338,9 +339,10 @@
         </div>
     </div>
 
-    <script src="app.js?v=63"></script>
-    <script src="robot-clock.js?v=63"></script>
-    <script src="background-animation.js?v=63"></script>
+    <script src="content.js?v=64"></script>
+    <script src="app.js?v=64"></script>
+    <script src="robot-clock.js?v=64"></script>
+    <script src="background-animation.js?v=64"></script>
 </body>
 
 </html>
