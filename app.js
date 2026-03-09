@@ -257,7 +257,22 @@ const TRANSLATIONS = {
         high: 'Высокий',
         medium: 'Умеренный',
         otc: 'ОТС',
-        regular: 'Биржа'
+        regular: 'Биржа',
+        mainSignalBtn: 'ПОЛУЧИТЬ СИГНАЛ',
+        newsTime: 'Время',
+        newsPriority: 'Приоритет',
+        newsTimeLeft: 'Осталось времени',
+        newsEvent: 'Событие',
+        newsPrev: 'Пред.',
+        newsForecast: 'Прогноз',
+        impactLow: 'Низкий',
+        impactMedium: 'Средний',
+        impactHigh: 'Высокий',
+        calcTableTitle: 'Таблица перекрытий',
+        calcStep: 'Шаг',
+        calcBet: 'Ставка',
+        calcProfit: 'Прибыль',
+        calcSimTitle: 'Симуляция (100 сделок)'
     },
     en: {
         syncing: 'SYNCING...',
@@ -325,7 +340,22 @@ const TRANSLATIONS = {
         high: 'High',
         medium: 'Medium',
         otc: 'OTC',
-        regular: 'Regular'
+        regular: 'Regular',
+        mainSignalBtn: 'GET SIGNAL',
+        newsTime: 'Time',
+        newsPriority: 'Priority',
+        newsTimeLeft: 'Time Left',
+        newsEvent: 'Event',
+        newsPrev: 'Prev.',
+        newsForecast: 'Forecast',
+        impactLow: 'Low',
+        impactMedium: 'Medium',
+        impactHigh: 'High',
+        calcTableTitle: 'Overlap Table',
+        calcStep: 'Step',
+        calcBet: 'Bet',
+        calcProfit: 'Profit',
+        calcSimTitle: 'Simulation (100 trades)'
     },
     hi: {
         syncing: 'सिंकिंग...',
@@ -393,7 +423,22 @@ const TRANSLATIONS = {
         high: 'उच्च',
         medium: 'औसत',
         otc: 'ओटीसी',
-        regular: 'नियमित'
+        regular: 'नियमित',
+        mainSignalBtn: 'सिग्नल प्राप्त करें',
+        newsTime: 'समय',
+        newsPriority: 'प्राथमिकता',
+        newsTimeLeft: 'बचा हुआ समय',
+        newsEvent: 'घटना',
+        newsPrev: 'पिछला',
+        newsForecast: 'अनुमान',
+        impactLow: 'कम',
+        impactMedium: 'मध्यम',
+        impactHigh: 'उच्च',
+        calcTableTitle: 'ओवरलैप तालिका',
+        calcStep: 'कदम',
+        calcBet: 'शर्त',
+        calcProfit: 'लाभ',
+        calcSimTitle: 'सिमुलेशन (100 ट्रेड)'
     },
     es: {
         syncing: 'SINCRONIZANDO...',
@@ -461,7 +506,22 @@ const TRANSLATIONS = {
         high: 'Alto',
         medium: 'Medio',
         otc: 'OTC',
-        regular: 'Regular'
+        regular: 'Regular',
+        mainSignalBtn: 'OBTENER SEÑAL',
+        newsTime: 'Tiempo',
+        newsPriority: 'Prioridad',
+        newsTimeLeft: 'Tiempo Restante',
+        newsEvent: 'Evento',
+        newsPrev: 'Ant.',
+        newsForecast: 'Pronóstico',
+        impactLow: 'Bajo',
+        impactMedium: 'Medio',
+        impactHigh: 'Alto',
+        calcTableTitle: 'Tabla de superposición',
+        calcStep: 'Paso',
+        calcBet: 'Apuesta',
+        calcProfit: 'Beneficio',
+        calcSimTitle: 'Simulación (100 operaciones)'
     },
     fr: {
         syncing: 'SYNCHRONISATION...',
@@ -529,7 +589,22 @@ const TRANSLATIONS = {
         high: 'Haut',
         medium: 'Moyen',
         otc: 'OTC',
-        regular: 'Régulier'
+        regular: 'Régulier',
+        mainSignalBtn: 'OBTENIR LE SIGNAL',
+        newsTime: 'Temps',
+        newsPriority: 'Priorité',
+        newsTimeLeft: 'Temps Restant',
+        newsEvent: 'Événement',
+        newsPrev: 'Préc.',
+        newsForecast: 'Prévision',
+        impactLow: 'Faible',
+        impactMedium: 'Moyen',
+        impactHigh: 'Élevé',
+        calcTableTitle: 'Tableau de chevauchement',
+        calcStep: 'Étape',
+        calcBet: 'Mise',
+        calcProfit: 'Profit',
+        calcSimTitle: 'Simulation (100 trades)'
     }
 };
 let currentLang = 'ru';
@@ -718,6 +793,7 @@ function setupLocalization() {
 
     if (q('.loader')) q('.loader').innerText = t.syncing;
     if (get('get-signal-btn')) get('get-signal-btn').innerText = t.analyze;
+    if (get('main-get-signal-btn')) get('main-get-signal-btn').innerText = t.mainSignalBtn;
     if (get('asset-search')) get('asset-search').placeholder = t.search;
     if (get('label-expiration')) get('label-expiration').innerText = t.selectExp;
 
@@ -754,6 +830,11 @@ function setupLocalization() {
     setLabel('sim-label-balance', t.balance);
     setLabel('sim-label-loss', t.lossSeries);
     setLabel('sim-label-drawdown', t.drawdown);
+    setLabel('calc-table-title', t.calcTableTitle);
+    setLabel('calc-th-step', t.calcStep);
+    setLabel('calc-th-bet', t.calcBet);
+    setLabel('calc-th-profit', t.calcProfit);
+    setLabel('calc-sim-title', t.calcSimTitle);
     setLabel('label-valid-until', t.validUntil);
     setLabel('label-confidence', t.confidence);
     setLabel('label-accuracy', t.accuracy);
@@ -1498,21 +1579,22 @@ async function fetchEconomicNews() {
         });
 
         // Map Forex Factory data
+        const tObj = TRANSLATIONS[currentLang] || TRANSLATIONS['ru'];
         cachedNews = filteredData.slice(0, 40).map(item => {
             const dateObj = new Date(item.date);
             const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             let importance = 1;
-            let impactName = 'Низкий';
+            let impactName = tObj.impactLow;
             let dotColor = '#ffb300';
 
             if (item.impact === 'High') {
                 importance = 3;
-                impactName = 'Высокий';
+                impactName = tObj.impactHigh;
                 dotColor = '#f44336';
             } else if (item.impact === 'Medium') {
                 importance = 2;
-                impactName = 'Средний';
+                impactName = tObj.impactMedium;
                 dotColor = '#ff9800';
             }
 
@@ -1570,12 +1652,12 @@ function renderNews() {
             <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #d1d5db; min-width: 500px;">
                 <thead>
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #888; text-align: left;">
-                        <th style="padding: 12px 8px; font-weight: 600;">Время</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">Приоритет</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">Осталось<br>времени</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">Событие</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">Пред.</th>
-                        <th style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">Прогноз</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTime}</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPriority}</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTimeLeft}</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsEvent}</th>
+                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPrev}</th>
+                        <th style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${t.newsForecast}</th>
                     </tr>
                 </thead>
                 <tbody>
