@@ -699,10 +699,27 @@ header {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    /* Center the card */
     z-index: 100;
     opacity: 0;
     overflow-x: hidden;
     backdrop-filter: none !important;
+    transition: opacity 0.3s ease;
+}
+
+.signal-card {
+    background: rgba(10, 11, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px 20px;
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 101;
 }
 
 /* Removed tv-chart-bg as we are using a cleaner dark theme for PO fidelity */

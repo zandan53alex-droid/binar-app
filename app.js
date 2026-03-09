@@ -1650,6 +1650,7 @@ function openLesson(lesson) {
 
     const overlay = document.getElementById('lesson-overlay');
     overlay.classList.remove('hidden');
+    document.body.classList.add('signal-active');
     setTimeout(() => overlay.classList.add('active'), 10);
 }
 
@@ -2043,6 +2044,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (closeLesson) {
         closeLesson.onclick = () => {
+            document.body.classList.remove('signal-active');
             lessonOverlay.classList.remove('active');
             setTimeout(() => lessonOverlay.classList.add('hidden'), 300);
         };
