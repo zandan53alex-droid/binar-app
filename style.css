@@ -1530,40 +1530,49 @@ header {
     color: #666;
 }
 
-color: #00aadd;
-font-size: 1rem;
-flex-shrink: 0;
+.book-card-arrow {
+    color: #00aadd;
+    font-size: 1rem;
+    flex-shrink: 0;
 }
 
-/* ── Indicators Toggle Button (Cyan/Teal Accent) ── */
+/* ── Indicators Toggle Button (Standard Style) ── */
 .indicators-toggle-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(0, 220, 150, 0.25);
-    color: #00dc96;
-    padding: 14px 18px;
-    border-radius: 14px;
-    font-size: 0.9rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-size: 0.85rem;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.05em;
     cursor: pointer;
     text-align: left;
     margin-top: 10px;
     margin-bottom: 5px;
-    transition: all 0.25s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     gap: 8px;
+    text-transform: uppercase;
 }
 
 .indicators-toggle-btn .dropdown-arrow {
     margin-left: auto;
+    font-size: 0.7rem;
+    opacity: 0.8;
 }
 
-.indicators-toggle-btn:hover,
+.indicators-toggle-btn:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
 .indicators-toggle-btn.active {
-    background: rgba(0, 220, 150, 0.1);
-    border-color: rgba(0, 220, 150, 0.5);
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.5);
+    color: #ffd700;
 }
 
 .indicators-toggle-btn.active .dropdown-arrow {
@@ -1584,33 +1593,56 @@ flex-shrink: 0;
     gap: 12px;
 }
 
+/* ── Indicator Card (Matches Lesson Card) ── */
 .indicator-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 18px;
-    padding: 18px;
-    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.indicator-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 220, 150, 0.3);
+    transform: translateY(-1px);
+}
+
+.indicator-card-info {
+    flex: 1;
 }
 
 .indicator-card-title {
-    font-size: 1rem;
-    font-weight: 800;
-    color: #00dc96;
-    margin-bottom: 8px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
 }
 
 .indicator-card-desc {
-    font-size: 0.85rem;
-    color: #ccc;
-    line-height: 1.5;
-    margin-bottom: 12px;
-    white-space: pre-line;
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 1.4;
 }
 
-.indicator-card-img {
-    width: 100%;
+.indicator-card-arrow {
+    color: #00dc96;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+.indicator-card-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 220, 150, 0.07);
     border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.2);
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
