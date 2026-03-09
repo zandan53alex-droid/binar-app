@@ -1373,7 +1373,8 @@ header {
 }
 
 .assets-toggle-btn.active .dropdown-arrow,
-.education-toggle-btn.active .dropdown-arrow {
+.education-toggle-btn.active .dropdown-arrow,
+.indicators-toggle-btn.active .dropdown-arrow {
     transform: rotate(180deg);
 }
 
@@ -1449,6 +1450,15 @@ header {
     line-height: 1.7;
     white-space: pre-wrap;
     margin-top: 12px;
+}
+
+.lesson-detail-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 15px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* ── Education Sub-Tabs ── */
@@ -1539,19 +1549,19 @@ header {
 /* ── Indicators Toggle Button (Standard Style) ── */
 .indicators-toggle-btn {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
-    padding: 12px 16px;
-    border-radius: 12px;
-    font-size: 0.85rem;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
     font-weight: 700;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
     cursor: pointer;
     text-align: left;
     margin-top: 10px;
     margin-bottom: 5px;
-    transition: all 0.2s ease;
+    transition: all 0.25s ease;
     display: flex;
     align-items: center;
     gap: 8px;
@@ -1564,7 +1574,8 @@ header {
     opacity: 0.8;
 }
 
-.indicators-toggle-btn:hover {
+.indicators-toggle-btn:hover,
+.indicators-toggle-btn.active {
     background: rgba(255, 255, 255, 0.08);
     border-color: rgba(255, 215, 0, 0.3);
 }
