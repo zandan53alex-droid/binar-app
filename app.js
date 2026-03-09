@@ -524,6 +524,131 @@ let currentTimeframe = '1m';
 let searchQuery = '';
 const tg = window.Telegram.WebApp;
 
+// Toggles State
+let assetsOpen = false;
+let educationOpen = false;
+let calculatorOpen = false;
+let newsOpen = false;
+let indicatorsOpen = false;
+
+// DOM Elements
+let assetsBtn, assetsPanel, educationBtn, educationPanel, calcBtn, calcPanel, newsBtn, newsPanel, indicatorsBtn, indicatorsPanel;
+
+function closeAllPanels() {
+    assetsOpen = false;
+    educationOpen = false;
+    calculatorOpen = false;
+    newsOpen = false;
+    indicatorsOpen = false;
+
+    if (assetsPanel) assetsPanel.classList.add('hidden');
+    if (educationPanel) educationPanel.classList.add('hidden');
+    if (calcPanel) calcPanel.classList.add('hidden');
+    if (newsPanel) newsPanel.classList.add('hidden');
+    if (indicatorsPanel) indicatorsPanel.classList.add('hidden');
+
+    if (assetsBtn) assetsBtn.classList.remove('active');
+    if (educationBtn) educationBtn.classList.remove('active');
+    if (calcBtn) calcBtn.classList.remove('active');
+    if (newsBtn) newsBtn.classList.remove('active');
+    if (indicatorsBtn) indicatorsBtn.classList.remove('active');
+
+    const arrows = ['assets-arrow', 'edu-arrow', 'calc-arrow', 'news-arrow', 'indicators-arrow'];
+    arrows.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.transform = '';
+    });
+}
+
+function toggleAssets() {
+    if (!assetsOpen) {
+        closeAllPanels();
+        assetsOpen = true;
+        if (assetsPanel) assetsPanel.classList.remove('hidden');
+        if (assetsBtn) assetsBtn.classList.add('active');
+    } else {
+        assetsOpen = false;
+        if (assetsPanel) assetsPanel.classList.add('hidden');
+        if (assetsBtn) assetsBtn.classList.remove('active');
+    }
+}
+
+function toggleEducation() {
+    if (!educationOpen) {
+        closeAllPanels();
+        educationOpen = true;
+        if (educationPanel) educationPanel.classList.remove('hidden');
+        if (educationBtn) educationBtn.classList.add('active');
+        const arrow = document.getElementById('edu-arrow');
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+
+        if (typeof currentEduTab !== 'undefined' && currentEduTab === 'basics') {
+            const basicList = document.getElementById('edu-basics-panel');
+            if (basicList && !basicList.querySelector('.lesson-card') && typeof renderBasics === 'function') renderBasics();
+        }
+    } else {
+        educationOpen = false;
+        if (educationPanel) educationPanel.classList.add('hidden');
+        if (educationBtn) educationBtn.classList.remove('active');
+        const arrow = document.getElementById('edu-arrow');
+        if (arrow) arrow.style.transform = '';
+    }
+}
+
+function toggleCalculator() {
+    if (!calculatorOpen) {
+        closeAllPanels();
+        calculatorOpen = true;
+        if (calcPanel) calcPanel.classList.remove('hidden');
+        if (calcBtn) calcBtn.classList.add('active');
+        const arrow = document.getElementById('calc-arrow');
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+        if (typeof initCalculator === 'function') initCalculator();
+    } else {
+        calculatorOpen = false;
+        if (calcPanel) calcPanel.classList.add('hidden');
+        if (calcBtn) calcBtn.classList.remove('active');
+        const arrow = document.getElementById('calc-arrow');
+        if (arrow) arrow.style.transform = '';
+    }
+}
+
+function toggleNews() {
+    if (!newsOpen) {
+        closeAllPanels();
+        newsOpen = true;
+        if (newsPanel) newsPanel.classList.remove('hidden');
+        if (newsBtn) newsBtn.classList.add('active');
+        const arrow = document.getElementById('news-arrow');
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+        if (typeof fetchEconomicNews === 'function') fetchEconomicNews();
+    } else {
+        newsOpen = false;
+        if (newsPanel) newsPanel.classList.add('hidden');
+        if (newsBtn) newsBtn.classList.remove('active');
+        const arrow = document.getElementById('news-arrow');
+        if (arrow) arrow.style.transform = '';
+    }
+}
+
+function toggleIndicators() {
+    if (!indicatorsOpen) {
+        closeAllPanels();
+        indicatorsOpen = true;
+        if (indicatorsPanel) indicatorsPanel.classList.remove('hidden');
+        if (indicatorsBtn) indicatorsBtn.classList.add('active');
+        const arrow = document.getElementById('indicators-arrow');
+        if (arrow) arrow.style.transform = 'rotate(180deg)';
+        if (typeof renderIndicators === 'function') renderIndicators();
+    } else {
+        indicatorsOpen = false;
+        if (indicatorsPanel) indicatorsPanel.classList.add('hidden');
+        if (indicatorsBtn) indicatorsBtn.classList.remove('active');
+        const arrow = document.getElementById('indicators-arrow');
+        if (arrow) arrow.style.transform = '';
+    }
+}
+
 function initApp() {
     try {
         tg.ready();
@@ -1416,7 +1541,6 @@ FOMO возникает, когда трейдер видит движение �
     }
 ];
 
-let educationOpen = false;
 let currentEduTab = 'basics';
 
 // ─── BOOKS (PDF Library) ───────────────────────────────────────
@@ -1809,131 +1933,22 @@ function openLesson(lesson) {
 
 // Wire up education toggle button
 document.addEventListener('DOMContentLoaded', () => {
-    // ─── Toggles (Education, Assets, Calculator, News) ────────────
-    let assetsOpen = false;
-    let educationOpen = false;
-    let calculatorOpen = false;
-    let newsOpen = false;
-    let indicatorsOpen = false;
+    assetsBtn = document.getElementById('assets-btn');
+    assetsPanel = document.getElementById('assets-panel');
+    educationBtn = document.getElementById('education-btn');
+    educationPanel = document.getElementById('education-panel');
+    calcBtn = document.getElementById('calc-btn');
+    calcPanel = document.getElementById('calc-panel');
+    newsBtn = document.getElementById('news-btn');
+    newsPanel = document.getElementById('news-panel');
+    indicatorsBtn = document.getElementById('indicators-toggle-btn');
+    indicatorsPanel = document.getElementById('indicators-panel');
 
-    const assetsBtn = document.getElementById('assets-btn');
-    const assetsPanel = document.getElementById('assets-panel');
-    const educationBtn = document.getElementById('education-btn');
-    const educationPanel = document.getElementById('education-panel');
-    const calcBtn = document.getElementById('calc-btn');
-    const calcPanel = document.getElementById('calc-panel');
-    const newsBtn = document.getElementById('news-btn');
-    const newsPanel = document.getElementById('news-panel');
-    const indicatorsBtn = document.getElementById('indicators-toggle-btn');
-    const indicatorsPanel = document.getElementById('indicators-panel');
-
-    function closeAllPanels() {
-        assetsOpen = false;
-        educationOpen = false;
-        calculatorOpen = false;
-        newsOpen = false;
-        indicatorsOpen = false;
-        assetsPanel.classList.add('hidden');
-        educationPanel.classList.add('hidden');
-        calcPanel.classList.add('hidden');
-        newsPanel.classList.add('hidden');
-        indicatorsPanel.classList.add('hidden');
-        assetsBtn.classList.remove('active');
-        educationBtn.classList.remove('active');
-        calcBtn.classList.remove('active');
-        newsBtn.classList.remove('active');
-        indicatorsBtn.classList.remove('active');
-        document.getElementById('assets-arrow').style.transform = '';
-        document.getElementById('edu-arrow').style.transform = '';
-        document.getElementById('calc-arrow').style.transform = '';
-        document.getElementById('news-arrow').style.transform = '';
-        document.getElementById('indicators-arrow').style.transform = '';
-    }
-
-    function toggleAssets() {
-        if (!assetsOpen) {
-            closeAllPanels();
-            assetsOpen = true;
-            assetsPanel.classList.remove('hidden');
-            assetsBtn.classList.add('active');
-        } else {
-            assetsOpen = false;
-            assetsPanel.classList.add('hidden');
-            assetsBtn.classList.remove('active');
-        }
-    }
-
-    function toggleEducation() {
-        if (!educationOpen) {
-            closeAllPanels();
-            educationOpen = true;
-            educationPanel.classList.remove('hidden');
-            educationBtn.classList.add('active');
-            document.getElementById('edu-arrow').style.transform = 'rotate(180deg)';
-            if (currentEduTab === 'basics' && !document.getElementById('edu-basics-panel').querySelector('.lesson-card')) {
-                renderBasics();
-            }
-        } else {
-            educationOpen = false;
-            educationPanel.classList.add('hidden');
-            educationBtn.classList.remove('active');
-            document.getElementById('edu-arrow').style.transform = '';
-        }
-    }
-
-    function toggleCalculator() {
-        if (!calculatorOpen) {
-            closeAllPanels();
-            calculatorOpen = true;
-            calcPanel.classList.remove('hidden');
-            calcBtn.classList.add('active');
-            document.getElementById('calc-arrow').style.transform = 'rotate(180deg)';
-            initCalculator();
-        } else {
-            calculatorOpen = false;
-            calcPanel.classList.add('hidden');
-            calcBtn.classList.remove('active');
-            document.getElementById('calc-arrow').style.transform = '';
-        }
-    }
-
-    function toggleNews() {
-        if (!newsOpen) {
-            closeAllPanels();
-            newsOpen = true;
-            newsPanel.classList.remove('hidden');
-            newsBtn.classList.add('active');
-            document.getElementById('news-arrow').style.transform = 'rotate(180deg)';
-            fetchEconomicNews();
-        } else {
-            newsOpen = false;
-            newsPanel.classList.add('hidden');
-            newsBtn.classList.remove('active');
-            document.getElementById('news-arrow').style.transform = '';
-        }
-    }
-
-    function toggleIndicators() {
-        if (!indicatorsOpen) {
-            closeAllPanels();
-            indicatorsOpen = true;
-            indicatorsPanel.classList.remove('hidden');
-            indicatorsBtn.classList.add('active');
-            document.getElementById('indicators-arrow').style.transform = 'rotate(180deg)';
-            renderIndicators();
-        } else {
-            indicatorsOpen = false;
-            indicatorsPanel.classList.add('hidden');
-            indicatorsBtn.classList.remove('active');
-            document.getElementById('indicators-arrow').style.transform = '';
-        }
-    }
-
-    assetsBtn.onclick = toggleAssets;
-    educationBtn.onclick = toggleEducation;
-    calcBtn.onclick = toggleCalculator;
-    newsBtn.onclick = toggleNews;
-    indicatorsBtn.onclick = toggleIndicators;
+    if (assetsBtn) assetsBtn.onclick = toggleAssets;
+    if (educationBtn) educationBtn.onclick = toggleEducation;
+    if (calcBtn) calcBtn.onclick = toggleCalculator;
+    if (newsBtn) newsBtn.onclick = toggleNews;
+    if (indicatorsBtn) indicatorsBtn.onclick = toggleIndicators;
 
     // ─── News & Economic Calendar Logic ──────────────────────────
     let cachedNews = [];
