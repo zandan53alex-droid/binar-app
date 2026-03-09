@@ -877,6 +877,11 @@ function setupLocalization() {
     if (confLabel) confLabel.innerText = '';
     if (accLabel) accLabel.innerText = '';
     if (volLabel) volLabel.parentElement.style.display = 'none';
+
+    // Re-run calculations to update dynamic translated strings such as survivalMsg
+    if (typeof runCalculations === 'function') {
+        runCalculations();
+    }
 }
 
 function setupEventListeners() {
@@ -1739,11 +1744,11 @@ function runCalculations() {
             totalRisk += currentBet;
             const potentialProfit = (currentBet * payout);
 
-            const row = `< tr >
+            const row = `<tr>
                 <td>${i}</td>
                 <td>$${currentBet.toFixed(2)}</td>
                 <td style="color: #00dc96">+$${potentialProfit.toFixed(2)}</td>
-            </tr > `;
+            </tr>`;
             tableBody.innerHTML += row;
             currentBet *= multiplier;
         }
