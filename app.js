@@ -538,6 +538,10 @@ let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
 const tg = window.Telegram.WebApp;
+tg.expand();
+if (tg.disableVerticalSwipes) {
+    tg.disableVerticalSwipes();
+}
 
 // Toggles State
 let assetsOpen = false;
