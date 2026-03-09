@@ -1502,20 +1502,20 @@ function renderNews() {
         // Default styling class for cards
         const impactClass = 'impact-med';
 
-        const card = \`
-            <div class="news-card \${impactClass}" onclick="window.open('\${item.url}', '_blank')" style="cursor: pointer; position: relative;">
+        const card = `
+            <div class="news-card ${impactClass}" onclick="window.open('${item.url}', '_blank')" style="cursor: pointer; position: relative;">
                 <div class="news-card-header" style="display:flex; justify-content:space-between; align-items:center;">
-                    <span class="news-time">\${item.time}</span>
-                    <span class="news-currency" style="background:#222; padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#ffd700;">\${item.currency}</span>
+                    <span class="news-time">${item.time}</span>
+                    <span class="news-currency" style="background:#222; padding:2px 8px; border-radius:4px; font-size:0.7rem; color:#ffd700;">${item.currency}</span>
                 </div>
                 <div class="news-event-name" style="margin-top: 8px; font-size:0.85rem; line-height:1.3; font-weight:600; color:#fff;">
-                    \${item.event}
+                    ${item.event}
                 </div>
                 <div class="news-importance" style="margin-top: 10px; font-size: 0.7rem; color: #aaa; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 6px;">
-                    Source: \${item.source}
+                    Source: ${item.source}
                 </div>
             </div>
-        \`;
+        `;
         listContainer.innerHTML += card;
     });
 }
