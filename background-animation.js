@@ -27,22 +27,46 @@
 
     // Asset Preloading
     const assetConfig = [
-        { name: 'btc', url: 'assets/background/bitcoin_coin.png' },
-        { name: 'eth', url: 'assets/background/ethereum_coin.png' },
-        { name: 'sol', url: 'assets/background/solana_coin.png' },
-        { name: 'usd', url: 'assets/background/usd_100_bill.png' },
-        { name: 'eur', url: 'assets/background/euro_500_bill.png' },
-        { name: 'yen', url: 'assets/background/yen_10000_bill.png' }
+        { name: 'btc', url: 'assets/background/bitcoin_coin.png?v=67' },
+        { name: 'eth', url: 'assets/background/ethereum_coin.png?v=67' },
+        { name: 'sol', url: 'assets/background/solana_coin.png?v=67' },
+        { name: 'usd', url: 'assets/background/usd_100_bill.png?v=67' },
+        { name: 'eur', url: 'assets/background/euro_500_bill.png?v=67' },
+        { name: 'yen', url: 'assets/background/yen_10000_bill.png?v=67' }
     ];
 
     const images = {};
     let loadedCount = 0;
 
+    // Utility to remove dark background from images for perfect blending
+    function cleanImage(img) {
+        const offCanvas = document.createElement('canvas');
+        offCanvas.width = img.width;
+        offCanvas.height = img.height;
+        const offCtx = offCanvas.getContext('2d');
+        offCtx.drawImage(img, 0, 0);
+
+        const imageData = offCtx.getImageData(0, 0, offCanvas.width, offCanvas.height);
+        const data = imageData.data;
+
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i], g = data[i + 1], b = data[i + 2];
+            // If the pixel is nearly black, make it transparent
+            if (r < 30 && g < 30 && b < 30) {
+                data[i + 3] = 0;
+            }
+        }
+        offCtx.putImageData(imageData, 0, 0);
+        return offCanvas;
+    }
+
     assetConfig.forEach(cfg => {
         const img = new Image();
+        img.crossOrigin = "anonymous";
         img.onload = () => {
+            // Clean the image to remove black squares (AI artifacts)
+            images[cfg.name] = cleanImage(img);
             loadedCount++;
-            images[cfg.name] = img;
         };
         img.src = cfg.url;
     });
@@ -195,15 +219,22 @@
             ctx.translate(fe.x, fe.y);
             ctx.rotate(fe.rot);
 
-            // Neon glow effect (soft pulse)
-            const glowSize = 5 + Math.sin(fe.pulse) * 5;
-            ctx.shadowBlur = glowSize;
-            ctx.shadowColor = 'rgba(255, 255, 255, 0.2)';
+            // Custom blending fix: the grid/border is removed by cleanImage()
+            // We can now use normal blending or 'screen' for extra glow
+            ctx.globalCompositeOperation = 'screen';
 
-            ctx.globalAlpha = 0.4; // Soft background appearance
+            // Neon glow effect (soft pulse)
+            const glowSize = 10 + Math.sin(fe.pulse) * 8;
+            ctx.shadowBlur = glowSize;
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.4)';
+
+            ctx.globalAlpha = 0.6; // Improved visibility
             ctx.drawImage(fe.img, -fe.size / 2, -fe.size / 2, fe.size, fe.size);
             ctx.restore();
         });
+
+        // Reset blending for other elements
+        ctx.globalCompositeOperation = 'source-over';
 
         // Draw particles
         particles.forEach(p => {
