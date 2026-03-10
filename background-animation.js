@@ -27,12 +27,12 @@
 
     // Asset Preloading
     const assetConfig = [
-        { name: 'btc', url: 'assets/background/bitcoin_coin.png?v=67' },
-        { name: 'eth', url: 'assets/background/ethereum_coin.png?v=67' },
-        { name: 'sol', url: 'assets/background/solana_coin.png?v=67' },
-        { name: 'usd', url: 'assets/background/usd_100_bill.png?v=67' },
-        { name: 'eur', url: 'assets/background/euro_500_bill.png?v=67' },
-        { name: 'yen', url: 'assets/background/yen_10000_bill.png?v=67' }
+        { name: 'btc', url: 'bitcoin_coin.png?v=68' },
+        { name: 'eth', url: 'ethereum_coin.png?v=68' },
+        { name: 'sol', url: 'solana_coin.png?v=68' },
+        { name: 'usd', url: 'usd_100_bill.png?v=68' },
+        { name: 'eur', url: 'euro_500_bill.png?v=68' },
+        { name: 'yen', url: 'yen_10000_bill.png?v=68' }
     ];
 
     const images = {};
