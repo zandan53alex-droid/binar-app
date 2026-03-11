@@ -1344,9 +1344,6 @@ function startPriceUpdates() {
 
     connectWs(false);
 }
-
-document.addEventListener('DOMContentLoaded', initApp);
-
 function buildFallbacks(asset, primaryUrl, idx) {
     const fallbacks = [];
     if (asset.category === 'Crypto') {
@@ -1536,32 +1533,13 @@ async function fetchEconomicNews() {
     try {
         updateStatus.innerText = t.loading;
 
-        // Forex Factory Free JSON API for Economic Calendar wrapped in CORS Proxies
-        const rawUrl = 'https://nfs.faireconomy.media/ff_calendar_thisweek.json';
-        const publicUrl = `https://corsproxy.io/?url=${encodeURIComponent(rawUrl)}`;
-        const fallbackUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(rawUrl)}`;
-
+        console.log("📡 Fetching news from backend proxy...");
+        const res = await fetch('/news');
         let data = null;
-        let errorMsg = '';
-
-        try {
-            console.log("📡 Пробуем corsproxy.io...");
-            const res = await fetch(publicUrl);
-            if (res.ok) data = await res.json();
-        } catch (e) { console.warn("Corsproxy.io failed", e); }
-
-        if (!data) {
-            try {
-                console.log("📡 Пробуем AllOrigins fallback...");
-                const res = await fetch(fallbackUrl);
-                if (res.ok) {
-                    const json = await res.json();
-                    data = JSON.parse(json.contents);
-                }
-            } catch (e) {
-                console.warn("AllOrigins failed", e);
-                errorMsg = e.message;
-            }
+        if (res.ok) {
+            data = await res.json();
+        } else {
+            throw new Error(`Backend news error: ${res.status}`);
         }
 
         if (!data || !Array.isArray(data)) {
@@ -1876,10 +1854,12 @@ function updateChart(data) {
     });
 }
 // Initialization of main get signal button
-const mainGetSignalBtn = document.getElementById('main-get-signal-btn');
 if (mainGetSignalBtn) {
     mainGetSignalBtn.addEventListener('click', () => {
         if (!assetsOpen) toggleAssets();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     });
 }
+
+// Initialize the app
+document.addEventListener('DOMContentLoaded', initApp);
