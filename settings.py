@@ -70,7 +70,7 @@ class Settings:
     PUBLIC_BASE: str = ""
     REF_REG_A: str = ""
     REF_DEP_A: str = ""
-    SUPPORT_URL: str = ""
+    SUPPORT_URL: str = (os.getenv("SUPPORT_URL") or "").strip()
     PLATINUM_THRESHOLD: float = 100.0
     FIRST_DEPOSIT_MIN: float = 10.0
     PB_SECRET: str = "supersecret123"

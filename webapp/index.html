@@ -4,24 +4,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>NeuralEdge Mini App</title>
+    <title>TRADE APP BOT</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="style.css?v=35">
+    <link rel="stylesheet" href="style.css?v=68">
+    <link rel="stylesheet" href="robot-clock.css?v=68">
     <style>
-        html {
-            min-height: 100%;
-            background: #0d0818;
-        }
-
+        html,
         body {
-            background-color: #0d0818 !important;
-            background-image:
-                radial-gradient(ellipse at 20% 20%, rgba(100, 40, 180, 0.35) 0%, transparent 55%),
-                radial-gradient(ellipse at 80% 70%, rgba(60, 20, 120, 0.4) 0%, transparent 50%),
-                radial-gradient(ellipse at 50% 100%, rgba(80, 0, 120, 0.3) 0%, transparent 60%),
-                radial-gradient(ellipse at 90% 10%, rgba(120, 50, 200, 0.2) 0%, transparent 45%),
-                linear-gradient(160deg, #0d0818 0%, #180828 40%, #0d0818 100%) !important;
+            margin: 0;
+            padding: 0;
+            background: transparent !important;
         }
     </style>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -31,11 +24,14 @@
 </head>
 
 <body>
+    <div id="debug-overlay"
+        style="position:fixed;top:0;left:0;width:100%;background:rgba(0,0,0,0.8);color:red;z-index:9999;font-size:10px;pointer-events:none;max-height:50px;overflow:hidden;">
+        DEBUG START</div>
     <div class="app-container">
         <!-- Header -->
         <header class="header">
             <div class="logo">
-                <span class="logo-gold">TURBO</span><span class="logo-white">APP</span>
+                <span class="logo-gold">TRADE APP</span><span class="logo-white"> BOT</span>
             </div>
             <div class="user-controls">
                 <div class="user-status">
@@ -62,12 +58,12 @@
         </div>
 
         <!-- Assets Toggle Button -->
-        <button id="assets-btn" class="assets-toggle-btn active">
-            <span id="assets-btn-text">📈 АКТИВЫ <span class="dropdown-arrow" id="assets-arrow">▼</span></span>
+        <button id="assets-btn" class="assets-toggle-btn">
+            <span id="assets-btn-text">📈 АКТИВЫ</span> <span class="dropdown-arrow" id="assets-arrow">▼</span>
         </button>
 
         <!-- Assets Panel -->
-        <div id="assets-panel" class="assets-panel">
+        <div id="assets-panel" class="assets-panel hidden">
             <!-- Category Select -->
             <div class="category-dropdown-container">
                 <button id="category-toggle" class="category-toggle-btn">
@@ -93,7 +89,7 @@
 
         <!-- Education Button -->
         <button id="education-btn" class="education-toggle-btn">
-            <span id="education-btn-text">🎓 ОБУЧЕНИЕ <span class="dropdown-arrow" id="edu-arrow">▼</span></span>
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span> <span class="dropdown-arrow" id="edu-arrow">▼</span>
         </button>
 
         <!-- Education Panel -->
@@ -118,7 +114,7 @@
 
         <!-- Calculator Toggle Button -->
         <button id="calc-btn" class="calc-toggle-btn">
-            <span id="calc-btn-text">🧮 КАЛЬКУЛЯТОР <span class="dropdown-arrow" id="calc-arrow">▼</span></span>
+            <span id="calc-btn-text">🧮 КАЛЬКУЛЯТОР</span> <span class="dropdown-arrow" id="calc-arrow">▼</span>
         </button>
 
         <!-- Calculator Panel -->
@@ -126,52 +122,52 @@
             <!-- Inputs -->
             <div class="calc-inputs-grid">
                 <div class="input-group">
-                    <label>Депозит ($)</label>
+                    <label id="label-deposit">Депозит ($)</label>
                     <input type="number" id="calc-deposit" value="100" min="50" max="100000">
                 </div>
                 <div class="input-group">
-                    <label>Первая сделка (%)</label>
+                    <label id="label-first-bet">Первая сделка (%)</label>
                     <input type="number" id="calc-first-bet-perc" value="1" step="0.1">
                 </div>
                 <div class="input-group">
-                    <label>Коэффициент</label>
+                    <label id="label-multiplier">Коэффициент</label>
                     <input type="number" id="calc-multiplier" value="2.2" step="0.1">
                 </div>
                 <div class="input-group">
-                    <label>Перекрытий</label>
+                    <label id="label-levels">Перекрытий</label>
                     <input type="number" id="calc-levels" value="5" min="1" max="10">
                 </div>
                 <div class="input-group">
-                    <label>Выплата (%)</label>
+                    <label id="label-payout">Выплата (%)</label>
                     <input type="number" id="calc-payout" value="82">
                 </div>
             </div>
 
             <!-- Stats Cards -->
-            <div class="calc-stats">
+            <div class="calc-results">
                 <div class="stat-card">
-                    <span class="stat-label">Первая ставка</span>
-                    <span class="stat-value" id="res-first-bet">$0</span>
+                    <div class="stat-label" id="stat-label-first-bet">Первая ставка</div>
+                    <div class="stat-value" id="res-first-bet">$1.00</div>
                 </div>
-                <div class="stat-card warning">
-                    <span class="stat-label">Общий риск</span>
-                    <span class="stat-value" id="res-total-risk">$0</span>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk">Общий риск</div>
+                    <div class="stat-value" id="res-total-risk">$57.97</div>
                 </div>
-                <div class="stat-card danger">
-                    <span class="stat-label">Риск от депо</span>
-                    <span class="stat-value" id="res-risk-perc">0%</span>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk-perc">Риск от депо</div>
+                    <div class="stat-value" id="res-risk-perc">58.0%</div>
                 </div>
             </div>
 
             <!-- Table -->
-            <div class="calc-section-title">Таблица перекрытий</div>
+            <div class="calc-section-title" id="calc-table-title">Таблица перекрытий</div>
             <div class="calc-table-wrapper">
                 <table class="calc-table">
                     <thead>
                         <tr>
-                            <th>Шаг</th>
-                            <th>Ставка</th>
-                            <th>Прибыль</th>
+                            <th id="calc-th-step">Шаг</th>
+                            <th id="calc-th-bet">Ставка</th>
+                            <th id="calc-th-profit">Прибыль</th>
                         </tr>
                     </thead>
                     <tbody id="calc-table-body"></tbody>
@@ -184,20 +180,26 @@
             </div>
 
             <!-- Simulation -->
-            <div class="calc-section-title">Симуляция (100 сделок)</div>
-            <div class="simulation-controls">
+            <div class="calc-section-title" id="calc-sim-title">Симуляция (100 сделок)</div>
+            <div class="sim-inputs">
                 <div class="input-group">
-                    <label>Винрейт (%)</label>
-                    <input type="number" id="calc-winrate" value="60">
+                    <label id="label-winrate">Винрейт (%)</label>
+                    <input type="number" id="calc-winrate" value="58">
                 </div>
-                <button id="run-sim-btn" class="sim-btn">ЗАПУСТИТЬ</button>
-            </div>
-            <div class="sim-results hidden" id="sim-results">
-                <div class="sim-chip">Баланс: <span id="sim-final-balance">0</span></div>
-                <div class="sim-chip">Лосс-серия: <span id="sim-max-loss">0</span></div>
-                <div class="sim-chip">Просадка: <span id="sim-drawdown">0%</span></div>
+                <button id="run-sim-btn" class="btn-primary">ЗАПУСТИТЬ</button>
             </div>
 
+            <div id="sim-results" class="sim-results-grid hidden">
+                <div class="sim-stat">
+                    <span id="sim-label-balance">Баланс:</span> <strong id="sim-final-balance">$0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-loss">Лосс-серия:</span> <strong id="sim-max-loss">0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-drawdown">Просадка:</span> <strong id="sim-drawdown">0%</strong>
+                </div>
+            </div>
             <!-- Chart -->
             <div class="chart-container">
                 <canvas id="growthChart"></canvas>
@@ -205,16 +207,18 @@
 
             <!-- Safe Bet -->
             <div class="safe-bet-card">
-                <div class="calc-section-title">Рекомендация</div>
-                <p>Безопасная первая ставка при риске <input type="number" id="calc-max-risk" value="10"
-                        style="width: 50px; display: inline;">%:</p>
+                <div class="calc-section-title" id="label-max-risk">Рекомендация</div>
+                <p id="label-max-risk-desc"><span id="label-safe-bet-prefix">Безопасная первая ставка при риске</span>
+                    <input type="number" id="calc-max-risk" value="10" style="width: 50px; display: inline;"><span
+                        id="label-safe-bet-suffix">%:</span>
+                </p>
                 <div class="stat-value highlight" id="res-safe-bet">$0</div>
             </div>
         </div>
 
         <!-- News Toggle Button -->
         <button id="news-btn" class="news-toggle-btn">
-            <span id="news-btn-text">📰 НОВОСТИ <span class="dropdown-arrow" id="news-arrow">▼</span></span>
+            <span id="news-btn-text">📰 НОВОСТИ</span> <span class="dropdown-arrow" id="news-arrow">▼</span>
         </button>
 
         <!-- News Panel -->
@@ -228,6 +232,24 @@
             <div class="news-update-status" id="news-update-time">
                 Обновлено: --:--
             </div>
+        </div>
+
+        <!-- Indicators Toggle Button -->
+        <button id="indicators-toggle-btn" class="indicators-toggle-btn">
+            <span id="indicators-btn-text">📉 ИНДИКАТОРЫ</span> <span class="dropdown-arrow"
+                id="indicators-arrow">▼</span>
+        </button>
+
+        <!-- Indicators Panel -->
+        <div id="indicators-panel" class="indicators-panel hidden">
+            <div id="indicators-list" class="indicators-list">
+                <!-- Data injected via JS -->
+            </div>
+        </div>
+
+        <!-- Central Get Signal Button (Moved to bottom) -->
+        <div class="main-action-container" style="padding: 20px; margin-top: 10px;">
+            <button id="main-get-signal-btn" class="main-get-signal-btn">ПОЛУЧИТЬ СИГНАЛ</button>
         </div>
     </div>
 
@@ -271,12 +293,44 @@
             </div>
 
             <div id="signal-content" class="hidden">
-                <div class="signal-result">
-                    <div id="signal-direction" class="direction">CALL</div>
-                    <div class="expiration-info" id="expiration-label">EXPIRATION: 1m</div>
-                    <div class="price-info">
-                        ENTRY PRICE: <span id="entry-price">0.0000</span>
+                <!-- Signal Main Result -->
+                <div class="signal-main-result">
+                    <div id="signal-direction-marker" class="direction-marker">
+                        <span id="signal-direction-icon">↑</span>
+                        <span id="signal-direction-text">ПОКУПКА</span>
                     </div>
+                    <div id="signal-asset-name-large" class="asset-name-large">EUR/USD</div>
+                </div>
+
+                <!-- Info Rows -->
+                <div class="signal-info-rows">
+                    <div class="info-row">
+                        <span class="info-label" id="label-market-info">РЫНОК</span>
+                        <span class="info-value" id="signal-market">---</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-strength-info">СИЛА</span>
+                        <span class="info-value" id="signal-strength">Сильный</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-time-info">ВРЕМЯ</span>
+                        <span class="info-value" id="signal-timeframe-val">M1</span>
+                    </div>
+                    <div class="info-row highlight">
+                        <span class="info-label" id="label-valid-until">ДЕЙСТВИТЕЛЕН ДО</span>
+                        <span class="info-value" id="signal-valid-time">--:--</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="timer-progress-container">
+                    <div id="timer-progress-bar" class="timer-progress-fill"></div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="signal-footer-btns">
+                    <button id="repeat-signal-btn" class="btn-footer-repeat">Повторить</button>
+                    <button id="back-to-assets-btn" class="btn-footer-back">Назад</button>
                 </div>
             </div>
         </div>
@@ -294,7 +348,10 @@
         </div>
     </div>
 
-    <script src="app.js?v=35"></script>
+    <script src="content.js?v=70"></script>
+    <script src="app.js?v=70"></script>
+    <script src="robot-clock.js?v=70"></script>
+    <script src="background-animation.js?v=70"></script>
 </body>
 
 </html>

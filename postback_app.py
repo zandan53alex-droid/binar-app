@@ -1,8 +1,10 @@
 import logging
 import asyncio
+import httpx
 from typing import Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.responses import RedirectResponse
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
@@ -15,8 +17,37 @@ from config_service import pb_secret, first_deposit_min, platinum_threshold, ref
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+from fastapi.staticfiles import StaticFiles
+import os
+
 app = FastAPI(title="PocketAI Postbacks")
+
+# Serve Mini App static files (will mount after routes)
+webapp_path = os.path.join(os.path.dirname(__file__), "webapp")
+
+# Добавляем CORS, чтобы фронтенд с GitHub Pages мог делать запросы
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # В продакшене лучше указать конкретные домены
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 _bot_push: Optional[Bot] = None
+
+@app.get("/news")
+async def get_news():
+    """Прокси для новостей Trading Economics (Guest API)"""
+    url = "https://api.tradingeconomics.com/calendar?c=guest:guest&f=json"
+    
+    async with httpx.AsyncClient() as client:
+        try:
+            # Увеличим проверку SSL для guest режима если будут ошибки
+            response = await client.get(url, timeout=10.0)
+            return response.json()
+        except Exception as e:
+            return {"error": str(e)}
 
 def get_bot() -> Bot:
     global _bot_push
@@ -88,3 +119,10 @@ async def pb(request: Request, secret: Optional[str] = None, click_id: Optional[
         await evaluate_and_route(get_bot(), tg_id, manual=False)
 
     return {"ok": True}
+
+# Mount static files last so they don't override /news or /pb
+if os.path.exists(webapp_path):
+    logger.info(f"Mounting static files from: {webapp_path}")
+    app.mount("/", StaticFiles(directory=webapp_path, html=True), name="webapp")
+else:
+    logger.error(f"Static files directory NOT FOUND: {webapp_path}")

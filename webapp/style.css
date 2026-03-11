@@ -17,10 +17,20 @@
 }
 
 body {
-    background-color: #0a0b10;
+    background: transparent;
     color: #ffffff;
     overflow-x: hidden;
     min-height: 100vh;
+}
+
+body.signal-active .app-container {
+    opacity: 0;
+    pointer-events: none;
+}
+
+body.signal-active #robot-assistant-container {
+    opacity: 0;
+    pointer-events: none;
 }
 
 .app-container {
@@ -263,55 +273,52 @@ header {
 
 /* Asset Item Enhancements */
 .asset-item {
-    display: flex;
-    align-items: center;
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 10px;
-    border-radius: 12px;
-    margin-bottom: 8px;
-    transition: transform 0.2s;
+    border-radius: 16px;
+    padding: 12px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(15px);
+    transition: transform 0.2s, background 0.2s;
     width: 100%;
     box-sizing: border-box;
-    /* Ensure padding doesn't add to width */
+    margin-bottom: 8px;
 }
 
 .asset-item:active {
     transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.08);
 }
 
 .asset-icon-wrapper {
-    position: relative;
-    width: 48px;
-    /* Slightly wider for better dual-flag visibility */
-    height: 28px;
-    margin-right: 15px;
     display: flex;
     align-items: center;
+    gap: 4px;
+    /* Small distance between icons per user request */
+    margin-right: 12px;
+    background: none !important;
+    /* Force removal of any boxes */
 }
 
 .asset-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     object-fit: cover;
     border-radius: 50%;
-    /* Rounded flags look more modern */
-    position: absolute;
-    left: 0;
-    z-index: 2;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    display: block;
+    border: none !important;
+    /* No borders per user request */
 }
 
-.asset-icon.secondary {
-    left: 18px;
-    /* Less overlap */
-    z-index: 1;
+.asset-icon-wrapper.multi {
+    width: auto;
 }
 
-.asset-icon-wrapper.single .asset-icon {
-    position: static;
-    width: 28px;
-    height: 28px;
+.asset-icon-wrapper.single {
+    width: 26px;
 }
 
 .asset-info {
@@ -326,8 +333,10 @@ header {
 
 .asset-category {
     font-size: 0.65rem;
-    color: #666;
+    color: var(--tg-theme-hint-color, #999);
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
 }
 
 .asset-price-box {
@@ -452,6 +461,31 @@ header {
     box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 
+/* Main Action Button */
+.main-get-signal-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.08);
+    /* slightly filled, not fully transparent */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    /* light border for glass effect */
+    color: #fff;
+    padding: 18px 20px;
+    border-radius: 16px;
+    font-size: 1.15rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.main-get-signal-btn:active {
+    transform: scale(0.98);
+    background: rgba(255, 255, 255, 0.12);
+}
+
 /* Asset Grid Optimization */
 .asset-grid {
     flex: 1;
@@ -464,22 +498,7 @@ header {
     /* Slightly smaller gap */
 }
 
-.asset-item {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 16px;
-    padding: 15px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    backdrop-filter: blur(15px);
-    transition: transform 0.2s, background 0.2s;
-}
-
-.asset-item:active {
-    transform: scale(0.98);
-    background: rgba(255, 255, 255, 0.08);
-}
+/* Consolidated above v42 */
 
 /* Asset Detail View (Overlay) */
 .asset-header {
@@ -491,13 +510,25 @@ header {
 }
 
 .signal-asset-icon-wrapper {
-    position: relative;
-    width: 104px;
-    /* Wider to accommodate less overlap */
-    height: 64px;
     display: flex;
+    align-items: center;
     justify-content: center;
-    margin-bottom: 5px;
+    gap: 8px;
+    /* Larger gap for the big detailed overlay */
+    margin-bottom: 20px;
+    background: none !important;
+}
+
+.signal-asset-icon-wrapper .asset-icon {
+    position: static;
+    width: 68px;
+    height: 44px;
+    /* Rectangular ratio for "flags" */
+    border-radius: 8px;
+    /* Slightly rounded edges as requested */
+    object-fit: cover;
+    border: none !important;
+    background: transparent;
 }
 
 .signal-asset-icon {
@@ -689,15 +720,31 @@ header {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: flex;
+    background: transparent !important;
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    /* Center the card */
     z-index: 100;
     opacity: 0;
     overflow-x: hidden;
-    background: #0d0d0d;
+    backdrop-filter: none !important;
+    transition: opacity 0.3s ease;
+}
+
+.signal-card {
+    background: rgba(10, 11, 16, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    padding: 30px 20px;
+    width: 90%;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    position: relative;
+    z-index: 101;
 }
 
 /* Removed tv-chart-bg as we are using a cleaner dark theme for PO fidelity */
@@ -708,54 +755,170 @@ header {
     pointer-events: all;
 }
 
-.scanner-line {
-    width: 80%;
-    height: 2px;
-    background: var(--accent-blue);
-    box-shadow: 0 0 15px var(--accent-blue);
-    position: absolute;
-    animation: scan 2s linear infinite;
+.signal-stats-grid,
+.stat-block {
+    display: none;
 }
 
-@keyframes scan {
-    0% {
-        top: 20%;
-    }
-
-    100% {
-        top: 80%;
-    }
+/* Advanced Signal Overlay (v40) */
+.signal-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
 }
 
-.signal-card {
-    background: #111;
-    width: 90%;
-    max-width: 400px;
-    margin: auto;
-    padding: 30px 20px;
-    border-radius: 24px;
-    border: 1px solid rgba(255, 215, 0, 0.1);
-    position: relative;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-.signal-result {
-    margin: 25px 0;
+.stat-block {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 15px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-.direction {
-    font-size: 48px;
+.stat-block .stat-label {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stat-block .stat-value {
+    font-size: 1.4rem;
     font-weight: 900;
-    margin-bottom: 5px;
-    letter-spacing: 2px;
+    color: #fff;
 }
 
-.expiration-info {
-    font-size: 14px;
-    color: rgba(255, 255, 255, 0.6);
-    margin-bottom: 10px;
+.signal-main-result {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.direction-marker {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1.8rem;
+    font-weight: 900;
+    padding: 30px 20px;
+    border-radius: 20px;
+    width: 100%;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+}
+
+.direction-marker.call {
+    color: #fff;
+    background: linear-gradient(135deg, #00c853, #00e676);
+    box-shadow: 0 10px 30px rgba(0, 200, 83, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.direction-marker.put {
+    color: #fff;
+    background: linear-gradient(135deg, #d50000, #ff1744);
+    box-shadow: 0 10px 30px rgba(213, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+#signal-direction-icon {
+    font-size: 3rem;
+    line-height: 1;
+}
+
+.asset-name-large {
+    color: #fff;
+    letter-spacing: -0.5px;
+}
+
+.signal-info-rows {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 18px;
+    overflow: hidden;
+    margin-bottom: 25px;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.info-row:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    color: #888;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.info-value {
+    color: #fff;
+    font-weight: 800;
+}
+
+.info-row.highlight {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.timer-progress-container {
+    height: 5px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+
+.timer-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d2ff, #9d50bb);
+    width: 100%;
+    transition: width 1s linear;
+}
+
+.signal-footer-btns {
+    display: flex;
+    justify-content: center;
+    /* Center them relative to the clock */
+    gap: 146px;
+    /* 140px robot width + 3px gap on each side */
+    margin-top: 20px;
+}
+
+.btn-footer-repeat,
+.btn-footer-back {
+    /* Removed flex: 1 to prevent stretching away from the clock */
+    min-width: 100px;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px;
+    border-radius: 14px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-footer-repeat:active,
+.btn-footer-back:active {
+    transform: scale(0.96);
+    background: rgba(255, 255, 255, 0.12);
 }
 
 .price-info {
@@ -818,6 +981,7 @@ header {
     transition: all 0.25s ease;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
 }
 
@@ -1211,6 +1375,7 @@ header {
     transition: all 0.25s ease;
     display: flex;
     align-items: center;
+    justify-content: flex-start;
     gap: 8px;
 }
 
@@ -1225,7 +1390,8 @@ header {
 }
 
 .assets-toggle-btn .dropdown-arrow,
-.education-toggle-btn .dropdown-arrow {
+.education-toggle-btn .dropdown-arrow,
+.indicators-toggle-btn .dropdown-arrow {
     transition: transform 0.3s ease;
     font-size: 0.7rem;
     margin-left: 10px;
@@ -1234,7 +1400,8 @@ header {
 }
 
 .assets-toggle-btn.active .dropdown-arrow,
-.education-toggle-btn.active .dropdown-arrow {
+.education-toggle-btn.active .dropdown-arrow,
+.indicators-toggle-btn.active .dropdown-arrow {
     transform: rotate(180deg);
 }
 
@@ -1310,6 +1477,15 @@ header {
     line-height: 1.7;
     white-space: pre-wrap;
     margin-top: 12px;
+}
+
+.lesson-detail-body img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    margin: 15px auto;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 /* ── Education Sub-Tabs ── */
@@ -1395,4 +1571,130 @@ header {
     color: #00aadd;
     font-size: 1rem;
     flex-shrink: 0;
+}
+
+/* ── Indicators Toggle Button (Standard Style) ── */
+.indicators-toggle-btn {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    text-align: left;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    text-transform: uppercase;
+}
+
+.indicators-toggle-btn .dropdown-arrow {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+.indicators-toggle-btn:hover,
+.indicators-toggle-btn.active {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.indicators-toggle-btn.active {
+    background: rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+}
+
+.indicators-toggle-btn.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.indicators-panel {
+    margin-top: 5px;
+}
+
+.indicators-panel.hidden {
+    display: none;
+}
+
+.indicators-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ── Indicator Card (Matches Lesson Card) ── */
+.indicator-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 14px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.indicator-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 220, 150, 0.3);
+    transform: translateY(-1px);
+}
+
+.indicator-card-info {
+    flex: 1;
+}
+
+.indicator-card-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+}
+
+.indicator-card-desc {
+    font-size: 0.8rem;
+    color: #999;
+    line-height: 1.4;
+}
+
+.indicator-card-arrow {
+    color: #00dc96;
+    font-size: 1.2rem;
+    opacity: 0.6;
+}
+
+.indicator-card-icon {
+    font-size: 1.8rem;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    background: rgba(0, 220, 150, 0.07);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lesson-detail-body {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #e0e0e0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    margin-top: 15px;
+}
+
+.lesson-detail-body b {
+    color: #FFD700;
+    font-weight: 700;
 }
