@@ -1260,13 +1260,13 @@ function startPriceUpdates() {
         const urlParams = new URLSearchParams(window.location.search);
         const paramIp = urlParams.get('ip'); // ?ip=192.168.x.x
         const savedIp = localStorage.getItem('quote_server_ip');
-        const defaultLocalIp = "192.168.1.8"; // Saved fallback from previous session
+        const defaultLocalIp = "127.0.0.1"; // Default to localhost
         const port = "8765";
 
         const host = window.location.hostname;
         const isLocalHost = host === 'localhost' || host === '127.0.0.1' || window.location.protocol === 'file:';
 
-        let targetIp = paramIp || savedIp || defaultLocalIp;
+        let targetIp = paramIp || savedIp || (isLocalHost ? "127.0.0.1" : defaultLocalIp);
 
         let currentUrl = "";
         if (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://'))) {
