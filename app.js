@@ -915,11 +915,11 @@ function setupEventListeners() {
     const currentCatName = document.getElementById('current-category-name');
 
     // Panel Toggles
-    if (assetsBtn) assetsBtn.onclick = (e) => { e.stopPropagation(); toggleAssets(); };
-    if (educationBtn) educationBtn.onclick = (e) => { e.stopPropagation(); toggleEducation(); };
-    if (calcBtn) calcBtn.onclick = (e) => { e.stopPropagation(); toggleCalculator(); };
-    if (newsBtn) newsBtn.onclick = (e) => { e.stopPropagation(); toggleNews(); };
-    if (indicatorsBtn) indicatorsBtn.onclick = (e) => { e.stopPropagation(); toggleIndicators(); };
+    if (assetsBtn) assetsBtn.onclick = (e) => { debugLog('Assets clicked'); e.stopPropagation(); toggleAssets(); };
+    if (educationBtn) educationBtn.onclick = (e) => { debugLog('Edu clicked'); e.stopPropagation(); toggleEducation(); };
+    if (calcBtn) calcBtn.onclick = (e) => { debugLog('Calc clicked'); e.stopPropagation(); toggleCalculator(); };
+    if (newsBtn) newsBtn.onclick = (e) => { debugLog('News clicked'); e.stopPropagation(); toggleNews(); };
+    if (indicatorsBtn) indicatorsBtn.onclick = (e) => { debugLog('Ind clicked'); e.stopPropagation(); toggleIndicators(); };
 
     // Toggle category dropdown
     if (toggleBtn) {
