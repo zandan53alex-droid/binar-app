@@ -608,7 +608,7 @@ const TRANSLATIONS = {
     }
 };
 let currentLang = 'ru';
-let currentCategory = null;
+let currentCategory = 'forex_otc';
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -743,21 +743,12 @@ function toggleIndicators() {
     }
 }
 
-function debugLog(msg) {
-    const div = document.getElementById('debug-overlay');
-    if (div) div.innerText += ' | ' + msg;
-    console.log('[DEBUG]', msg);
-}
 
 function initApp() {
-    debugLog('initApp started');
     const tg = window.Telegram?.WebApp;
     if (tg) {
-        debugLog('tg found');
         tg.ready();
         tg.expand();
-    } else {
-        debugLog('tg NOT found');
     }
 
     try {
@@ -916,15 +907,14 @@ function setupEventListeners() {
     const currentCatName = document.getElementById('current-category-name');
 
     // Panel Toggles
-    if (assetsBtn) assetsBtn.onclick = (e) => { debugLog('Assets clicked'); e.stopPropagation(); toggleAssets(); };
-    if (educationBtn) educationBtn.onclick = (e) => { debugLog('Edu clicked'); e.stopPropagation(); toggleEducation(); };
-    if (calcBtn) calcBtn.onclick = (e) => { debugLog('Calc clicked'); e.stopPropagation(); toggleCalculator(); };
-    if (newsBtn) newsBtn.onclick = (e) => { debugLog('News clicked'); e.stopPropagation(); toggleNews(); };
-    if (indicatorsBtn) indicatorsBtn.onclick = (e) => { debugLog('Ind clicked'); e.stopPropagation(); toggleIndicators(); };
+    if (assetsBtn) assetsBtn.onclick = (e) => { e.stopPropagation(); toggleAssets(); };
+    if (educationBtn) educationBtn.onclick = (e) => { e.stopPropagation(); toggleEducation(); };
+    if (calcBtn) calcBtn.onclick = (e) => { e.stopPropagation(); toggleCalculator(); };
+    if (newsBtn) newsBtn.onclick = (e) => { e.stopPropagation(); toggleNews(); };
+    if (indicatorsBtn) indicatorsBtn.onclick = (e) => { e.stopPropagation(); toggleIndicators(); };
 
     if (mainGetSignalBtn) {
         mainGetSignalBtn.addEventListener('click', () => {
-            debugLog('Main Get Signal clicked');
             if (!assetsOpen) toggleAssets();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
