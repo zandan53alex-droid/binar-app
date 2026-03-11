@@ -626,7 +626,7 @@ let newsOpen = false;
 let indicatorsOpen = false;
 
 // DOM Elements
-let assetsBtn, assetsPanel, educationBtn, educationPanel, calcBtn, calcPanel, newsBtn, newsPanel, indicatorsBtn, indicatorsPanel;
+let assetsBtn, assetsPanel, educationBtn, educationPanel, calcBtn, calcPanel, newsBtn, newsPanel, indicatorsBtn, indicatorsPanel, mainGetSignalBtn;
 
 function closeAllPanels() {
     assetsOpen = false;
@@ -909,6 +909,7 @@ function setupEventListeners() {
     newsPanel = document.getElementById('news-panel');
     indicatorsBtn = document.getElementById('indicators-toggle-btn');
     indicatorsPanel = document.getElementById('indicators-panel');
+    mainGetSignalBtn = document.getElementById('main-get-signal-btn');
 
     const dropdownContainer = document.querySelector('.category-dropdown-container');
     const toggleBtn = document.getElementById('category-toggle');
@@ -920,6 +921,14 @@ function setupEventListeners() {
     if (calcBtn) calcBtn.onclick = (e) => { debugLog('Calc clicked'); e.stopPropagation(); toggleCalculator(); };
     if (newsBtn) newsBtn.onclick = (e) => { debugLog('News clicked'); e.stopPropagation(); toggleNews(); };
     if (indicatorsBtn) indicatorsBtn.onclick = (e) => { debugLog('Ind clicked'); e.stopPropagation(); toggleIndicators(); };
+
+    if (mainGetSignalBtn) {
+        mainGetSignalBtn.addEventListener('click', () => {
+            debugLog('Main Get Signal clicked');
+            if (!assetsOpen) toggleAssets();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+    }
 
     // Toggle category dropdown
     if (toggleBtn) {
@@ -1269,17 +1278,13 @@ function startPriceUpdates() {
 
         let targetIp = paramIp || savedIp || defaultLocalIp;
 
-        if (isLocalHost && !paramIp && !isFallback) {
-            targetIp = '127.0.0.1';
-        } else if (isFallback) {
-            targetIp = (targetIp === '127.0.0.1') ? defaultLocalIp : '127.0.0.1';
-        }
-
         let currentUrl = "";
         if (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://'))) {
             currentUrl = paramIp;
+        } else if (host === "185.174.138.19.sslip.io" || host === "vm3997023.firstbyte.club") {
+            // Production: use wss through nginx proxy
+            currentUrl = `wss://${host}/ws`;
         } else if (paramIp && (paramIp.includes('ngrok') || paramIp.includes('cloudflare') || paramIp.includes('.app'))) {
-            // Automatic secure tunnel detection: assume wss and no port
             const cleanIp = paramIp.replace('https://', '').replace('http://', '');
             currentUrl = `wss://${cleanIp}`;
         } else {
@@ -1866,13 +1871,7 @@ function updateChart(data) {
         }
     });
 }
-// Initialization of main get signal button
-if (mainGetSignalBtn) {
-    mainGetSignalBtn.addEventListener('click', () => {
-        if (!assetsOpen) toggleAssets();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-}
+// Initialization of main get signal button is now inside setupEventListeners
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', initApp);
