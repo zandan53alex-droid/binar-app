@@ -743,12 +743,25 @@ function toggleIndicators() {
     }
 }
 
+function debugLog(msg) {
+    const div = document.getElementById('debug-overlay');
+    if (div) div.innerText += ' | ' + msg;
+    console.log('[DEBUG]', msg);
+}
+
 function initApp() {
-    try {
+    debugLog('initApp started');
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+        debugLog('tg found');
         tg.ready();
         tg.expand();
+    } else {
+        debugLog('tg NOT found');
+    }
 
-        const userLang = tg.initDataUnsafe?.user?.language_code;
+    try {
+        const userLang = tg?.initDataUnsafe?.user?.language_code;
         const savedLang = localStorage.getItem('user_lang');
 
         if (savedLang && TRANSLATIONS[savedLang]) {
