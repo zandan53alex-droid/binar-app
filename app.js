@@ -1571,6 +1571,7 @@ async function fetchEconomicNews() {
         if (data.error) throw new Error(data.error);
         
         if (!Array.isArray(data)) {
+            console.error('Expected array, got:', data);
             let msg = 'Invalid calendar format';
             if (data['Error Message']) msg = data['Error Message'];
             else if (data['message']) msg = data['message'];
