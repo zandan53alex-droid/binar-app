@@ -112,8 +112,7 @@ const ASSETS_DB = {
         { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'crude.jpg', category: 'Commodities' },
         { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
         { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
-        { id: 'natural_gas', name: 'Natural Gas OTC', icon: 'natural_gas.jpg', category: 'Commodities' },
-        { id: 'natural_gas_regular', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
         { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
         { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.jpg', category: 'Commodities' },
         { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
@@ -1533,90 +1532,85 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    if (!listContainer || !updateStatus) return;
-    const t = TRANSLATIONS[currentLang];
+    const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
     try {
-        updateStatus.innerText = t.loading;
-
-        console.log("📡 Fetching news from backend proxy...");
-        const res = await fetch('/news');
-        let data = null;
-        if (res.ok) {
-            data = await res.json();
-        } else {
-            throw new Error(`Backend news error: ${res.status}`);
-        }
-
-        if (!data || !Array.isArray(data)) {
-            // Also try direct fetch as absolute last resort
-            try {
-                const res = await fetch(rawUrl);
-                if (res.ok) data = await res.json();
-            } catch (e) {
-                throw new Error(errorMsg || 'All proxies failed to load calendar data');
-            }
-        }
-
+        // Get today and tomorrow's date for a 48h window
         const now = new Date();
-        // Filter events: starting from NOW up to 48 hours in the future
-        const timeNow = now.getTime();
-        const timePlus48h = now.getTime() + 48 * 60 * 60 * 1000;
-        const filteredData = data.filter(item => {
-            const eventTime = new Date(item.date).getTime();
-            return eventTime >= timeNow && eventTime <= timePlus48h;
-        });
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 1);
 
-        // Map Forex Factory data
-        const tObj = TRANSLATIONS[currentLang] || TRANSLATIONS['ru'];
-        cachedNews = filteredData.slice(0, 40).map(item => {
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        const from = formatDate(now);
+        const to = formatDate(tomorrow);
+
+        // Use CORS proxy to bypass browser/header restrictions
+        const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+
+        const response = await fetch(proxyUrl);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+
+        const proxyRes = await response.json();
+        const data = JSON.parse(proxyRes.contents);
+
+        if (!Array.isArray(data)) {
+            if (data && data['Error Message']) throw new Error(data['Error Message']);
+            throw new Error('Invalid data format');
+        }
+
+        // Map FMP data to our structure
+        cachedNews = data.slice(0, 20).map(item => {
+            let impNum = 1;
+            if (item.impact === 'Medium') impNum = 2;
+            if (item.impact === 'High') impNum = 3;
+
             const dateObj = new Date(item.date);
             const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-            let importance = 1;
-            let impactName = tObj.impactLow;
-            let dotColor = '#ffb300';
-
-            if (item.impact === 'High') {
-                importance = 3;
-                impactName = tObj.impactHigh;
-                dotColor = '#f44336';
-            } else if (item.impact === 'Medium') {
-                importance = 2;
-                impactName = tObj.impactMedium;
-                dotColor = '#ff9800';
-            }
-
-            // Calculate time left
-            const diffMs = dateObj - now;
-            let timeLeftStr = '-';
-            if (diffMs > 0) {
-                const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-                const diffMins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-                timeLeftStr = `${String(diffHours).padStart(2, '0')}h. ${String(diffMins).padStart(2, '0')}m.`;
-            }
 
             return {
                 time: timeStr,
                 rawDate: dateObj,
-                currency: item.country,
-                event: item.title,
-                importance: importance,
-                impactName: impactName,
-                dotColor: dotColor,
-                timeLeft: timeLeftStr,
-                forecast: item.forecast || '-',
-                previous: item.previous || '-'
+                currency: item.currency || '???',
+                event: item.event,
+                importance: impNum
             };
         });
 
         renderNews();
-        updateStatus.innerText = `${t.updatedAt} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
     } catch (error) {
         console.error('News Fetch Error:', error);
-        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">${t.notFound}<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
     }
+}
+
+function renderNews() {
+    const listContainer = document.getElementById('news-list');
+    listContainer.innerHTML = '';
+
+    if (cachedNews.length === 0) {
+        listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #555;">Событий не найдено</div>';
+        return;
+    }
+
+    cachedNews.forEach(item => {
+        const stars = '⭐'.repeat(item.importance);
+        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
+
+        const card = `
+            <div class="news-card ${impactClass}">
+                <div class="news-card-header">
+                    <span class="news-time">${item.time}</span>
+                    <span class="news-currency">${item.currency}</span>
+                </div>
+                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
+                <div class="news-importance">Влияние: ${stars}</div>
+            </div>
+        `;
+        listContainer.innerHTML += card;
+    });
 }
 
 function renderNews() {
