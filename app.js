@@ -1548,33 +1548,27 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    const FINNHUB_TOKEN = 'd5dpk41r01qur4itq710d5dpk41r01qur4itq71g';
 
     try {
-        // Finnhub Economic Calendar API
-        // Format of Finnhub calendar: date, country, event, impact, actual, previous, estimate, unit
-        const newsSource = `https://finnhub.io/api/v1/calendar/economic?token=${FINNHUB_TOKEN}`; 
+        // Free Economic Calendar API (ForexFactory Feed)
+        // Format: title, country, date, impact, forecast, previous
+        const newsSource = `https://nfs.faireconomy.media/ff_calendar_thisweek.json`; 
         
         const response = await fetch(newsSource);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const result = await response.json();
-        // Finnhub returns { economicCalendar: [...] }
-        const data = result.economicCalendar || [];
-        
+        const data = await response.json();
         if (!Array.isArray(data)) throw new Error('Invalid calendar format');
 
-        // Filter for relevant currencies to reduce list size
-        const relevantCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'NZD', 'CNY', 'RUB'];
+        const now = new Date();
+        const future = new Date(now.getTime() + (48 * 60 * 60 * 1000));
 
-        // Map Finnhub data to our structure
+        // Map data to our structure
         cachedNews = data
-            .filter(item => relevantCurrencies.includes(item.country) || item.impact === 'High')
-            .slice(0, 30)
             .map(item => {
-                const eventTime = new Date(item.time + 'Z'); // Finnhub time is UTC
-                const impact = item.impact; // Finnhub values: 1-4 or High/Low
-                const importance = (impact === 'High' || impact === 3) ? 3 : ((impact === 'Medium' || impact === 2) ? 2 : 1);
+                const eventTime = new Date(item.date);
+                const impact = item.impact.toLowerCase(); // low, medium, high
+                const importance = impact === 'high' ? 3 : (impact === 'medium' ? 2 : 1);
                 
                 const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
                 const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
@@ -1587,7 +1581,7 @@ async function fetchEconomicNews() {
                     const hrs = Math.floor(totalMins / 60);
                     const mins = totalMins % 60;
                     timeLeft = `${hrs}h. ${mins}m.`;
-                } else if (Math.abs(diffMs) < 600000) { // 10 mins after event
+                } else if (Math.abs(diffMs) < 3600000) { // 1 hour after event
                     timeLeft = 'Сейчас';
                 } else {
                     timeLeft = 'Завершено';
@@ -1597,15 +1591,21 @@ async function fetchEconomicNews() {
                     time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     eventTime: eventTime,
                     currency: item.country || 'USD',
-                    event: item.event || 'Economic Event',
+                    event: item.title || 'Economic Event',
                     importance: importance,
                     dotColor: dotColor,
                     impactName: impactName,
                     timeLeft: timeLeft,
                     previous: item.previous || '-',
-                    forecast: item.estimate || '-'
+                    forecast: item.forecast || '-'
                 };
-            });
+            })
+            // Filter only events from now up to 48 hours + show 5 recent ones
+            .filter(item => {
+                 const diff = item.eventTime - now;
+                 return (diff > -3600000 && diff < 48 * 3600000); 
+            })
+            .slice(0, 30);
 
         renderNews();
         if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
