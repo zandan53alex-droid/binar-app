@@ -1548,27 +1548,34 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
+    const FMP_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
     try {
-        // Free Economic Calendar API (ForexFactory Feed)
-        // Format: title, country, date, impact, forecast, previous
-        const newsSource = `https://nfs.faireconomy.media/ff_calendar_thisweek.json`; 
-        
-        const response = await fetch(newsSource);
+        const now = new Date();
+        const tomorrow = new Date(now);
+        tomorrow.setDate(now.getDate() + 2); // 48h range
+
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        const from = formatDate(now);
+        const to = formatDate(tomorrow);
+
+        const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${FMP_KEY}`;
+        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+
+        const response = await fetch(proxyUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const data = await response.json();
+        const proxyRes = await response.json();
+        const data = JSON.parse(proxyRes.contents);
+        
         if (!Array.isArray(data)) throw new Error('Invalid calendar format');
-
-        const now = new Date();
-        const future = new Date(now.getTime() + (48 * 60 * 60 * 1000));
 
         // Map data to our structure
         cachedNews = data
             .map(item => {
                 const eventTime = new Date(item.date);
-                const impact = item.impact.toLowerCase(); // low, medium, high
-                const importance = impact === 'high' ? 3 : (impact === 'medium' ? 2 : 1);
+                const impact = item.impact || 'Low';
+                const importance = impact === 'High' ? 3 : (impact === 'Medium' ? 2 : 1);
                 
                 const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
                 const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
@@ -1590,20 +1597,15 @@ async function fetchEconomicNews() {
                 return {
                     time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
                     eventTime: eventTime,
-                    currency: item.country || 'USD',
-                    event: item.title || 'Economic Event',
+                    currency: item.currency || 'USD',
+                    event: item.event || 'Economic Event',
                     importance: importance,
                     dotColor: dotColor,
                     impactName: impactName,
                     timeLeft: timeLeft,
                     previous: item.previous || '-',
-                    forecast: item.forecast || '-'
+                    forecast: item.estimate || '-'
                 };
-            })
-            // Filter only events from now up to 48 hours + show 5 recent ones
-            .filter(item => {
-                 const diff = item.eventTime - now;
-                 return (diff > -3600000 && diff < 48 * 3600000); 
             })
             .slice(0, 30);
 
