@@ -1563,24 +1563,68 @@ async function fetchEconomicNews() {
         const targetUrl = window.location.origin + '/api/calendar';
         console.log('Fetching economic news from:', targetUrl);
 
-        const response = await fetch(targetUrl);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const data = await response.json();
-        
-        if (data.error) throw new Error(data.error);
-        
-        if (!Array.isArray(data)) {
-            console.error('Expected array, got:', data);
-            let msg = 'Invalid calendar format';
-            if (data['Error Message']) msg = data['Error Message'];
-            else if (data['message']) msg = data['message'];
-            else msg = 'Invalid format: ' + JSON.stringify(data).substring(0, 50);
-            throw new Error(msg);
-        } else {
-            cachedNews = mapFmpData(data);
+        let data = null;
+        try {
+            const response = await fetch(targetUrl);
+            if (response.ok) data = await response.json();
+        } catch (e) {
+            console.warn('Backend calendar fetch failed:', e);
         }
 
+        // If backend returned empty or failed, try Forex Factory directly from browser
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            console.log('Backend returned empty, trying Forex Factory directly...');
+            try {
+                const now = new Date();
+                const cutoff = new Date(now.getTime() + 24 * 3600 * 1000);
+                const urls = [
+                    'https://nfs.faireconomy.media/ff_calendar_thisweek.json',
+                    'https://nfs.faireconomy.media/ff_calendar_nextweek.json'
+                ];
+                let ffEvents = [];
+                for (const url of urls) {
+                    try {
+                        const r = await fetch(url);
+                        if (r.ok) {
+                            const d = await r.json();
+                            if (Array.isArray(d)) ffEvents = ffEvents.concat(d);
+                        }
+                    } catch (e2) { /* skip */ }
+                }
+                if (ffEvents.length > 0) {
+                    // Map and filter to upcoming only
+                    data = ffEvents
+                        .map(item => {
+                            const impact = (item.impact || 'Low');
+                            const impactNorm = impact.toLowerCase().includes('high') ? 'High'
+                                : impact.toLowerCase().includes('medium') ? 'Medium' : 'Low';
+                            return {
+                                date: item.date,
+                                event: item.title || 'Economic Event',
+                                currency: item.country || 'USD',
+                                impact: impactNorm
+                            };
+                        })
+                        .filter(item => {
+                            const t = new Date(item.date);
+                            return t >= now && t <= cutoff;
+                        })
+                        .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    console.log('Direct Forex Factory: got', data.length, 'upcoming events');
+                }
+            } catch (e) {
+                console.warn('Direct Forex Factory failed:', e);
+            }
+        }
+
+        if (data && data.error) throw new Error(data.error);
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #888; font-size: 0.8rem;">Событий не найдено</div>`;
+            return;
+        }
+
+        cachedNews = mapFmpData(data);
         renderNews();
         if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
