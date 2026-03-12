@@ -106,18 +106,18 @@ const ASSETS_DB = {
         { id: 'link', name: 'Chainlink', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' }
     ],
     commodities: [
-        { id: 'xageur', name: 'XAG/EUR', icons: ['images/silver_logo.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'xaueur', name: 'XAU/EUR', icons: ['images/gold.jpg', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'images/brent.png', category: 'Commodities' },
-        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'images/crude.jpg', category: 'Commodities' },
-        { id: 'silver_otc', name: 'Silver OTC', icon: 'images/silver.jpg', category: 'Commodities' },
-        { id: 'gold_otc', name: 'Gold OTC', icon: 'images/gold.jpg', category: 'Commodities' },
-        { id: 'natural_gas', name: 'Natural Gas', icon: 'images/natural_gas.jpg', category: 'Commodities' },
-        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'images/palladium.jpg', category: 'Commodities' },
-        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'images/platinum.jpg', category: 'Commodities' },
-        { id: 'gold', name: 'Gold', icon: 'images/gold.jpg', category: 'Commodities' },
-        { id: 'silver', name: 'Silver', icon: 'images/silver.jpg', category: 'Commodities' },
-        { id: 'platinum_spot', name: 'Platinum spot', icon: 'images/platinum.jpg', category: 'Commodities' }
+        { id: 'xageur', name: 'XAG/EUR', icons: ['silver_logo.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'xaueur', name: 'XAU/EUR', icons: ['gold.jpg', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'brent.png', category: 'Commodities' },
+        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'crude.jpg', category: 'Commodities' },
+        { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
+        { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
+        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
+        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.jpg', category: 'Commodities' },
+        { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
+        { id: 'silver', name: 'Silver', icon: 'silver.jpg', category: 'Commodities' },
+        { id: 'platinum_spot', name: 'Platinum spot', icon: 'platinum.jpg', category: 'Commodities' }
     ],
     stocks: [
         { id: 'amzn_otc', name: 'Amazon OTC', icon: 'https://logo.clearbit.com/amazon.com', category: 'Stocks' },
@@ -162,30 +162,30 @@ const ASSETS_DB = {
         { id: 'intel', name: 'Intel', icon: 'https://logo.clearbit.com/intel.com', category: 'Stocks' }
     ],
     indices: [
-        { id: 'aus200_otc', name: 'AUS 200 OTC', icon: 'images/aus200.png', category: 'Indices' },
-        { id: '100gbp_otc', name: '100GBP OTC', icon: 'images/100gbp.png', category: 'Indices' },
-        { id: 'cac40_index', name: 'CAC 40', icon: 'images/cac40.png', category: 'Indices' },
-        { id: 'd30eur_otc', name: 'D30EUR OTC', icon: 'images/d30eur.jpg', category: 'Indices' },
-        { id: 'dji30_otc', name: 'DJI30 OTC', icon: 'images/dji30.png', category: 'Indices' },
-        { id: 'e35eur_index', name: 'E35EUR', icon: 'images/e35eur.jpg', category: 'Indices' },
-        { id: 'e35eur_otc', name: 'E35EUR OTC', icon: 'images/e35eur.jpg', category: 'Indices' },
-        { id: 'e50eur_otc', name: 'E50EUR OTC', icon: 'images/e50eur.png', category: 'Indices' },
-        { id: 'jpn225_otc', name: 'JPN225 OTC', icon: 'images/jpn225.png', category: 'Indices' },
-        { id: 'us100_index', name: 'US100', icon: 'images/us100.png', category: 'Indices' },
-        { id: 'us100_otc', name: 'US100 OTC', icon: 'images/us100.png', category: 'Indices' },
-        { id: 'smi20_index', name: 'SMI 20', icon: 'images/smi20.png', category: 'Indices' },
-        { id: 'sp500_index', name: 'SP500', icon: 'images/sp500.png', category: 'Indices' },
-        { id: 'sp500_otc', name: 'SP500 OTC', icon: 'images/sp500.png', category: 'Indices' },
-        { id: '100gbp_index', name: '100GBP', icon: 'images/100gbp.png', category: 'Indices' },
-        { id: 'aex25_index', name: 'AEX 25', icon: 'images/aex25.png', category: 'Indices' },
-        { id: 'd30eur_index', name: 'D30/EUR', icon: 'images/d30eur.jpg', category: 'Indices' },
-        { id: 'dji30_index', name: 'DJI30', icon: 'images/dji30.png', category: 'Indices' },
-        { id: 'e50eur_index', name: 'E50/EUR', icon: 'images/e50eur.png', category: 'Indices' },
-        { id: 'f40eur_index', name: 'F40/EUR', icon: 'images/f40eur.png', category: 'Indices' },
-        { id: 'f40eur_otc', name: 'F40EUR OTC', icon: 'images/f40eur.png', category: 'Indices' },
-        { id: 'hk33_index', name: 'HONG KONG 33', icon: 'images/hk33.jpg', category: 'Indices' },
-        { id: 'jpn225_index', name: 'JPN225', icon: 'images/jpn225.png', category: 'Indices' },
-        { id: 'aus200_index', name: 'AUS 200', icon: 'images/aus200.png', category: 'Indices' }
+        { id: 'aus200_otc', name: 'AUS 200 OTC', icon: 'aus200.png', category: 'Indices' },
+        { id: '100gbp_otc', name: '100GBP OTC', icon: '100gbp.png', category: 'Indices' },
+        { id: 'cac40_index', name: 'CAC 40', icon: 'cac40.png', category: 'Indices' },
+        { id: 'd30eur_otc', name: 'D30EUR OTC', icon: 'd30eur.jpg', category: 'Indices' },
+        { id: 'dji30_otc', name: 'DJI30 OTC', icon: 'dji30.png', category: 'Indices' },
+        { id: 'e35eur_index', name: 'E35EUR', icon: 'e35eur.jpg', category: 'Indices' },
+        { id: 'e35eur_otc', name: 'E35EUR OTC', icon: 'e35eur.jpg', category: 'Indices' },
+        { id: 'e50eur_otc', name: 'E50EUR OTC', icon: 'e50eur.png', category: 'Indices' },
+        { id: 'jpn225_otc', name: 'JPN225 OTC', icon: 'jpn225.png', category: 'Indices' },
+        { id: 'us100_index', name: 'US100', icon: 'us100.png', category: 'Indices' },
+        { id: 'us100_otc', name: 'US100 OTC', icon: 'us100.png', category: 'Indices' },
+        { id: 'smi20_index', name: 'SMI 20', icon: 'smi20.png', category: 'Indices' },
+        { id: 'sp500_index', name: 'SP500', icon: 'sp500.png', category: 'Indices' },
+        { id: 'sp500_otc', name: 'SP500 OTC', icon: 'sp500.png', category: 'Indices' },
+        { id: '100gbp_index', name: '100GBP', icon: '100gbp.png', category: 'Indices' },
+        { id: 'aex25_index', name: 'AEX 25', icon: 'aex25.png', category: 'Indices' },
+        { id: 'd30eur_index', name: 'D30/EUR', icon: 'd30eur.jpg', category: 'Indices' },
+        { id: 'dji30_index', name: 'DJI30', icon: 'dji30.png', category: 'Indices' },
+        { id: 'e50eur_index', name: 'E50/EUR', icon: 'e50eur.png', category: 'Indices' },
+        { id: 'f40eur_index', name: 'F40/EUR', icon: 'f40eur.png', category: 'Indices' },
+        { id: 'f40eur_otc', name: 'F40EUR OTC', icon: 'f40eur.png', category: 'Indices' },
+        { id: 'hk33_index', name: 'HONG KONG 33', icon: 'hk33.jpg', category: 'Indices' },
+        { id: 'jpn225_index', name: 'JPN225', icon: 'jpn225.png', category: 'Indices' },
+        { id: 'aus200_index', name: 'AUS 200', icon: 'aus200.png', category: 'Indices' }
     ]
 };
 
@@ -264,6 +264,7 @@ const TRANSLATIONS = {
         newsEvent: 'Событие',
         newsPrev: 'Пред.',
         newsForecast: 'Прогноз',
+        allAssets: 'ВСЕ АКТИВЫ',
         impactLow: 'Низкий',
         impactMedium: 'Средний',
         impactHigh: 'Высокий',
@@ -278,9 +279,10 @@ const TRANSLATIONS = {
         standard: 'STANDARD',
         platinum: 'VIP ACCESS',
         analyze: 'GET SIGNAL',
+        mainSignalBtn: 'GET SIGNAL',
         entry: 'ENTRY:',
-        call: 'BUY ↗',
-        put: 'SELL ↘',
+        call: 'CALL ↗',
+        put: 'PUT ↘',
         crypto: 'CRYPTO',
         forex: 'CURRENCIES',
         forex_otc: 'CURRENCIES OTC',
@@ -299,7 +301,7 @@ const TRANSLATIONS = {
         notFound: 'Nothing found',
         updatedAt: 'Updated:',
         loading: 'LOADING...',
-        basics: 'Basics',
+        basics: 'Trading Basics',
         books: 'Books',
         deposit: 'Deposit ($)',
         firstBet: 'First Bet (%)',
@@ -308,9 +310,9 @@ const TRANSLATIONS = {
         payout: 'Payout (%)',
         statsFirstBet: 'First Bet',
         statsRisk: 'Total Risk',
-        statsRiskPerc: 'Risk of Depo',
-        survivalMsg: 'Deposit will last {n} steps in a row.',
-        runSim: 'RUN',
+        statsRiskPerc: 'Risk/Depo',
+        survivalMsg: 'Deposit holds {n} steps.',
+        runSim: 'RUN SIM',
         winrate: 'Winrate (%)',
         balance: 'Balance:',
         lossSeries: 'Loss Series:',
@@ -1027,19 +1029,27 @@ function setupEventListeners() {
         setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
         if (signalTimerInterval) clearInterval(signalTimerInterval);
     };
+    document.querySelectorAll('.dropdown-item').forEach(btn => {
+        if (btn.dataset.category === currentCategory) btn.classList.add('active');
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.dropdown-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
 
-    const repeatBtn = document.getElementById('repeat-signal-btn');
-    if (repeatBtn) repeatBtn.onclick = generateSignal;
+            // Update button text to selected category
+            const categoryNameEl = document.getElementById('current-category-name');
+            const t = TRANSLATIONS[currentLang];
+            if (currentCategory && t[currentCategory]) {
+                categoryNameEl.innerText = t[currentCategory];
+            } else {
+                categoryNameEl.innerText = t.allAssets || 'ВСЕ АКТИВЫ';
+            }
 
-    const backBtn = document.getElementById('back-to-assets-btn');
-    if (backBtn) {
-        backBtn.onclick = () => {
-            document.body.classList.remove('signal-active');
-            document.getElementById('signal-overlay').classList.remove('active');
-            setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
-            if (signalTimerInterval) clearInterval(signalTimerInterval);
+            document.querySelector('.category-dropdown-container').classList.remove('open');
+            renderAssets();
         };
-    }
+    });
 
     document.getElementById('get-signal-btn').onclick = generateSignal;
 }
@@ -1532,85 +1542,51 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
+    
+    // We try to fetch from the local proxy if available, otherwise fallback to Trading Economics Guest
+    // But since the server (postback_app.py) has its own /news endpoint, let's use it!
+    const newsSource = '/news'; 
 
     try {
-        // Get today and tomorrow's date for a 48h window
-        const now = new Date();
-        const tomorrow = new Date(now);
-        tomorrow.setDate(now.getDate() + 1);
-
-        const formatDate = (d) => d.toISOString().split('T')[0];
-        const from = formatDate(now);
-        const to = formatDate(tomorrow);
-
-        // Use CORS proxy to bypass browser/header restrictions
-        const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
-
-        const response = await fetch(proxyUrl);
+        const response = await fetch(newsSource);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const proxyRes = await response.json();
-        const data = JSON.parse(proxyRes.contents);
+        const data = await response.json();
 
-        if (!Array.isArray(data)) {
-            if (data && data['Error Message']) throw new Error(data['Error Message']);
-            throw new Error('Invalid data format');
-        }
+        if (data.error) throw new Error(data.error);
+        if (!Array.isArray(data)) throw new Error('Invalid news format');
 
-        // Map FMP data to our structure
+        // Map Trading Economics data to our structure
         cachedNews = data.slice(0, 20).map(item => {
-            let impNum = 1;
-            if (item.impact === 'Medium') impNum = 2;
-            if (item.impact === 'High') impNum = 3;
+            const importance = (item.Importance === 3 || item.Importance === '3') ? 3 : 
+                             ((item.Importance === 2 || item.Importance === '2') ? 2 : 1);
+            
+            const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
+            const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
 
-            const dateObj = new Date(item.date);
-            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
+            // Format date/time
+            let timeStr = item.Date ? item.Date.split('T')[1]?.substring(0, 5) : '--:--';
+            
             return {
-                time: timeStr,
-                rawDate: dateObj,
-                currency: item.currency || '???',
-                event: item.event,
-                importance: impNum
+                time: timeStr || '--:--',
+                currency: item.Country || item.Currency || '?',
+                event: item.Event || 'Economic Event',
+                importance: importance,
+                dotColor: dotColor,
+                impactName: impactName,
+                timeLeft: '--', // Calculation would require complex time logic
+                previous: item.Previous || '-',
+                forecast: item.Forecast || '-'
             };
         });
 
         renderNews();
-        updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
     } catch (error) {
         console.error('News Fetch Error:', error);
-        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+        if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
     }
-}
-
-function renderNews() {
-    const listContainer = document.getElementById('news-list');
-    listContainer.innerHTML = '';
-
-    if (cachedNews.length === 0) {
-        listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #555;">Событий не найдено</div>';
-        return;
-    }
-
-    cachedNews.forEach(item => {
-        const stars = '⭐'.repeat(item.importance);
-        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
-
-        const card = `
-            <div class="news-card ${impactClass}">
-                <div class="news-card-header">
-                    <span class="news-time">${item.time}</span>
-                    <span class="news-currency">${item.currency}</span>
-                </div>
-                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                <div class="news-importance">Влияние: ${stars}</div>
-            </div>
-        `;
-        listContainer.innerHTML += card;
-    });
 }
 
 function renderNews() {
@@ -1627,7 +1603,7 @@ function renderNews() {
     const FLAG_MAP = {
         'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
         'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'NZD': '🇳🇿',
-        'CNY': '🇨🇳'
+        'CNY': '🇨🇳', 'RUB': '🇷🇺', 'GOLD': '🟡', 'SILVER': '⚪'
     };
 
     let tableHTML = `
