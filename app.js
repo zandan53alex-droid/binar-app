@@ -856,7 +856,7 @@ function setupLocalization() {
         if (currentCategory && t[currentCategory]) {
             categoryNameEl.innerText = t[currentCategory];
         } else {
-            categoryNameEl.innerText = t.assetsBtn || 'Активы';
+            categoryNameEl.innerText = t.allAssets || 'АКТИВЫ';
         }
     }
 
@@ -1544,31 +1544,54 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    
-    // Finnhub API as requested
-    const newsSource = 'https://finnhub.io/api/v1/news?category=forex&token=d5dpk41r01qur4itq710d5dpk41r01qur4itq71g'; 
+    const FMP_API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
     try {
+        const now = new Date();
+        const future = new Date(now.getTime() + (48 * 60 * 60 * 1000));
+        const formatDate = (d) => d.toISOString().split('T')[0];
+        const from = formatDate(now);
+        const to = formatDate(future);
+
+        // Fetching economic calendar for 48h
+        const newsSource = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${FMP_API_KEY}`; 
+        
         const response = await fetch(newsSource);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
+        if (!Array.isArray(data)) throw new Error('Invalid calendar format');
 
-        if (!Array.isArray(data)) throw new Error('Invalid news format');
+        // Map FMP data to our structure
+        cachedNews = data.slice(0, 30).map(item => {
+            const eventTime = new Date(item.date);
+            const importance = (item.impact === 'High') ? 3 : ((item.impact === 'Medium') ? 2 : 1);
+            const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
+            const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
 
-        // Map Finnhub data to our structure
-        cachedNews = data.slice(0, 20).map(item => {
-            // Finnhub format: datetime, headline, summary, source, url, image
-            const date = item.datetime ? new Date(item.datetime * 1000) : new Date();
-            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-            
+            // Calculate "Time Left"
+            const diffMs = eventTime - new Date();
+            let timeLeft = '--';
+            if (diffMs > 0) {
+                const totalMins = Math.floor(diffMs / 60000);
+                const hrs = Math.floor(totalMins / 60);
+                const mins = totalMins % 60;
+                timeLeft = `${hrs}h. ${mins}m.`;
+            } else {
+                timeLeft = 'Завершено';
+            }
+
             return {
-                time: timeStr,
-                headline: item.headline || 'Forex News',
-                summary: item.summary || '',
-                source: item.source || 'Finnhub',
-                url: item.url || '#',
-                image: item.image || ''
+                time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                eventTime: eventTime,
+                currency: item.currency || 'USD',
+                event: item.event || 'Economic Event',
+                importance: importance,
+                dotColor: dotColor,
+                impactName: impactName,
+                timeLeft: timeLeft,
+                previous: item.previous || '-',
+                forecast: item.estimate || '-'
             };
         });
 
@@ -1576,8 +1599,8 @@ async function fetchEconomicNews() {
         if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
     } catch (error) {
-        console.error('News Fetch Error:', error);
-        if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+        console.error('Calendar Fetch Error:', error);
+        if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">События временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
     }
 }
 
@@ -1592,27 +1615,77 @@ function renderNews() {
         return;
     }
 
-    cachedNews.forEach(item => {
-        const card = document.createElement('div');
-        card.style.padding = '15px';
-        card.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
-        card.style.cursor = 'pointer';
-        card.onclick = () => { if (item.url !== '#') window.open(item.url, '_blank'); };
+    const FLAG_MAP = {
+        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
+        'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'NZD': '🇳🇿',
+        'CNY': '🇨🇳', 'RUB': '🇷🇺', 'GOLD': '🟡', 'SILVER': '⚪'
+    };
 
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
-                <span style="font-size: 0.65rem; color: #3b82f6; font-weight: 700; text-transform: uppercase;">${item.source}</span>
-                <span style="font-size: 0.65rem; color: #888;">${item.time}</span>
-            </div>
-            <div style="font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 5px; line-height: 1.3;">${item.headline}</div>
-            <div style="font-size: 0.7rem; color: #aaa; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.summary}</div>
+    let tableHTML = `
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.7rem; color: #d1d5db; min-width: 400px; table-layout: fixed;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: #888; text-align: left;">
+                        <th style="padding: 10px 5px; width: 50px;">${t.newsTime}</th>
+                        <th style="padding: 10px 5px; width: 80px;">${t.newsPriority}</th>
+                        <th style="padding: 10px 5px; width: 100px;">${t.newsTimeLeft}</th>
+                        <th style="padding: 10px 5px;">${t.newsEvent}</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    cachedNews.forEach(item => {
+        const flag = FLAG_MAP[item.currency] || '🌐';
+        const dots = `<span style="color: ${item.dotColor}; font-size: 0.8rem; letter-spacing: -2px;">${'●'.repeat(item.importance)}</span>`;
+
+        tableHTML += `
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                <td style="padding: 12px 5px; font-weight: 700; color: #fff; vertical-align: top;">${item.time}</td>
+                <td style="padding: 12px 5px; vertical-align: top;">
+                    <div style="line-height: 1;">${dots}</div>
+                    <div style="font-size: 0.6rem; color: #888; margin-top: 2px;">${item.impactName}</div>
+                </td>
+                <td style="padding: 12px 5px; color: #aaa; vertical-align: top; font-weight: 500;">${item.timeLeft}</td>
+                <td style="padding: 12px 5px; vertical-align: top; line-height: 1.2;">
+                    <span style="display: inline-flex; align-items: center;">
+                        <span style="font-size: 0.9rem; margin-right: 6px;">${flag}</span>
+                        <span style="font-weight: 500; color: #eee;">${item.event}</span>
+                    </span>
+                </td>
+            </tr>
         `;
-        listContainer.appendChild(card);
     });
+
+    tableHTML += `
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    listContainer.innerHTML = tableHTML;
 }
 
-// Auto update every 5 mins
-setInterval(fetchEconomicNews, 300000);
+// Update countdowns every minute
+setInterval(() => {
+    if (cachedNews.length > 0) {
+        cachedNews.forEach(item => {
+            const diffMs = item.eventTime - new Date();
+            if (diffMs > 0) {
+                const totalMins = Math.floor(diffMs / 60000);
+                const hrs = Math.floor(totalMins / 60);
+                const mins = totalMins % 60;
+                item.timeLeft = `${hrs}h. ${mins}m.`;
+            } else {
+                item.timeLeft = 'Завершено';
+            }
+        });
+        if (newsPanel && !newsPanel.classList.contains('hidden')) renderNews();
+    }
+}, 60000);
+
+// Auto update data every 10 mins
+setInterval(fetchEconomicNews, 600000);
 
 // ─── Calculator Logic ─────────────────────────────────────────
 let growthChart = null;
