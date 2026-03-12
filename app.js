@@ -1575,6 +1575,7 @@ async function fetchEconomicNews() {
             let msg = 'Invalid calendar format';
             if (data['Error Message']) msg = data['Error Message'];
             else if (data['message']) msg = data['message'];
+            else msg = 'Invalid format: ' + JSON.stringify(data).substring(0, 50);
             throw new Error(msg);
         } else {
             cachedNews = mapFmpData(data);
