@@ -264,7 +264,7 @@ const TRANSLATIONS = {
         newsEvent: 'Событие',
         newsPrev: 'Пред.',
         newsForecast: 'Прогноз',
-        allAssets: 'ВСЕ АКТИВЫ',
+        allAssets: 'АКТИВЫ',
         impactLow: 'Низкий',
         impactMedium: 'Средний',
         impactHigh: 'Высокий',
@@ -356,7 +356,8 @@ const TRANSLATIONS = {
         calcStep: 'Step',
         calcBet: 'Bet',
         calcProfit: 'Profit',
-        calcSimTitle: 'Simulation (100 trades)'
+        calcSimTitle: 'Simulation (100 trades)',
+        allAssets: 'ASSETS'
     },
     hi: {
         syncing: 'सिंकिंग...',
@@ -439,7 +440,8 @@ const TRANSLATIONS = {
         calcStep: 'कदम',
         calcBet: 'शर्त',
         calcProfit: 'लाभ',
-        calcSimTitle: 'सिमुलेशन (100 ट्रेड)'
+        calcSimTitle: 'सिमुलेशन (100 ट्रेड)',
+        allAssets: 'संपत्ति'
     },
     es: {
         syncing: 'SINCRONIZANDO...',
@@ -522,7 +524,8 @@ const TRANSLATIONS = {
         calcStep: 'Paso',
         calcBet: 'Apuesta',
         calcProfit: 'Beneficio',
-        calcSimTitle: 'Simulación (100 operaciones)'
+        calcSimTitle: 'Simulación (100 operaciones)',
+        allAssets: 'ACTIVOS'
     },
     fr: {
         syncing: 'SYNCHRONISATION...',
@@ -605,7 +608,8 @@ const TRANSLATIONS = {
         calcStep: 'Étape',
         calcBet: 'Mise',
         calcProfit: 'Profit',
-        calcSimTitle: 'Simulation (100 trades)'
+        calcSimTitle: 'Simulation (100 trades)',
+        allAssets: 'ACTIFS'
     }
 };
 let currentLang = 'ru';
@@ -856,7 +860,7 @@ function setupLocalization() {
         if (currentCategory && t[currentCategory]) {
             categoryNameEl.innerText = t[currentCategory];
         } else {
-            categoryNameEl.innerText = t.allAssets || 'АКТИВЫ';
+            categoryNameEl.innerText = t.allAssets || (currentLang === 'ru' ? 'АКТИВЫ' : 'ASSETS');
         }
     }
 
