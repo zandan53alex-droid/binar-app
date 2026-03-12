@@ -1559,23 +1559,21 @@ async function fetchEconomicNews() {
         const from = formatDate(now);
         const to = formatDate(tomorrow);
 
-        const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${FMP_KEY}`;
-        // Switching to a more reliable proxy
-        const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`;
+        // Using our own backend proxy for better reliability
+        const targetUrl = `/api/calendar`;
 
-        const response = await fetch(proxyUrl);
+        const response = await fetch(targetUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
         const data = await response.json();
         
+        if (data.error) throw new Error(data.error);
+        
         if (!Array.isArray(data)) {
-             // Handle case where proxy might wrap result or return error
-             if (data && data.contents) { // Check if it's still behaving like allorigins
-                 const parsed = JSON.parse(data.contents);
-                 if (Array.isArray(parsed)) cachedNews = mapFmpData(parsed);
-             } else {
-                 throw new Error('Invalid calendar format');
-             }
+            let msg = 'Invalid calendar format';
+            if (data['Error Message']) msg = data['Error Message'];
+            else if (data['message']) msg = data['message'];
+            throw new Error(msg);
         } else {
             cachedNews = mapFmpData(data);
         }
