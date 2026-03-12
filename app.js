@@ -106,18 +106,18 @@ const ASSETS_DB = {
         { id: 'link', name: 'Chainlink', icon: 'https://assets.coingecko.com/coins/images/877/small/chainlink-new-logo.png', category: 'Crypto' }
     ],
     commodities: [
-        { id: 'xageur', name: 'XAG/EUR', icons: ['silver_logo.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'xaueur', name: 'XAU/EUR', icons: ['gold.jpg', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
-        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'brent.png', category: 'Commodities' },
-        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'crude.jpg', category: 'Commodities' },
-        { id: 'silver_otc', name: 'Silver OTC', icon: 'silver.jpg', category: 'Commodities' },
-        { id: 'gold_otc', name: 'Gold OTC', icon: 'gold.jpg', category: 'Commodities' },
-        { id: 'natural_gas', name: 'Natural Gas', icon: 'natural_gas.jpg', category: 'Commodities' },
-        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'palladium.jpg', category: 'Commodities' },
-        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'platinum.jpg', category: 'Commodities' },
-        { id: 'gold', name: 'Gold', icon: 'gold.jpg', category: 'Commodities' },
-        { id: 'silver', name: 'Silver', icon: 'silver.jpg', category: 'Commodities' },
-        { id: 'platinum_spot', name: 'Platinum spot', icon: 'platinum.jpg', category: 'Commodities' }
+        { id: 'xageur', name: 'XAG/EUR', icons: ['images/silver_logo.png', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'xaueur', name: 'XAU/EUR', icons: ['images/gold.jpg', 'https://flagcdn.com/w40/eu.png'], category: 'Commodities' },
+        { id: 'brent_oil_otc', name: 'Brent Oil OTC', icon: 'images/brent.png', category: 'Commodities' },
+        { id: 'us_crude_otc', name: 'US Crude OTC', icon: 'images/crude.jpg', category: 'Commodities' },
+        { id: 'silver_otc', name: 'Silver OTC', icon: 'images/silver.jpg', category: 'Commodities' },
+        { id: 'gold_otc', name: 'Gold OTC', icon: 'images/gold.jpg', category: 'Commodities' },
+        { id: 'natural_gas', name: 'Natural Gas', icon: 'images/natural_gas.jpg', category: 'Commodities' },
+        { id: 'palladium_otc', name: 'Palladium OTC', icon: 'images/palladium.jpg', category: 'Commodities' },
+        { id: 'platinum_otc', name: 'Platinum OTC', icon: 'images/platinum.jpg', category: 'Commodities' },
+        { id: 'gold', name: 'Gold', icon: 'images/gold.jpg', category: 'Commodities' },
+        { id: 'silver', name: 'Silver', icon: 'images/silver.jpg', category: 'Commodities' },
+        { id: 'platinum_spot', name: 'Platinum spot', icon: 'images/platinum.jpg', category: 'Commodities' }
     ],
     stocks: [
         { id: 'amzn_otc', name: 'Amazon OTC', icon: 'https://logo.clearbit.com/amazon.com', category: 'Stocks' },
@@ -162,30 +162,30 @@ const ASSETS_DB = {
         { id: 'intel', name: 'Intel', icon: 'https://logo.clearbit.com/intel.com', category: 'Stocks' }
     ],
     indices: [
-        { id: 'aus200_otc', name: 'AUS 200 OTC', icon: 'aus200.png', category: 'Indices' },
-        { id: '100gbp_otc', name: '100GBP OTC', icon: '100gbp.png', category: 'Indices' },
-        { id: 'cac40_index', name: 'CAC 40', icon: 'cac40.png', category: 'Indices' },
-        { id: 'd30eur_otc', name: 'D30EUR OTC', icon: 'd30eur.jpg', category: 'Indices' },
-        { id: 'dji30_otc', name: 'DJI30 OTC', icon: 'dji30.png', category: 'Indices' },
-        { id: 'e35eur_index', name: 'E35EUR', icon: 'e35eur.jpg', category: 'Indices' },
-        { id: 'e35eur_otc', name: 'E35EUR OTC', icon: 'e35eur.jpg', category: 'Indices' },
-        { id: 'e50eur_otc', name: 'E50EUR OTC', icon: 'e50eur.png', category: 'Indices' },
-        { id: 'jpn225_otc', name: 'JPN225 OTC', icon: 'jpn225.png', category: 'Indices' },
-        { id: 'us100_index', name: 'US100', icon: 'us100.png', category: 'Indices' },
-        { id: 'us100_otc', name: 'US100 OTC', icon: 'us100.png', category: 'Indices' },
-        { id: 'smi20_index', name: 'SMI 20', icon: 'smi20.png', category: 'Indices' },
-        { id: 'sp500_index', name: 'SP500', icon: 'sp500.png', category: 'Indices' },
-        { id: 'sp500_otc', name: 'SP500 OTC', icon: 'sp500.png', category: 'Indices' },
-        { id: '100gbp_index', name: '100GBP', icon: '100gbp.png', category: 'Indices' },
-        { id: 'aex25_index', name: 'AEX 25', icon: 'aex25.png', category: 'Indices' },
-        { id: 'd30eur_index', name: 'D30/EUR', icon: 'd30eur.jpg', category: 'Indices' },
-        { id: 'dji30_index', name: 'DJI30', icon: 'dji30.png', category: 'Indices' },
-        { id: 'e50eur_index', name: 'E50/EUR', icon: 'e50eur.png', category: 'Indices' },
-        { id: 'f40eur_index', name: 'F40/EUR', icon: 'f40eur.png', category: 'Indices' },
-        { id: 'f40eur_otc', name: 'F40EUR OTC', icon: 'f40eur.png', category: 'Indices' },
-        { id: 'hk33_index', name: 'HONG KONG 33', icon: 'hk33.jpg', category: 'Indices' },
-        { id: 'jpn225_index', name: 'JPN225', icon: 'jpn225.png', category: 'Indices' },
-        { id: 'aus200_index', name: 'AUS 200', icon: 'aus200.png', category: 'Indices' }
+        { id: 'aus200_otc', name: 'AUS 200 OTC', icon: 'images/aus200.png', category: 'Indices' },
+        { id: '100gbp_otc', name: '100GBP OTC', icon: 'images/100gbp.png', category: 'Indices' },
+        { id: 'cac40_index', name: 'CAC 40', icon: 'images/cac40.png', category: 'Indices' },
+        { id: 'd30eur_otc', name: 'D30EUR OTC', icon: 'images/d30eur.jpg', category: 'Indices' },
+        { id: 'dji30_otc', name: 'DJI30 OTC', icon: 'images/dji30.png', category: 'Indices' },
+        { id: 'e35eur_index', name: 'E35EUR', icon: 'images/e35eur.jpg', category: 'Indices' },
+        { id: 'e35eur_otc', name: 'E35EUR OTC', icon: 'images/e35eur.jpg', category: 'Indices' },
+        { id: 'e50eur_otc', name: 'E50EUR OTC', icon: 'images/e50eur.png', category: 'Indices' },
+        { id: 'jpn225_otc', name: 'JPN225 OTC', icon: 'images/jpn225.png', category: 'Indices' },
+        { id: 'us100_index', name: 'US100', icon: 'images/us100.png', category: 'Indices' },
+        { id: 'us100_otc', name: 'US100 OTC', icon: 'images/us100.png', category: 'Indices' },
+        { id: 'smi20_index', name: 'SMI 20', icon: 'images/smi20.png', category: 'Indices' },
+        { id: 'sp500_index', name: 'SP500', icon: 'images/sp500.png', category: 'Indices' },
+        { id: 'sp500_otc', name: 'SP500 OTC', icon: 'images/sp500.png', category: 'Indices' },
+        { id: '100gbp_index', name: '100GBP', icon: 'images/100gbp.png', category: 'Indices' },
+        { id: 'aex25_index', name: 'AEX 25', icon: 'images/aex25.png', category: 'Indices' },
+        { id: 'd30eur_index', name: 'D30/EUR', icon: 'images/d30eur.jpg', category: 'Indices' },
+        { id: 'dji30_index', name: 'DJI30', icon: 'images/dji30.png', category: 'Indices' },
+        { id: 'e50eur_index', name: 'E50/EUR', icon: 'images/e50eur.png', category: 'Indices' },
+        { id: 'f40eur_index', name: 'F40/EUR', icon: 'images/f40eur.png', category: 'Indices' },
+        { id: 'f40eur_otc', name: 'F40EUR OTC', icon: 'images/f40eur.png', category: 'Indices' },
+        { id: 'hk33_index', name: 'HONG KONG 33', icon: 'images/hk33.jpg', category: 'Indices' },
+        { id: 'jpn225_index', name: 'JPN225', icon: 'images/jpn225.png', category: 'Indices' },
+        { id: 'aus200_index', name: 'AUS 200', icon: 'images/aus200.png', category: 'Indices' }
     ]
 };
 
@@ -609,7 +609,7 @@ const TRANSLATIONS = {
     }
 };
 let currentLang = 'ru';
-let currentCategory = 'forex_otc';
+let currentCategory = null;
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -1312,7 +1312,8 @@ function startPriceUpdates() {
             console.log(`✅ ПОДКЛЮЧЕНО К: ${currentUrl}`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.className = 'badge status-badge connected';
+                badge.classList.remove('disconnected');
+                badge.classList.add('connected');
             }
         };
 
@@ -1349,7 +1350,8 @@ function startPriceUpdates() {
             console.warn(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.className = 'badge status-badge disconnected';
+                badge.classList.remove('connected');
+                badge.classList.add('disconnected');
             }
             setTimeout(() => connectWs(!isFallback), 3000);
         };
@@ -1543,9 +1545,8 @@ async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
     
-    // We try to fetch from the local proxy if available, otherwise fallback to Trading Economics Guest
-    // But since the server (postback_app.py) has its own /news endpoint, let's use it!
-    const newsSource = '/news'; 
+    // Finnhub API as requested
+    const newsSource = 'https://finnhub.io/api/v1/news?category=forex&token=d5dpk41r01qur4itq710d5dpk41r01qur4itq71g'; 
 
     try {
         const response = await fetch(newsSource);
@@ -1553,30 +1554,21 @@ async function fetchEconomicNews() {
 
         const data = await response.json();
 
-        if (data.error) throw new Error(data.error);
         if (!Array.isArray(data)) throw new Error('Invalid news format');
 
-        // Map Trading Economics data to our structure
+        // Map Finnhub data to our structure
         cachedNews = data.slice(0, 20).map(item => {
-            const importance = (item.Importance === 3 || item.Importance === '3') ? 3 : 
-                             ((item.Importance === 2 || item.Importance === '2') ? 2 : 1);
-            
-            const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
-            const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
-
-            // Format date/time
-            let timeStr = item.Date ? item.Date.split('T')[1]?.substring(0, 5) : '--:--';
+            // Finnhub format: datetime, headline, summary, source, url, image
+            const date = item.datetime ? new Date(item.datetime * 1000) : new Date();
+            const timeStr = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             
             return {
-                time: timeStr || '--:--',
-                currency: item.Country || item.Currency || '?',
-                event: item.Event || 'Economic Event',
-                importance: importance,
-                dotColor: dotColor,
-                impactName: impactName,
-                timeLeft: '--', // Calculation would require complex time logic
-                previous: item.Previous || '-',
-                forecast: item.Forecast || '-'
+                time: timeStr,
+                headline: item.headline || 'Forex News',
+                summary: item.summary || '',
+                source: item.source || 'Finnhub',
+                url: item.url || '#',
+                image: item.image || ''
             };
         });
 
@@ -1600,56 +1592,23 @@ function renderNews() {
         return;
     }
 
-    const FLAG_MAP = {
-        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
-        'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'NZD': '🇳🇿',
-        'CNY': '🇨🇳', 'RUB': '🇷🇺', 'GOLD': '🟡', 'SILVER': '⚪'
-    };
-
-    let tableHTML = `
-        <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #d1d5db; min-width: 500px;">
-                <thead>
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #888; text-align: left;">
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTime}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPriority}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTimeLeft}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsEvent}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPrev}</th>
-                        <th style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${t.newsForecast}</th>
-                    </tr>
-                </thead>
-                <tbody>
-    `;
-
     cachedNews.forEach(item => {
-        const flag = FLAG_MAP[item.currency] || '🌐';
-        const dots = `<span style="color: ${item.dotColor}; font-size: 0.9rem;">${'●'.repeat(item.importance)}</span>`;
+        const card = document.createElement('div');
+        card.style.padding = '15px';
+        card.style.borderBottom = '1px solid rgba(255,255,255,0.05)';
+        card.style.cursor = 'pointer';
+        card.onclick = () => { if (item.url !== '#') window.open(item.url, '_blank'); };
 
-        tableHTML += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.time}</td>
-                <td style="padding: 12px 8px;">
-                    <div>${dots}</div>
-                    <div style="font-size: 0.65rem; color: #aaa; margin-top: 2px;">${item.impactName}</div>
-                </td>
-                <td style="padding: 12px 8px; color: #aaa;">${item.timeLeft}</td>
-                <td style="padding: 12px 8px; font-weight: 500;">
-                    <span style="margin-right: 5px;">${flag}</span> ${item.event}
-                </td>
-                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.previous}</td>
-                <td style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${item.forecast}</td>
-            </tr>
+        card.innerHTML = `
+            <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="font-size: 0.65rem; color: #3b82f6; font-weight: 700; text-transform: uppercase;">${item.source}</span>
+                <span style="font-size: 0.65rem; color: #888;">${item.time}</span>
+            </div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: #fff; margin-bottom: 5px; line-height: 1.3;">${item.headline}</div>
+            <div style="font-size: 0.7rem; color: #aaa; line-height: 1.4; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;">${item.summary}</div>
         `;
+        listContainer.appendChild(card);
     });
-
-    tableHTML += `
-                </tbody>
-            </table>
-        </div>
-    `;
-
-    listContainer.innerHTML = tableHTML;
 }
 
 // Auto update every 5 mins
