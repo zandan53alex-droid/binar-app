@@ -1548,56 +1548,64 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    const FMP_API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
+    const FINNHUB_TOKEN = 'd5dpk41r01qur4itq710d5dpk41r01qur4itq71g';
 
     try {
-        const now = new Date();
-        const future = new Date(now.getTime() + (48 * 60 * 60 * 1000));
-        const formatDate = (d) => d.toISOString().split('T')[0];
-        const from = formatDate(now);
-        const to = formatDate(future);
-
-        // Fetching economic calendar for 48h
-        const newsSource = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${FMP_API_KEY}`; 
+        // Finnhub Economic Calendar API
+        // Format of Finnhub calendar: date, country, event, impact, actual, previous, estimate, unit
+        const newsSource = `https://finnhub.io/api/v1/calendar/economic?token=${FINNHUB_TOKEN}`; 
         
         const response = await fetch(newsSource);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-        const data = await response.json();
+        const result = await response.json();
+        // Finnhub returns { economicCalendar: [...] }
+        const data = result.economicCalendar || [];
+        
         if (!Array.isArray(data)) throw new Error('Invalid calendar format');
 
-        // Map FMP data to our structure
-        cachedNews = data.slice(0, 30).map(item => {
-            const eventTime = new Date(item.date);
-            const importance = (item.impact === 'High') ? 3 : ((item.impact === 'Medium') ? 2 : 1);
-            const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
-            const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
+        // Filter for relevant currencies to reduce list size
+        const relevantCurrencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'CHF', 'NZD', 'CNY', 'RUB'];
 
-            // Calculate "Time Left"
-            const diffMs = eventTime - new Date();
-            let timeLeft = '--';
-            if (diffMs > 0) {
-                const totalMins = Math.floor(diffMs / 60000);
-                const hrs = Math.floor(totalMins / 60);
-                const mins = totalMins % 60;
-                timeLeft = `${hrs}h. ${mins}m.`;
-            } else {
-                timeLeft = 'Завершено';
-            }
+        // Map Finnhub data to our structure
+        cachedNews = data
+            .filter(item => relevantCurrencies.includes(item.country) || item.impact === 'High')
+            .slice(0, 30)
+            .map(item => {
+                const eventTime = new Date(item.time + 'Z'); // Finnhub time is UTC
+                const impact = item.impact; // Finnhub values: 1-4 or High/Low
+                const importance = (impact === 'High' || impact === 3) ? 3 : ((impact === 'Medium' || impact === 2) ? 2 : 1);
+                
+                const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
+                const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
 
-            return {
-                time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-                eventTime: eventTime,
-                currency: item.currency || 'USD',
-                event: item.event || 'Economic Event',
-                importance: importance,
-                dotColor: dotColor,
-                impactName: impactName,
-                timeLeft: timeLeft,
-                previous: item.previous || '-',
-                forecast: item.estimate || '-'
-            };
-        });
+                // Calculate "Time Left"
+                const diffMs = eventTime - new Date();
+                let timeLeft = '--';
+                if (diffMs > 0) {
+                    const totalMins = Math.floor(diffMs / 60000);
+                    const hrs = Math.floor(totalMins / 60);
+                    const mins = totalMins % 60;
+                    timeLeft = `${hrs}h. ${mins}m.`;
+                } else if (Math.abs(diffMs) < 600000) { // 10 mins after event
+                    timeLeft = 'Сейчас';
+                } else {
+                    timeLeft = 'Завершено';
+                }
+
+                return {
+                    time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    eventTime: eventTime,
+                    currency: item.country || 'USD',
+                    event: item.event || 'Economic Event',
+                    importance: importance,
+                    dotColor: dotColor,
+                    impactName: impactName,
+                    timeLeft: timeLeft,
+                    previous: item.previous || '-',
+                    forecast: item.estimate || '-'
+                };
+            });
 
         renderNews();
         if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
