@@ -1560,7 +1560,8 @@ async function fetchEconomicNews() {
         const to = formatDate(tomorrow);
 
         // Using our own backend proxy for better reliability
-        const targetUrl = `/api/calendar`;
+        const targetUrl = window.location.origin + '/api/calendar';
+        console.log('Fetching economic news from:', targetUrl);
 
         const response = await fetch(targetUrl);
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
