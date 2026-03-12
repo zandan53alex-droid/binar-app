@@ -1303,8 +1303,7 @@ function startPriceUpdates() {
             console.log(`✅ ПОДКЛЮЧЕНО К: ${currentUrl}`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.innerText = `ЦЕНЫ: ${targetIp}`;
-                badge.className = 'status-badge connected';
+                badge.className = 'badge status-badge connected';
             }
         };
 
@@ -1341,8 +1340,7 @@ function startPriceUpdates() {
             console.warn(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.innerText = `ПОИСК: ${targetIp}`;
-                badge.className = 'status-badge disconnected';
+                badge.className = 'badge status-badge disconnected';
             }
             setTimeout(() => connectWs(!isFallback), 3000);
         };
