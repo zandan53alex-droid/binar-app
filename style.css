@@ -720,7 +720,7 @@ header {
     color: var(--danger);
 }
 
-/* Neural Edge Animation Overlay */
+/* PocketAI Plus Animation Overlay */
 .signal-overlay {
     position: fixed;
     top: 0;

@@ -322,7 +322,7 @@ const TRANSLATIONS = {
         safeBetPrefix: 'Safe first bet at ',
         safeBetSuffix: '% risk:',
         statuses: [
-            'Initializing Neural Network...',
+            'Initializing TRADE APP BOT...',
             'Analyzing current volatility...',
             'Checking cluster volumes...',
             'Searching for optimal entry...',
@@ -1641,7 +1641,15 @@ async function fetchEconomicNews() {
 }
 
 function mapFmpData(data) {
-    return data.map(item => {
+    const now = new Date();
+    // Фильтруем: только события, которые еще не прошли (запас 10 минут)
+    const futureEvents = data.filter(item => {
+        if (!item.date) return false;
+        const itemTime = new Date(item.date);
+        return itemTime > (now - 600000); 
+    });
+
+    return futureEvents.map(item => {
         const eventTime = new Date(item.date);
         const impact = item.impact || 'Low';
         const importance = impact === 'High' ? 3 : (impact === 'Medium' ? 2 : 1);
@@ -1649,17 +1657,15 @@ function mapFmpData(data) {
         const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
         const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
 
-        const diffMs = eventTime - new Date();
+        const diffMs = eventTime - now;
         let timeLeft = '--';
         if (diffMs > 0) {
             const totalMins = Math.floor(diffMs / 60000);
             const hrs = Math.floor(totalMins / 60);
             const mins = totalMins % 60;
             timeLeft = `${hrs}ч. ${mins}м.`;
-        } else if (Math.abs(diffMs) < 3600000) {
-            timeLeft = 'Сейчас';
         } else {
-            timeLeft = 'Завершено';
+            timeLeft = 'Сейчас';
         }
 
         return {
