@@ -1056,6 +1056,10 @@ function setupEventListeners() {
     });
 
     document.getElementById('get-signal-btn').onclick = generateSignal;
+    document.getElementById('repeat-signal-btn').onclick = generateSignal;
+    document.getElementById('back-to-assets-btn').onclick = () => {
+        document.getElementById('close-signal').click();
+    };
 }
 
 function renderAssets() {
@@ -1177,6 +1181,7 @@ function openSignalDialog(asset) {
 async function generateSignal() {
     const t = TRANSLATIONS[currentLang];
     document.getElementById('signal-init-view').classList.add('hidden');
+    document.getElementById('signal-content').classList.add('hidden');
     document.getElementById('signal-loader').classList.remove('hidden');
 
     // Multi-stage status cycle (5-15 seconds total)
