@@ -10,6 +10,12 @@ __pycache__/
 
 # Browser session (Chromium)
 .chromium_session/
+.session/
+
+# Large Binaries / Archives
+*.zip
+*.rar
+*.7z
 
 # IDE
 .idea/

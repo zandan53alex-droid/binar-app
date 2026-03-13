@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TRADE APP BOT</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css?v=97">
+    <link rel="stylesheet" href="robot-clock.css?v=97">
+    <style>
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Removed TradingView for Pocket Option Fidelity -->
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <span class="logo-gold">TRADE APP</span><span class="logo-white"> BOT</span>
+            </div>
+            <div class="user-controls">
+                <div class="user-status">
+                    <span id="status-badge" class="badge">STANDARD</span>
+                </div>
+                <div class="lang-selector-container">
+                    <button id="lang-toggle" class="lang-toggle-btn">
+                        <span id="current-lang-icon">🇷🇺</span>
+                    </button>
+                    <div id="lang-dropdown" class="lang-dropdown">
+                        <button class="lang-item" data-lang="ru">🇷🇺 Русский</button>
+                        <button class="lang-item" data-lang="en">🇬🇧 English</button>
+                        <button class="lang-item" data-lang="hi">🇮🇳 हिन्दी</button>
+                        <button class="lang-item" data-lang="es">🇪🇸 Español</button>
+                        <button class="lang-item" data-lang="fr">🇫🇷 Français</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Bar (Always Visible) -->
+        <div class="search-container">
+            <input type="text" id="asset-search" placeholder="Search asset...">
+        </div>
+
+        <!-- Assets Toggle Button -->
+        <button id="assets-btn" class="assets-toggle-btn">
+            <span id="assets-btn-text">📈 АКТИВЫ</span> <span class="dropdown-arrow" id="assets-arrow">▼</span>
+        </button>
+
+        <!-- Assets Panel -->
+        <div id="assets-panel" class="assets-panel hidden">
+            <!-- Category Select -->
+            <div class="category-dropdown-container">
+                <button id="category-toggle" class="category-toggle-btn">
+                    <span id="current-category-name">CURRENCIES</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div id="category-dropdown" class="category-dropdown">
+                    <button class="dropdown-item" data-category="forex">CURRENCIES</button>
+                    <button class="dropdown-item" data-category="forex_otc">CURRENCIES OTC</button>
+                    <button class="dropdown-item" data-category="crypto">CRYPTO</button>
+                    <button class="dropdown-item" data-category="stocks">STOCKS</button>
+                    <button class="dropdown-item" data-category="commodities">COMMODITIES</button>
+                    <button class="dropdown-item" data-category="indices">INDICES</button>
+                </div>
+            </div>
+
+            <!-- Asset List Container -->
+            <main id="asset-list" class="asset-grid">
+                <!-- Asset cards will be injected here -->
+                <div class="loader">SYNCING REAL-TIME DATA...</div>
+            </main>
+        </div>
+
+        <!-- Education Button -->
+        <button id="education-btn" class="education-toggle-btn">
+            <span id="education-btn-text">🎓 ОБУЧЕНИЕ</span> <span class="dropdown-arrow" id="edu-arrow">▼</span>
+        </button>
+
+        <!-- Education Panel -->
+        <div id="education-panel" class="education-panel hidden">
+            <!-- Sub-tab pills -->
+            <div class="edu-tabs">
+                <button id="tab-basics" class="edu-tab active" onclick="switchEduTab('basics')">📖 Основа
+                    трейдинга</button>
+                <button id="tab-books" class="edu-tab" onclick="switchEduTab('books')">📚 Книги</button>
+            </div>
+
+            <!-- Basics: courses + modules -->
+            <div id="edu-basics-panel" class="lesson-list">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Books: PDF library -->
+            <div id="edu-books-panel" class="lesson-list hidden">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- Calculator Toggle Button -->
+        <button id="calc-btn" class="calc-toggle-btn">
+            <span id="calc-btn-text">🧮 КАЛЬКУЛЯТОР</span> <span class="dropdown-arrow" id="calc-arrow">▼</span>
+        </button>
+
+        <!-- Calculator Panel -->
+        <div id="calc-panel" class="calc-panel hidden">
+            <!-- Inputs -->
+            <div class="calc-inputs-grid">
+                <div class="input-group">
+                    <label id="label-deposit">Депозит ($)</label>
+                    <input type="number" id="calc-deposit" value="100" min="50" max="100000">
+                </div>
+                <div class="input-group">
+                    <label id="label-first-bet">Первая сделка (%)</label>
+                    <input type="number" id="calc-first-bet-perc" value="1" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label id="label-multiplier">Коэффициент</label>
+                    <input type="number" id="calc-multiplier" value="2.2" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label id="label-levels">Перекрытий</label>
+                    <input type="number" id="calc-levels" value="5" min="1" max="10">
+                </div>
+                <div class="input-group">
+                    <label id="label-payout">Выплата (%)</label>
+                    <input type="number" id="calc-payout" value="82">
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="calc-results">
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-first-bet">Первая ставка</div>
+                    <div class="stat-value" id="res-first-bet">$1.00</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk">Общий риск</div>
+                    <div class="stat-value" id="res-total-risk">$57.97</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label" id="stat-label-risk-perc">Риск от депо</div>
+                    <div class="stat-value" id="res-risk-perc">58.0%</div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="calc-section-title" id="calc-table-title">Таблица перекрытий</div>
+            <div class="calc-table-wrapper">
+                <table class="calc-table">
+                    <thead>
+                        <tr>
+                            <th id="calc-th-step">Шаг</th>
+                            <th id="calc-th-bet">Ставка</th>
+                            <th id="calc-th-profit">Прибыль</th>
+                        </tr>
+                    </thead>
+                    <tbody id="calc-table-body"></tbody>
+                </table>
+            </div>
+
+            <!-- Survival Analysis -->
+            <div class="calc-alert" id="calc-survival-msg">
+                Депозит выдержит 0 колен подряд.
+            </div>
+
+            <!-- Simulation -->
+            <div class="calc-section-title" id="calc-sim-title">Симуляция (100 сделок)</div>
+            <div class="sim-inputs">
+                <div class="input-group">
+                    <label id="label-winrate">Винрейт (%)</label>
+                    <input type="number" id="calc-winrate" value="58">
+                </div>
+                <button id="run-sim-btn" class="btn-primary">ЗАПУСТИТЬ</button>
+            </div>
+
+            <div id="sim-results" class="sim-results-grid hidden">
+                <div class="sim-stat">
+                    <span id="sim-label-balance">Баланс:</span> <strong id="sim-final-balance">$0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-loss">Лосс-серия:</span> <strong id="sim-max-loss">0</strong>
+                </div>
+                <div class="sim-stat">
+                    <span id="sim-label-drawdown">Просадка:</span> <strong id="sim-drawdown">0%</strong>
+                </div>
+            </div>
+            <!-- Chart -->
+            <div class="chart-container">
+                <canvas id="growthChart"></canvas>
+            </div>
+
+            <!-- Safe Bet -->
+            <div class="safe-bet-card">
+                <div class="calc-section-title" id="label-max-risk">Рекомендация</div>
+                <p id="label-max-risk-desc"><span id="label-safe-bet-prefix">Безопасная первая ставка при риске</span>
+                    <input type="number" id="calc-max-risk" value="10" style="width: 50px; display: inline;"><span
+                        id="label-safe-bet-suffix">%:</span>
+                </p>
+                <div class="stat-value highlight" id="res-safe-bet">$0</div>
+            </div>
+        </div>
+
+        <!-- News Toggle Button -->
+        <button id="news-btn" class="news-toggle-btn">
+            <span id="news-btn-text">📰 НОВОСТИ</span> <span class="dropdown-arrow" id="news-arrow">▼</span>
+        </button>
+
+        <!-- News Panel -->
+        <div id="news-panel" class="news-panel hidden">
+
+            <!-- News List -->
+            <div id="news-list" class="news-list">
+                <div class="loader">ЗАГРУЗКА НОВОСТЕЙ...</div>
+            </div>
+
+            <div class="news-update-status" id="news-update-time">
+                Обновлено: --:--
+            </div>
+        </div>
+
+        <!-- Indicators Toggle Button -->
+        <button id="indicators-toggle-btn" class="indicators-toggle-btn">
+            <span id="indicators-btn-text">📉 ИНДИКАТОРЫ</span> <span class="dropdown-arrow"
+                id="indicators-arrow">▼</span>
+        </button>
+
+        <!-- Indicators Panel -->
+        <div id="indicators-panel" class="indicators-panel hidden">
+            <div id="indicators-list" class="indicators-list">
+                <!-- Data injected via JS -->
+            </div>
+        </div>
+
+        <!-- Central Get Signal Button (Moved to bottom) -->
+        <div class="main-action-container" style="padding: 20px; margin-top: 10px;">
+            <button id="main-get-signal-btn" class="main-get-signal-btn">ПОЛУЧИТЬ СИГНАЛ</button>
+        </div>
+    </div>
+
+    <!-- Signal Overlay -->
+    <div id="signal-overlay" class="signal-overlay hidden">
+        <div class="signal-card">
+            <button id="close-signal" class="btn-close">×</button>
+
+            <div class="asset-header">
+                <div id="signal-asset-icons" class="signal-asset-icon-wrapper">
+                    <!-- Icons injected via JS -->
+                </div>
+                <h2 id="signal-asset-name">--</h2>
+            </div>
+
+            <div class="timeframe-selection">
+                <p class="section-label" id="label-expiration">SELECT EXPIRATION:</p>
+                <div class="timeframes">
+                    <button class="tf-btn" data-tf="3s">3s</button>
+                    <button class="tf-btn" data-tf="5s">5s</button>
+                    <button class="tf-btn" data-tf="15s">15s</button>
+                    <button class="tf-btn" data-tf="30s">30s</button>
+                    <button class="tf-btn active" data-tf="1m">1m</button>
+                    <button class="tf-btn" data-tf="2m">2m</button>
+                    <button class="tf-btn" data-tf="3m">3m</button>
+                    <button class="tf-btn" data-tf="5m">5m</button>
+                    <button class="tf-btn" data-tf="15m">15m</button>
+                    <button class="tf-btn" data-tf="30m">30m</button>
+                    <button class="tf-btn" data-tf="1h">1h</button>
+                    <button class="tf-btn" data-tf="4h">4h</button>
+                </div>
+            </div>
+
+            <div id="signal-init-view">
+                <button id="get-signal-btn" class="btn-primary">GET SIGNAL</button>
+            </div>
+
+            <div id="signal-loader" class="neural-loader hidden">
+                <div class="pulse-ring"></div>
+                <p id="status-text">INITIALIZING...</p>
+            </div>
+
+            <div id="signal-content" class="hidden">
+                <!-- Signal Main Result -->
+                <div class="signal-main-result">
+                    <div id="signal-direction-marker" class="direction-marker">
+                        <span id="signal-direction-icon">↑</span>
+                        <span id="signal-direction-text">ПОКУПКА</span>
+                    </div>
+                    <div id="signal-asset-name-large" class="asset-name-large">EUR/USD</div>
+                </div>
+
+                <!-- Info Rows -->
+                <div class="signal-info-rows">
+                    <div class="info-row">
+                        <span class="info-label" id="label-market-info">РЫНОК</span>
+                        <span class="info-value" id="signal-market">---</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-strength-info">СИЛА</span>
+                        <span class="info-value" id="signal-strength">Сильный</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label" id="label-time-info">ВРЕМЯ</span>
+                        <span class="info-value" id="signal-timeframe-val">M1</span>
+                    </div>
+                    <div class="info-row highlight">
+                        <span class="info-label" id="label-valid-until">ДЕЙСТВИТЕЛЕН ДО</span>
+                        <span class="info-value" id="signal-valid-time">--:--</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="timer-progress-container">
+                    <div id="timer-progress-bar" class="timer-progress-fill"></div>
+                </div>
+
+                <!-- Footer Buttons -->
+                <div class="signal-footer-btns">
+                    <button id="repeat-signal-btn" class="btn-footer-repeat">Повторить</button>
+                    <button id="back-to-assets-btn" class="btn-footer-back">Назад</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lesson Detail Overlay -->
+    <div id="lesson-overlay" class="signal-overlay hidden">
+        <div class="signal-card lesson-detail-card">
+            <button id="close-lesson" class="btn-close">×</button>
+            <div id="lesson-detail-image-wrapper" class="lesson-detail-img-wrapper">
+                <img id="lesson-detail-img" src="" alt="Lesson" style="width:100%;border-radius:12px;display:none;">
+            </div>
+            <h2 id="lesson-detail-title" style="color:#FFD700;margin:12px 0 8px;"></h2>
+            <div id="lesson-detail-body" class="lesson-detail-body"></div>
+        </div>
+    </div>
+
+    <script src="content.js?v=97"></script>
+    <script src="app.js?v=97"></script>
+    <script src="robot-clock.js?v=97"></script>
+    <script src="background-animation.js?v=97"></script>
+</body>
+
+</html>

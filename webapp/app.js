@@ -78,7 +78,8 @@ const ASSETS_DB = {
         { id: 'usdphp_otc', name: 'USD/PHP OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/ph.png'], category: 'Forex OTC' },
         { id: 'chfjpy_otc', name: 'CHF/JPY OTC', icons: ['https://flagcdn.com/w80/ch.png', 'https://flagcdn.com/w80/jp.png'], category: 'Forex OTC' },
         { id: 'usdvnd_otc', name: 'USD/VND OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/vn.png'], category: 'Forex OTC' },
-        { id: 'usddzd_otc', name: 'USD/DZD OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/dz.png'], category: 'Forex OTC' }
+        { id: 'usddzd_otc', name: 'USD/DZD OTC', icons: ['https://flagcdn.com/w80/us.png', 'https://flagcdn.com/w80/dz.png'], category: 'Forex OTC' },
+        { id: 'zarusd_otc', name: 'ZAR/USD OTC', icons: ['https://flagcdn.com/w80/za.png', 'https://flagcdn.com/w80/us.png'], category: 'Forex OTC' }
     ],
     crypto: [
         { id: 'ada_otc', name: 'Cardano OTC', icon: 'https://assets.coingecko.com/coins/images/975/small/cardano.png', category: 'Crypto' },
@@ -264,6 +265,7 @@ const TRANSLATIONS = {
         newsEvent: 'Событие',
         newsPrev: 'Пред.',
         newsForecast: 'Прогноз',
+        allAssets: 'АКТИВЫ',
         impactLow: 'Низкий',
         impactMedium: 'Средний',
         impactHigh: 'Высокий',
@@ -278,9 +280,10 @@ const TRANSLATIONS = {
         standard: 'STANDARD',
         platinum: 'VIP ACCESS',
         analyze: 'GET SIGNAL',
+        mainSignalBtn: 'GET SIGNAL',
         entry: 'ENTRY:',
-        call: 'BUY ↗',
-        put: 'SELL ↘',
+        call: 'CALL ↗',
+        put: 'PUT ↘',
         crypto: 'CRYPTO',
         forex: 'CURRENCIES',
         forex_otc: 'CURRENCIES OTC',
@@ -299,7 +302,7 @@ const TRANSLATIONS = {
         notFound: 'Nothing found',
         updatedAt: 'Updated:',
         loading: 'LOADING...',
-        basics: 'Basics',
+        basics: 'Trading Basics',
         books: 'Books',
         deposit: 'Deposit ($)',
         firstBet: 'First Bet (%)',
@@ -308,9 +311,9 @@ const TRANSLATIONS = {
         payout: 'Payout (%)',
         statsFirstBet: 'First Bet',
         statsRisk: 'Total Risk',
-        statsRiskPerc: 'Risk of Depo',
-        survivalMsg: 'Deposit will last {n} steps in a row.',
-        runSim: 'RUN',
+        statsRiskPerc: 'Risk/Depo',
+        survivalMsg: 'Deposit holds {n} steps.',
+        runSim: 'RUN SIM',
         winrate: 'Winrate (%)',
         balance: 'Balance:',
         lossSeries: 'Loss Series:',
@@ -319,7 +322,7 @@ const TRANSLATIONS = {
         safeBetPrefix: 'Safe first bet at ',
         safeBetSuffix: '% risk:',
         statuses: [
-            'Initializing Neural Network...',
+            'Initializing TRADE APP BOT...',
             'Analyzing current volatility...',
             'Checking cluster volumes...',
             'Searching for optimal entry...',
@@ -354,7 +357,8 @@ const TRANSLATIONS = {
         calcStep: 'Step',
         calcBet: 'Bet',
         calcProfit: 'Profit',
-        calcSimTitle: 'Simulation (100 trades)'
+        calcSimTitle: 'Simulation (100 trades)',
+        allAssets: 'ASSETS'
     },
     hi: {
         syncing: 'सिंकिंग...',
@@ -437,7 +441,8 @@ const TRANSLATIONS = {
         calcStep: 'कदम',
         calcBet: 'शर्त',
         calcProfit: 'लाभ',
-        calcSimTitle: 'सिमुलेशन (100 ट्रेड)'
+        calcSimTitle: 'सिमुलेशन (100 ट्रेड)',
+        allAssets: 'संपत्ति'
     },
     es: {
         syncing: 'SINCRONIZANDO...',
@@ -520,7 +525,8 @@ const TRANSLATIONS = {
         calcStep: 'Paso',
         calcBet: 'Apuesta',
         calcProfit: 'Beneficio',
-        calcSimTitle: 'Simulación (100 operaciones)'
+        calcSimTitle: 'Simulación (100 operaciones)',
+        allAssets: 'ACTIVOS'
     },
     fr: {
         syncing: 'SYNCHRONISATION...',
@@ -603,11 +609,12 @@ const TRANSLATIONS = {
         calcStep: 'Étape',
         calcBet: 'Mise',
         calcProfit: 'Profit',
-        calcSimTitle: 'Simulation (100 trades)'
+        calcSimTitle: 'Simulation (100 trades)',
+        allAssets: 'ACTIFS'
     }
 };
 let currentLang = 'ru';
-let currentCategory = 'forex_otc';
+let currentCategory = null;
 let currentAsset = null;
 let currentTimeframe = '1m';
 let searchQuery = '';
@@ -854,7 +861,7 @@ function setupLocalization() {
         if (currentCategory && t[currentCategory]) {
             categoryNameEl.innerText = t[currentCategory];
         } else {
-            categoryNameEl.innerText = t.assetsBtn || 'Активы';
+            categoryNameEl.innerText = t.allAssets || (currentLang === 'ru' ? 'АКТИВЫ' : 'ASSETS');
         }
     }
 
@@ -1027,21 +1034,33 @@ function setupEventListeners() {
         setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
         if (signalTimerInterval) clearInterval(signalTimerInterval);
     };
+    document.querySelectorAll('.dropdown-item').forEach(btn => {
+        if (btn.dataset.category === currentCategory) btn.classList.add('active');
+        btn.onclick = (e) => {
+            e.stopPropagation();
+            document.querySelectorAll('.dropdown-item').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentCategory = btn.dataset.category;
 
-    const repeatBtn = document.getElementById('repeat-signal-btn');
-    if (repeatBtn) repeatBtn.onclick = generateSignal;
+            // Update button text to selected category
+            const categoryNameEl = document.getElementById('current-category-name');
+            const t = TRANSLATIONS[currentLang];
+            if (currentCategory && t[currentCategory]) {
+                categoryNameEl.innerText = t[currentCategory];
+            } else {
+                categoryNameEl.innerText = t.allAssets || 'ВСЕ АКТИВЫ';
+            }
 
-    const backBtn = document.getElementById('back-to-assets-btn');
-    if (backBtn) {
-        backBtn.onclick = () => {
-            document.body.classList.remove('signal-active');
-            document.getElementById('signal-overlay').classList.remove('active');
-            setTimeout(() => document.getElementById('signal-overlay').classList.add('hidden'), 300);
-            if (signalTimerInterval) clearInterval(signalTimerInterval);
+            document.querySelector('.category-dropdown-container').classList.remove('open');
+            renderAssets();
         };
-    }
+    });
 
     document.getElementById('get-signal-btn').onclick = generateSignal;
+    document.getElementById('repeat-signal-btn').onclick = generateSignal;
+    document.getElementById('back-to-assets-btn').onclick = () => {
+        document.getElementById('close-signal').click();
+    };
 }
 
 function renderAssets() {
@@ -1163,6 +1182,7 @@ function openSignalDialog(asset) {
 async function generateSignal() {
     const t = TRANSLATIONS[currentLang];
     document.getElementById('signal-init-view').classList.add('hidden');
+    document.getElementById('signal-content').classList.add('hidden');
     document.getElementById('signal-loader').classList.remove('hidden');
 
     // Multi-stage status cycle (5-15 seconds total)
@@ -1302,7 +1322,8 @@ function startPriceUpdates() {
             console.log(`✅ ПОДКЛЮЧЕНО К: ${currentUrl}`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.className = 'badge status-badge connected';
+                badge.classList.remove('disconnected');
+                badge.classList.add('connected');
             }
         };
 
@@ -1339,7 +1360,8 @@ function startPriceUpdates() {
             console.warn(`❌ Соединение ${currentUrl} прервано. Рестарт через 3сек...`);
             const badge = document.getElementById('status-badge');
             if (badge) {
-                badge.className = 'badge status-badge disconnected';
+                badge.classList.remove('connected');
+                badge.classList.add('disconnected');
             }
             setTimeout(() => connectWs(!isFallback), 3000);
         };
@@ -1532,85 +1554,133 @@ const COUNTRY_DATA = {
 async function fetchEconomicNews() {
     const listContainer = document.getElementById('news-list');
     const updateStatus = document.getElementById('news-update-time');
-    const API_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
+    const FMP_KEY = 'IiNiPuFE8Yfxp1Ka1tXfNdIq2CA1DF1EFnCPIAig';
 
     try {
-        // Get today and tomorrow's date for a 48h window
         const now = new Date();
         const tomorrow = new Date(now);
-        tomorrow.setDate(now.getDate() + 1);
+        tomorrow.setDate(now.getDate() + 2); // 48h range
 
         const formatDate = (d) => d.toISOString().split('T')[0];
         const from = formatDate(now);
         const to = formatDate(tomorrow);
 
-        // Use CORS proxy to bypass browser/header restrictions
-        const targetUrl = `https://financialmodelingprep.com/api/v3/economic_calendar?from=${from}&to=${to}&apikey=${API_KEY}`;
-        const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl)}`;
+        // Using our own backend proxy for better reliability
+        const targetUrl = window.location.origin + '/api/calendar';
+        console.log('Fetching economic news from:', targetUrl);
 
-        const response = await fetch(proxyUrl);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
-        const proxyRes = await response.json();
-        const data = JSON.parse(proxyRes.contents);
-
-        if (!Array.isArray(data)) {
-            if (data && data['Error Message']) throw new Error(data['Error Message']);
-            throw new Error('Invalid data format');
+        let data = null;
+        try {
+            const response = await fetch(targetUrl);
+            if (response.ok) data = await response.json();
+        } catch (e) {
+            console.warn('Backend calendar fetch failed:', e);
         }
 
-        // Map FMP data to our structure
-        cachedNews = data.slice(0, 20).map(item => {
-            let impNum = 1;
-            if (item.impact === 'Medium') impNum = 2;
-            if (item.impact === 'High') impNum = 3;
+        // If backend returned empty or failed, try Forex Factory directly from browser
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            console.log('Backend returned empty, trying Forex Factory directly...');
+            try {
+                const now = new Date();
+                const cutoff = new Date(now.getTime() + 24 * 3600 * 1000);
+                const urls = [
+                    'https://nfs.faireconomy.media/ff_calendar_thisweek.json',
+                    'https://nfs.faireconomy.media/ff_calendar_nextweek.json'
+                ];
+                let ffEvents = [];
+                for (const url of urls) {
+                    try {
+                        const r = await fetch(url);
+                        if (r.ok) {
+                            const d = await r.json();
+                            if (Array.isArray(d)) ffEvents = ffEvents.concat(d);
+                        }
+                    } catch (e2) { /* skip */ }
+                }
+                if (ffEvents.length > 0) {
+                    // Map and filter to upcoming only
+                    data = ffEvents
+                        .map(item => {
+                            const impact = (item.impact || 'Low');
+                            const impactNorm = impact.toLowerCase().includes('high') ? 'High'
+                                : impact.toLowerCase().includes('medium') ? 'Medium' : 'Low';
+                            return {
+                                date: item.date,
+                                event: item.title || 'Economic Event',
+                                currency: item.country || 'USD',
+                                impact: impactNorm
+                            };
+                        })
+                        .filter(item => {
+                            const t = new Date(item.date);
+                            return t >= now && t <= cutoff;
+                        })
+                        .sort((a, b) => new Date(a.date) - new Date(b.date));
+                    console.log('Direct Forex Factory: got', data.length, 'upcoming events');
+                }
+            } catch (e) {
+                console.warn('Direct Forex Factory failed:', e);
+            }
+        }
 
-            const dateObj = new Date(item.date);
-            const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        if (data && data.error) throw new Error(data.error);
+        
+        if (!Array.isArray(data) || data.length === 0) {
+            if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #888; font-size: 0.8rem;">Событий не найдено</div>`;
+            return;
+        }
 
-            return {
-                time: timeStr,
-                rawDate: dateObj,
-                currency: item.currency || '???',
-                event: item.event,
-                importance: impNum
-            };
-        });
-
+        cachedNews = mapFmpData(data);
         renderNews();
-        updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+        if (updateStatus) updateStatus.innerText = `Обновлено: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
 
     } catch (error) {
-        console.error('News Fetch Error:', error);
-        listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">Новости временно недоступны<br><span style="font-size:0.6rem; opacity:0.7;">${error.message}</span></div>`;
+        console.error('Calendar Fetch Error:', error);
+        if (listContainer) listContainer.innerHTML = `<div style="text-align:center; padding: 20px; color: #ff4444; font-size: 0.8rem; font-weight:700;">События временно недоступны<br><span style="font-size:0.6rem; opacity:0.75;">${error.message}</span></div>`;
     }
 }
 
-function renderNews() {
-    const listContainer = document.getElementById('news-list');
-    listContainer.innerHTML = '';
-
-    if (cachedNews.length === 0) {
-        listContainer.innerHTML = '<div style="text-align:center; padding: 20px; color: #555;">Событий не найдено</div>';
-        return;
-    }
-
-    cachedNews.forEach(item => {
-        const stars = '⭐'.repeat(item.importance);
-        const impactClass = item.importance === 3 ? 'impact-high' : (item.importance === 2 ? 'impact-med' : 'impact-low');
-
-        const card = `
-            <div class="news-card ${impactClass}">
-                <div class="news-card-header">
-                    <span class="news-time">${item.time}</span>
-                    <span class="news-currency">${item.currency}</span>
-                </div>
-                <div class="news-event-name" style="margin-bottom: 5px;">${item.event}</div>
-                <div class="news-importance">Влияние: ${stars}</div>
-            </div>
-        `;
-        listContainer.innerHTML += card;
+function mapFmpData(data) {
+    const now = new Date();
+    // Фильтруем: только события, которые еще не прошли (запас 10 минут)
+    const futureEvents = data.filter(item => {
+        if (!item.date) return false;
+        const itemTime = new Date(item.date);
+        return itemTime > (now - 600000); 
     });
+
+    return futureEvents.map(item => {
+        const eventTime = new Date(item.date);
+        const impact = item.impact || 'Low';
+        const importance = impact === 'High' ? 3 : (impact === 'Medium' ? 2 : 1);
+        
+        const dotColor = importance === 3 ? '#ff4d4d' : (importance === 2 ? '#ffb900' : '#4ade80');
+        const impactName = importance === 3 ? 'Высокий' : (importance === 2 ? 'Средний' : 'Низкий');
+
+        const diffMs = eventTime - now;
+        let timeLeft = '--';
+        if (diffMs > 0) {
+            const totalMins = Math.floor(diffMs / 60000);
+            const hrs = Math.floor(totalMins / 60);
+            const mins = totalMins % 60;
+            timeLeft = `${hrs}ч. ${mins}м.`;
+        } else {
+            timeLeft = 'Сейчас';
+        }
+
+        return {
+            time: eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            eventTime: eventTime,
+            currency: item.currency || 'USD',
+            event: item.event || 'Economic Event',
+            importance: importance,
+            dotColor: dotColor,
+            impactName: impactName,
+            timeLeft: timeLeft,
+            previous: item.previous || '-',
+            forecast: item.estimate || '-'
+        };
+    }).slice(0, 30);
 }
 
 function renderNews() {
@@ -1627,20 +1697,18 @@ function renderNews() {
     const FLAG_MAP = {
         'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵',
         'CAD': '🇨🇦', 'AUD': '🇦🇺', 'CHF': '🇨🇭', 'NZD': '🇳🇿',
-        'CNY': '🇨🇳'
+        'CNY': '🇨🇳', 'RUB': '🇷🇺', 'GOLD': '🟡', 'SILVER': '⚪'
     };
 
     let tableHTML = `
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.75rem; color: #d1d5db; min-width: 500px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.7rem; color: #d1d5db; min-width: 400px; table-layout: fixed;">
                 <thead>
-                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); color: #888; text-align: left;">
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTime}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPriority}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsTimeLeft}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsEvent}</th>
-                        <th style="padding: 12px 8px; font-weight: 600;">${t.newsPrev}</th>
-                        <th style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${t.newsForecast}</th>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); color: #888; text-align: left;">
+                        <th style="padding: 10px 5px; width: 50px;">${t.newsTime}</th>
+                        <th style="padding: 10px 5px; width: 80px;">${t.newsPriority}</th>
+                        <th style="padding: 10px 5px; width: 100px;">${t.newsTimeLeft}</th>
+                        <th style="padding: 10px 5px;">${t.newsEvent}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1648,21 +1716,22 @@ function renderNews() {
 
     cachedNews.forEach(item => {
         const flag = FLAG_MAP[item.currency] || '🌐';
-        const dots = `<span style="color: ${item.dotColor}; font-size: 0.9rem;">${'●'.repeat(item.importance)}</span>`;
+        const dots = `<span style="color: ${item.dotColor}; font-size: 0.8rem; letter-spacing: -2px;">${'●'.repeat(item.importance)}</span>`;
 
         tableHTML += `
-            <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
-                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.time}</td>
-                <td style="padding: 12px 8px;">
-                    <div>${dots}</div>
-                    <div style="font-size: 0.65rem; color: #aaa; margin-top: 2px;">${item.impactName}</div>
+            <tr style="border-bottom: 1px solid rgba(255,255,255,0.03);">
+                <td style="padding: 12px 5px; font-weight: 700; color: #fff; vertical-align: top;">${item.time}</td>
+                <td style="padding: 12px 5px; vertical-align: top;">
+                    <div style="line-height: 1;">${dots}</div>
+                    <div style="font-size: 0.6rem; color: #888; margin-top: 2px;">${item.impactName}</div>
                 </td>
-                <td style="padding: 12px 8px; color: #aaa;">${item.timeLeft}</td>
-                <td style="padding: 12px 8px; font-weight: 500;">
-                    <span style="margin-right: 5px;">${flag}</span> ${item.event}
+                <td style="padding: 12px 5px; color: #aaa; vertical-align: top; font-weight: 500;">${item.timeLeft}</td>
+                <td style="padding: 12px 5px; vertical-align: top; line-height: 1.2;">
+                    <span style="display: inline-flex; align-items: center;">
+                        <span style="font-size: 0.9rem; margin-right: 6px;">${flag}</span>
+                        <span style="font-weight: 500; color: #eee;">${item.event}</span>
+                    </span>
                 </td>
-                <td style="padding: 12px 8px; font-weight: 600; color: #fff;">${item.previous}</td>
-                <td style="padding: 12px 8px; font-weight: 600; color: #3b82f6;">${item.forecast}</td>
             </tr>
         `;
     });
@@ -1676,8 +1745,26 @@ function renderNews() {
     listContainer.innerHTML = tableHTML;
 }
 
-// Auto update every 5 mins
-setInterval(fetchEconomicNews, 300000);
+// Update countdowns every minute
+setInterval(() => {
+    if (cachedNews.length > 0) {
+        cachedNews.forEach(item => {
+            const diffMs = item.eventTime - new Date();
+            if (diffMs > 0) {
+                const totalMins = Math.floor(diffMs / 60000);
+                const hrs = Math.floor(totalMins / 60);
+                const mins = totalMins % 60;
+                item.timeLeft = `${hrs}h. ${mins}m.`;
+            } else {
+                item.timeLeft = 'Завершено';
+            }
+        });
+        if (newsPanel && !newsPanel.classList.contains('hidden')) renderNews();
+    }
+}, 60000);
+
+// Auto update data every 10 mins
+setInterval(fetchEconomicNews, 600000);
 
 // ─── Calculator Logic ─────────────────────────────────────────
 let growthChart = null;

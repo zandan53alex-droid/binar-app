@@ -36,6 +36,10 @@ app.add_middleware(
 
 _bot_push: Optional[Bot] = None
 
+@app.get("/debug")
+async def debug():
+    return {"status": "ok", "version": "v=89", "provider": "api-ninjas"}
+
 @app.get("/news")
 async def get_news():
     """Прокси для новостей Trading Economics (Guest API)"""
@@ -48,6 +52,41 @@ async def get_news():
             return response.json()
         except Exception as e:
             return {"error": str(e)}
+
+@app.get("/api/calendar")
+async def get_calendar():
+    """Простой прокси для Forex Factory без фильтрации на бэкенде."""
+    urls = [
+        "https://nfs.faireconomy.media/ff_calendar_thisweek.json",
+        "https://nfs.faireconomy.media/ff_calendar_nextweek.json"
+    ]
+    results = []
+    async with httpx.AsyncClient(verify=False) as client:
+        for url in urls:
+            try:
+                r = await client.get(url, timeout=10.0, headers={"User-Agent": "Mozilla/5.0"})
+                if r.status_code == 200:
+                    data = r.json()
+                    if isinstance(data, list):
+                        results.extend(data)
+            except Exception as e:
+                logger.warning(f"Fetch error {url}: {e}")
+
+    # Минимальная нормализация для фронтенда
+    normalized = []
+    for item in results:
+        normalized.append({
+            "date": item.get("date"),
+            "event": item.get("title", "Economic Event"),
+            "currency": item.get("country", "USD"),
+            "impact": item.get("impact", "Low")
+        })
+    
+    # Сортируем по дате, но НЕ фильтруем (пусть фронтенд решает что показывать)
+    normalized.sort(key=lambda x: x.get("date", ""))
+    
+    logger.info(f"News Proxy: returning {len(normalized)} total events.")
+    return normalized
 
 def get_bot() -> Bot:
     global _bot_push

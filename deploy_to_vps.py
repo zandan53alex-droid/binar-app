@@ -18,10 +18,30 @@ def run_cmd(cmd):
     return True
 
 def deploy():
-    # 1. Zip the project (excluding venv, pycache, etc.)
-    print("--- Zipping project ---")
-    exclude_args = '--exclude ".venv" --exclude "__pycache__" --exclude ".git" --exclude "*.db" --exclude ".idea"'
-    if not run_cmd(f'powershell -Command "Compress-Archive -Path . -DestinationPath bot_deploy.zip -Force"'):
+    # 1. Zip the project (excluding venv, pycache, zips, etc.)
+    print("--- Zipping project (excluding large files) ---")
+    import zipfile
+    
+    zip_name = "bot_deploy.zip"
+    exclude_dirs = {'.venv', '__pycache__', '.git', '.idea', '.session', 'lessons_extracted', 'temp_po_api'}
+    exclude_files = {zip_name, 'FINAL_V99_UPDATE.zip', 'SERVER_DEPLOY_PACKAGE.zip', 'TRADE_BOT_FULL_BACKUP.zip', 'project.zip', 'webapp.zip', 'project_v99_final.zip'}
+    
+    try:
+        with zipfile.ZipFile(zip_name, 'w', zipfile.ZIP_DEFLATED) as zipf:
+            for root, dirs, files in os.walk('.'):
+                # Filter directories
+                dirs[:] = [d for d in dirs if d not in exclude_dirs]
+                
+                for file in files:
+                    if file in exclude_files or file.endswith(('.db', '.zip', '.log', '.bat')):
+                        continue
+                    
+                    file_path = os.path.join(root, file)
+                    arcname = os.path.relpath(file_path, '.')
+                    zipf.write(file_path, arcname)
+        print(f"✅ Created {zip_name}")
+    except Exception as e:
+        print(f"❌ Error creating zip: {e}")
         return
 
     # 2. Create remote directory
@@ -35,21 +55,16 @@ def deploy():
         return
 
     # 4. Setup on server
-    print("--- Unzipping and Installing on server ---")
+    print("--- Unzipping and Restarting services ---")
     remote_cmds = [
         f"cd {REMOTE_PATH}",
-        "apt update && apt install -y unzip python3-pip",
         "unzip -o bot_deploy.zip",
-        "pip3 install -r requirements.txt",
         "cp bot_service.service /etc/systemd/system/",
         "cp postback_service.service /etc/systemd/system/",
         "systemctl daemon-reload",
-        "systemctl enable bot_service",
         "systemctl restart bot_service",
-        "systemctl enable postback_service",
         "systemctl restart postback_service",
-        "systemctl status bot_service --no-pager",
-        "systemctl status postback_service --no-pager"
+        "systemctl status bot_service --no-pager"
     ]
     
     full_remote_cmd = " && ".join(remote_cmds)

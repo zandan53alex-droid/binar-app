@@ -1,395 +1,248 @@
 """
-pocket_playwright.py — Перехват котировок PocketOption через реальный браузер.
+pocket_playwright.py — Мост котировок (УЛЬТРА-АВТОМАТИКА: 130+ активов + СТАБИЛЬНОСТЬ)
 """
 
 import asyncio
 import json
 import logging
 import os
-import re
-import socket
 import websockets
+import time
 
 from dotenv import load_dotenv
-from playwright.async_api import async_playwright, Page, WebSocket as PWWebSocket
+from playwright.async_api import async_playwright, WebSocket as PWWebSocket
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 load_dotenv()
 
-# ─── Глобальный broadcast сервер ────────────────────────────────────────────
+# Настройки
+VPS_WS_URL = "wss://185.174.138.19.sslip.io/ws"
+BRIDGE_TOKEN = os.getenv("PB_SECRET", "zandan53")
+pulse_assets = set()
 
-clients: set = set()
-
-
-async def ws_handler(websocket, path=None):
-    """Обработчик подключений от мини-приложения."""
-    clients.add(websocket)
-    logging.info(f"📱 Мини-приложение подключилось: {websocket.remote_address}. Всего клиентов: {len(clients)}")
-    try:
-        async for _ in websocket:
-            pass
-    except websockets.exceptions.ConnectionClosed:
-        pass
-    finally:
-        clients.discard(websocket)
-        logging.info(f"❌ Мини-приложение отключилось. Всего клиентов: {len(clients)}")
-
-
-# ─── Таблица соответствия PocketOption API ID → app.js asset ID ─────────────
+# ГИГАНТСКИЙ МАППИНГ (Все вариации ID)
 PO_ID_MAP = {
-    # --- 6 КРИПТОВАЛЮТ + ETF (Универсальный маппинг) ---
-    "btcusd": "bitcoin", "btcusd_otc": "bitcoin_otc", "bitcoin otc": "bitcoin_otc",
-    "ethusd": "ethereum", "ethusd_otc": "eth_otc", "ethereum otc": "eth_otc",
-    "solusd": "sol_otc", "solusd_otc": "sol_otc", "solana otc": "sol_otc",
-    "adausd": "ada_otc", "adausd_otc": "ada_otc", "cardano otc": "ada_otc",
-    "trxusd": "trx_otc", "trxusd_otc": "trx_otc", "tron otc": "trx_otc",
-    "tonusd": "ton_otc", "tonusd_otc": "ton_otc", "toncoin otc": "ton_otc",
-    "bnbusd": "bnb_otc", "bnbusd_otc": "bnb_otc", "bnb otc": "bnb_otc",
-    "bitcoin_etf_otc": "bitcoin_etf_otc", "bitcoin etf otc": "bitcoin_etf_otc", "bitb_otc": "bitcoin_etf_otc",
+    # Forex
+    "eurusd": "eurusd", "gbpusd": "gbpusd", "usdjpy": "usdjpy", "audusd": "audusd",
+    "usdcad": "usdcad", "usdchf": "usdchf", "eurjpy": "eurjpy", "gbpjpy": "gbpjpy",
+    "audjpy": "audjpy", "nzdjpy": "nzdjpy", "eurgbp": "eurgbp", "audcad": "audcad",
+    "nzdusd": "nzdusd", "eurnzd": "eurnzd", "usdrub": "usdrub", "eurrub": "eurrub",
+    "eurcad": "eurcad", "cadchf": "cadchf", "gbpchf": "gbpchf", "chfjpy": "chfjpy",
+    "euraud": "euraud", "gbpaud": "gbpaud", "gbpcad": "gbpcad", "cadjpy": "cadjpy",
     
-    # --- Дополнительная крипта (Регрессия) ---
-    "ltcusd": "ltc_otc", "ltcusd_otc": "ltc_otc", "litecoin otc": "ltc_otc", "ltc-usd_otc": "ltc_otc",
-    "dogeusd_otc": "doge_otc", "dogecoin otc": "doge_otc",
-    "avaxusd_otc": "avax_otc", "avalanche otc": "avax_otc",
-    "linkusd_otc": "link_otc", "chainlink otc": "link_otc",
-    "maticusd_otc": "matic_otc", "polygon otc": "matic_otc",
-    "dotusd_otc": "dot_otc", "polkadot otc": "dot_otc",
-    
-    # --- INDICES ---
-    "f40eur_otc": "f40eur_otc", "f40eur": "f40eur_index",
-    "nasusd_otc": "us100_otc", "sp500_otc": "sp500_otc", "dji30_otc": "dji30_otc",
-    "aus200_otc": "aus200_otc", "100gbp_otc": "100gbp_otc",
-    "d30eur_otc": "d30eur_otc", "e35eur_otc": "e35eur_otc", "e50eur_otc": "e50eur_otc",
-    "jpn225_otc": "jpn225_otc",
-    
-    # --- COMMODITIES ---
-    "xngusd_otc": "natural_gas", "xngusd": "natural_gas_regular",
-    "xpdusd_otc": "palladium_otc", "xptusd_otc": "platinum_otc",
-    "xauusd_otc": "gold_otc", "xagusd_otc": "silver_otc",
-    "ukbrent_otc": "brent_oil_otc", "uscrude_otc": "us_crude_otc",
-    
-    # --- STOCKS ---
-    "fb_otc": "fb_otc", "meta_otc": "fb_otc", "facebook_otc": "fb_otc",
-    "apple_otc": "aapl_otc", "amazon_otc": "amzn_otc", "tesla_otc": "tsla_otc",
+    # Forex OTC
+    "eurusdotc": "eurusd_otc", "gbpusdotc": "gbpusd_otc", "usdjpyotc": "usdjpy_otc",
+    "audusdotc": "audusd_otc", "usdcadotc": "usdcad_otc", "usdchfotc": "usdchf_otc",
+    "eurjpyotc": "eurjpy_otc", "gbpjpyotc": "gbpjpy_otc", "audjpyotc": "audjpy_otc",
+    "nzdjpyotc": "nzdjpy_otc", "eurgbpotc": "eurgbp_otc", "audcadotc": "audcad_otc",
+    "nzdusdotc": "nzdusd_otc", "eurnzdotc": "eurnzd_otc", "usdrubotc": "usdrub_otc",
+    "eurrubotc": "eurrub_otc", "aedcnyotc": "aedcny_otc", "audnzdotc": "audnzd_otc",
+    "bhdcnyotc": "bhdcny_otc", "cadchfotc": "cadchf_otc", "cadjpyotc": "cadjpy_otc",
+    "eurchfotc": "eurchf_otc", "uahusdotc": "uahusd_otc", "usdcopotc": "usdcop_otc",
+    "usdegpotc": "usdegp_otc", "usdidrotc": "usdidr_otc", "usdpkrotc": "usdpkr_otc",
+    "sarcnyotc": "sarcny_otc", "eurtryotc": "eurtry_otc", "qarcnyotc": "qarcny_otc",
+    "usdbdtotc": "usdbdt_otc", "omrcnyotc": "omrcny_otc", "usdbrlotc": "usdbrl_otc",
+    "usdarsotc": "usdars_otc", "usdsgdotc": "usdsgd_otc", "kesusdotc": "kesusd_otc",
+    "usdclpotc": "usdclp_otc", "audchfotc": "audchf_otc", "madusdotc": "madusd_otc",
+    "usdmxnotc": "usdmxn_otc", "usdinrotc": "usdinr_otc", "usdthbotc": "usdthb_otc",
+    "jodcnyotc": "jodcny_otc", "tndusdotc": "tndusd_otc", "lbpusdotc": "lbpusd_otc",
+    "chfnokotc": "chfnok_otc", "eurhufotc": "eurhuf_otc", "yerusdotc": "yerusd_otc",
+    "ngnusdotc": "ngnusd_otc", "usdmyrotc": "usdmyr_otc", "usdphpotc": "usdphp_otc",
+    "usdvndotc": "usdvnd_otc", "usddzdotc": "usddzd_otc", "chfjpyotc": "chfjpy_otc", "usdcnhotc": "usdcnh_otc", "zarusdotc": "zarusd_otc",
+
+    # Crypto (Исправлено: btcetfotc + вариации)
+    "bitcoinetfotc": "bitcoin_etf_otc", "btcetfotc": "bitcoin_etf_otc", "bitcoin_etf_otc": "bitcoin_etf_otc",
+    "btcusdotc": "bitcoin_otc", "bitcoinotc": "bitcoin_otc", "btc_otc": "bitcoin_otc",
+    "ethusdotc": "eth_otc", "ethereumotc": "eth_otc", "eth_otc": "eth_otc",
+    "solusdotc": "sol_otc", "solanaotc": "sol_otc", "sol_otc": "sol_otc",
+    "tonusdotc": "ton_otc", "toncoinotc": "ton_otc", "ton_otc": "ton_otc",
+    "adausdotc": "ada_otc", "adaotc": "ada_otc", "bnbusdotc": "bnb_otc", "bnbotc": "bnb_otc",
+    "avaxusdotc": "avax_otc", "avaxotc": "avax_otc", "linkusdotc": "link_otc", "linkotc": "link_otc",
+    "maticusdotc": "matic_otc", "maticotc": "matic_otc", "trxusdotc": "trx_otc", "trxotc": "trx_otc",
+    "ltcusdotc": "ltc_otc", "ltcotc": "ltc_otc", "dogeusdotc": "doge_otc", "dogeotc": "doge_otc",
+    "dotusdotc": "dot_otc", "dototc": "dot_otc",
+
+    # Commodities
+    "gold": "gold", "silver": "silver", "goldotc": "gold_otc", "silverotc": "silver_otc",
+    "brentoilotc": "brent_oil_otc", "uscrudeotc": "us_crude_otc",
+    "naturalgas": "natural_gas", "palladiumotc": "palladium_otc", "platinumotc": "platinum_otc",
+
+    # Stocks
+    "aaplotc": "aapl_otc", "tslaotc": "tsla_otc", "amznotc": "amzn_otc", "msftotc": "msft_otc",
+    "nvdaotc": "nvda_otc", "googotc": "google_otc", "nflxotc": "netflix_otc", "babaotc": "alibaba_otc",
+    "votc": "visa_otc", "mcdotc": "mcd_otc", "baotc": "ba_otc", "fbotc": "fb_otc", "intcotc": "intc_otc",
+    "disotc": "dis_otc", "maraotc": "mara_otc", "cscootc": "csco_otc", "xomotc": "xom_otc",
+    "gmeotc": "gme_otc", "pltrotc": "pltr_otc", "fdxotc": "fdx_otc", "amdotc": "amd_otc",
+    "citiotc": "citi_otc", "axpotc": "axp_otc", "coinotc": "coin_otc", "pfeotc": "pfe_otc",
+
+    # Indices
+    "aus200index": "aus200_index", "100gbpindex": "100gbp_index", "cac40index": "cac40_index",
+    "dji30index": "dji30_index", "us100index": "us100_index", "sp500index": "sp500_index",
+    "aus200otc": "aus200_otc", "100gbpotc": "100gbp_otc", "d30eurotc": "d30eur_otc",
+    "dji30otc": "dji30_otc", "e35eurotc": "e35eur_otc", "e50eurotc": "e50eur_otc",
+    "us100otc": "us100_otc", "sp500otc": "sp500_otc",
 }
 
+# МЕНЕДЖЕР VPS (Авто-переподключение)
+class VPSManager:
+    def __init__(self): self.ws = None; self.lock = asyncio.Lock()
+    async def send(self, data):
+        async with self.lock:
+            if not self.ws or self.ws.closed:
+                try: self.ws = await websockets.connect(VPS_WS_URL, close_timeout=2)
+                except: return
+            try: await self.ws.send(json.dumps({"token": BRIDGE_TOKEN, "action": "bridge_update", "data": data}))
+            except: self.ws = None
+vps_manager = VPSManager()
 
-async def broadcast_quotes(quotes_data):
-    """Рассылает котировки всем подключённым клиентам."""
-    global clients
-    if not clients:
-        return
+async def broadcast(quotes):
+    global pulse_assets
     translated = []
-    # Хранилище для отладки неизвестных ID
-    if not hasattr(broadcast_quotes, 'unknown_ids'): broadcast_quotes.unknown_ids = set()
-    
-    for row in quotes_data:
+    seen = set()
+    for row in quotes:
         if isinstance(row, list) and len(row) >= 2:
-            # Очищаем ID: строчные буквы, убираем # и - (Нормализация)
-            po_id = str(row[0]).lower().replace("#", "").replace("-", "")
-            app_id = PO_ID_MAP.get(po_id, po_id)
-            
-            translated.append([app_id, row[1]])
-                
-    if not translated:
-        return
+            raw_id = str(row[0]).lower().replace("_", "").replace("-", "").replace(" ", "").replace("#", "")
+            app_id = PO_ID_MAP.get(raw_id) or raw_id
+            if app_id not in seen:
+                translated.append([app_id, row[1]])
+                seen.add(app_id)
+                pulse_assets.add(app_id)
+    if not translated: return
+    await vps_manager.send(translated)
     
-    message = json.dumps({"action": "update_quotes", "data": translated})
-    dead = set()
-    active_count = 0
-    for client in list(clients):
-        try:
-            await client.send(message)
-            active_count += 1
-        except Exception:
-            dead.add(client)
-    clients.difference_update(dead)
+    # Pulse log
+    now = time.time()
+    if now - getattr(broadcast, 'last_t', 0) > 5:
+        logging.info(f"💓 ПУЛЬС: {len(pulse_assets)} актив. | VPS: OK")
+        pulse_assets.clear()
+        broadcast.last_t = now
+
+_loop = None
+def schedule(q):
+    if _loop: _loop.call_soon_threadsafe(lambda: asyncio.create_task(broadcast(q)))
+
+async def on_ws(ws: PWWebSocket):
+    if "po.market" not in ws.url and "api" not in ws.url: return
+    logging.info(f"📡 WebSocket PocketOption активен: {ws.url}")
     
-    if active_count > 0:
-        if not hasattr(broadcast_quotes, 'last_log_time'): broadcast_quotes.last_log_time = 0
-        import time
-        now = time.time()
-        
-        # Лог для крипты — всегда (без 5с задержки)
-        crypto_data = [t for t in translated if any(x in str(t[0]).lower() for x in ["bitcoin", "eth", "sol", "ada", "trx", "ton", "bnb", "ltc", "avax", "link", "matic", "dot", "etf"])]
-        if crypto_data:
-            logging.info(f"💎 КРИПТА В ЭФИРЕ: {crypto_data}")
-
-        if now - broadcast_quotes.last_log_time > 5:
-            if not crypto_data: # Если крипты нет, логируем обычный статус раз в 5 сек
-                if len(translated) == 1:
-                    logging.info(f"📤 [1] Актив в сети: {translated[0][0]} (ID: {quotes_data[0][0]})")
-                else:
-                    logging.info(f"📤 Разослано {len(translated)} котировок {active_count} клиентам")
-            broadcast_quotes.last_log_time = now
-    else:
-        if not hasattr(broadcast_quotes, 'fail_count'): broadcast_quotes.fail_count = 0
-        broadcast_quotes.fail_count += 1
-        if broadcast_quotes.fail_count % 30 == 0:
-            logging.warning("⚠️ Котировки идут, но Mini App НЕ ПОДКЛЮЧЕН. Откройте: http://localhost:8080/?ip=127.0.0.1")
-
-
-def parse_po_message(raw: str):
-    if not raw.startswith("42"):
-        return None, None
-    bracket = raw.find("[")
-    if bracket == -1:
-        return None, None
-    try:
-        data = json.loads(raw[bracket:])
-        if isinstance(data, list) and len(data) >= 2:
-            return data[0], data[1]
-    except json.JSONDecodeError:
-        pass
-    return None, None
-
-
-async def handle_po_websocket(ws: PWWebSocket):
-    url = ws.url
-    if "socket.io" not in url:
-        return
-    logging.info(f"📡 Перехвачен WebSocket PocketOption: {url}")
-    expect_binary_data = [False]
-
-    def on_frame_received(payload):
+    expect_bin = [False]
+    def handle_frame(payload):
         try:
             text = payload if isinstance(payload, str) else payload.decode("utf-8", errors="replace")
-            
-            # 1. Бинарные обновления (451-["updateStream", ...)
-            if text.startswith('451-["updateStream"') and '_placeholder' in text:
-                expect_binary_data[0] = True
-                return
-                
-            if expect_binary_data[0]:
-                expect_binary_data[0] = False
+            if 'updateStream' in text and '_placeholder' in text:
+                expect_bin[0] = True; return
+            if expect_bin[0]:
+                expect_bin[0] = False
                 try:
                     data = json.loads(text)
-                    if isinstance(data, list) and data:
-                        # В бинарных данных: [id, unknown, price]
-                        quotes = []
-                        for row in data:
-                            if isinstance(row, list) and len(row) >= 3:
-                                quotes.append([row[0], row[2]])
-                        if quotes: schedule_broadcast(quotes)
-                except Exception: pass
+                    if isinstance(data, list):
+                        q = [[r[0], r[2]] for r in data if isinstance(r, list) and len(r) >= 3]
+                        if q: schedule(q)
+                except: pass
                 return
-            
-            # 2. Текстовые обновления (42["updateStream", ...)
             if text.startswith('42['):
-                event, data = parse_po_message(text)
-                
-                if event in ("updateStream", "price", "tick", "candles", "asset") and data:
-                    normalized = []
-                    
-                    # Обработка разных форматов данных
-                    if isinstance(data, list) and data and isinstance(data[0], (list, dict)):
-                        for row in data:
-                            # Формат: [id, time, price, ...]
-                            if isinstance(row, list) and len(row) >= 3:
-                                normalized.append([row[0], row[2]])
-                            # Формат: [id, price]
-                            elif isinstance(row, list) and len(row) == 2:
-                                normalized.append([row[0], row[1]])
-                            # Формат: {"asset": "...", "price": ...}
-                            elif isinstance(row, dict):
-                                asset = row.get("asset") or row.get("symbol") or row.get("id")
-                                price = row.get("price") or row.get("last") or row.get("close")
-                                if asset and price:
-                                    normalized.append([asset, price])
-                    
-                    # Одиночное сообщение [id, price] или {"symbol": "...", "price": ...}
-                    elif isinstance(data, list) and len(data) >= 2 and isinstance(data[0], str):
-                        normalized.append([data[0], data[1]])
-                    elif isinstance(data, dict):
-                        asset = data.get("asset") or data.get("symbol") or data.get("id")
-                        price = data.get("price") or data.get("last") or data.get("close")
-                        if asset and price:
-                            normalized.append([asset, price])
-                    
-                    if normalized:
-                        # Лог для крипты
-                        crypto_patterns = ["btc", "sol", "ada", "trx", "ton", "bnb", "eth", "ltc", "etf", "bitcoin", "solana", "tron", "cardano", "litecoin"]
-                        crypto_found = [n for n in normalized if any(p in str(n[0]).lower() for p in crypto_patterns)]
-                        if crypto_found:
-                            logging.info(f"💎 КРИПТА В ПОТОКЕ: {crypto_found}")
-                        schedule_broadcast(normalized)
-        except Exception as e:
-            logging.error(f"Error in on_frame_received: {e}")
+                try:
+                    data = json.loads(text[2:])
+                    if data[0] in ("updateStream", "price", "p"):
+                        content = data[1]
+                        norm = []
+                        if isinstance(content, list):
+                            for r in content:
+                                if isinstance(r, list) and len(r) >= 2: norm.append([r[0], r[-1]])
+                        elif isinstance(content, dict):
+                            a, p = content.get("s"), content.get("p")
+                            if a and p: norm.append([a, p])
+                        if norm: schedule(norm)
+                except: pass
+        except: pass
+    ws.on("framereceived", handle_frame)
 
-    ws.on("framereceived", on_frame_received)
+# ГЕНЕРАЦИЯ ПОЛНОГО СПИСКА (130+ активов)
+FULL_ASSET_LIST = list(PO_ID_MAP.keys())
 
-_main_loop: asyncio.AbstractEventLoop | None = None
-
-def schedule_broadcast(quotes):
-    if _main_loop and not _main_loop.is_closed():
-        _main_loop.call_soon_threadsafe(
-            lambda q=quotes: asyncio.ensure_future(broadcast_quotes(q), loop=_main_loop)
-        )
-
-POCKET_URL = "https://pocketoption.com/ru/cabinet/demo-quick-high-low/"
-
-# Список активов для подписки (РЕГИСТР ВАЖЕН!)
-ALL_ASSETS = [
-    # Crypto (Short & Long names)
-    "BTCUSD", "SOLUSD", "ADAUSD", "TRXUSD", "TONUSD", "BNBUSD", "LTCUSD",
-    "BTCUSD_otc", "SOLUSD_otc", "ADAUSD_otc", "TRXUSD_otc", "TONUSD_otc", "BNBUSD_otc", "LTCUSD_otc",
-    "Bitcoin OTC", "Ethereum OTC", "Litecoin OTC", "Solana OTC", "Cardano OTC", "TRON OTC", "Toncoin OTC", "BNB OTC", "Bitcoin ETF OTC",
-    # Forex OTC
-    "EURUSD_otc","GBPUSD_otc","USDJPY_otc","USDCHF_otc","USDCAD_otc","AUDUSD_otc","AUDCAD_otc","AUDJPY_otc",
-    "NZDJPY_otc","NZDUSD_otc","AUDNZD_otc","GBPCHF_otc","EURGBP_otc","EURJPY_otc","GBPJPY_otc",
-    # Commodities OTC
-    "XAUUSD_otc","XAGUSD_otc","UKBrent_otc","USCrude_otc","XNGUSD_otc","XNGUSD","XPTUSD_otc","XPDUSD_otc",
-    # Indices OTC
-    "SP500_otc","DJI30_otc","NASUSD_otc","AUS200_otc","100GBP_otc","D30EUR_otc","E35EUR_otc","E50EUR_otc","JPN225_otc","F40EUR_otc",
-    # Stocks OTC
-    "#AAPL_otc","#TSLA_otc","#AMZN_otc","#MSFT_otc","#FB_otc","#GOOG_otc","#NFLX_otc","#NVDA_otc","#AMD_otc","#INTC_otc","#BA_otc","#V_otc","#GME_otc","#MCD_otc",
-    "#PYPL_otc","#BABA_otc","#PFE_otc","#JNJ_otc","#DIS_otc","#ADBE_otc","#MARA_otc","#COIN_otc","#PLTR_otc",
-]
-
-WS_HOOK_JS = """
+HOOK = """
 (function() {
-    const ASSETS = """ + str(ALL_ASSETS).replace("'", '"') + """;
-    const OrigWS = window.WebSocket;
-    function doSubscribe(send) {
-        console.log('[HOOK] Initialization Step 1-3...');
-        // 22 варианта крипто (Short, OTC, Long names)
-        const cryptoAssets = [
-            "BTCUSD","SOLUSD","ADAUSD","TRXUSD","TONUSD","BNBUSD","LTCUSD",
-            "BTCUSD_otc","SOLUSD_otc","ADAUSD_otc","TRXUSD_otc","TONUSD_otc","BNBUSD_otc","LTCUSD_otc",
-            "Bitcoin OTC", "Ethereum OTC", "Litecoin OTC", "Solana OTC", "Cardano OTC", "TRON OTC", "Toncoin OTC", "BNB OTC", "Bitcoin ETF OTC"
-        ];
+    const ASSETS = """ + json.dumps(FULL_ASSET_LIST) + """;
+    const Orig = window.WebSocket;
+    
+    function autoRun(ws) {
+        console.log('[SPY] STARTING FULL AUTO-SUB (' + ASSETS.length + ' assets)');
         
-        // Подписка
-        send('42["subscribe",' + JSON.stringify(cryptoAssets) + ']');
-        
-        // Прогрев через changeSymbol (ОБЯЗАТЕЛЬНО для крипты)
-        cryptoAssets.forEach((asset, i) => {
-            setTimeout(() => {
-                console.log('[HOOK] Warming up (ChatGPT recommended): ' + asset);
-                send('42["changeSymbol",{"asset":"' + asset + '","period":60}]');
-            }, i * 2000);
-        });
+        const subscribe = () => {
+            ws.send('42["subscribe",' + JSON.stringify(ASSETS) + ']');
+            ws.send('42["subscribe",' + JSON.stringify(ASSETS.map(a => [a, 60])) + ']');
+        };
 
-        // Подписка на остальные активы
-        const otherAssets = ASSETS.filter(a => !cryptoAssets.includes(a));
-        const chunkSize = 15;
-        for (let i = 0; i < otherAssets.length; i += chunkSize) {
-            const chunk = otherAssets.slice(i, i + chunkSize);
-            setTimeout(() => {
-                send('42["subscribe",' + JSON.stringify(chunk) + ']');
-            }, 30000 + (i * 1000));
+        let i = 0;
+        function cycle() {
+            if (i >= ASSETS.length) { 
+                console.log('[SPY] Cycle done. Waiting 30s...');
+                i = 0; setTimeout(cycle, 30000); return; 
+            }
+            const a = ASSETS[i];
+            console.log('[SPY] Activating (' + (i+1) + '/' + ASSETS.length + '): ' + a);
+            ws.send('42["changeSymbol",{"asset":"' + a + '","period":60}]');
+            ws.send('42["subscribe",["' + a + '",60]]');
+            i++;
+            setTimeout(cycle, 400); // 400ms - высокая скорость активации
         }
-
-        // Heartbeat (каждые 12 секунд)
-        setInterval(() => {
-            send('2'); 
-        }, 12000);
-
-        // Авто-реподписка каждые 30 минут (для подстраховки при открытии рынков)
-        setInterval(() => {
-            console.log('[HOOK] Periodic re-subscription to ensure all markets are active...');
-            doSubscribe(send);
-        }, 30 * 60 * 1000);
+        
+        subscribe();
+        cycle();
+        setInterval(() => ws.send('2'), 10000);
     }
 
-    window.WebSocket = function(url, protocols) {
-        const ws = protocols ? new OrigWS(url, protocols) : new OrigWS(url);
-        if (!url.includes('socket.io')) return ws;
-        const origSend = ws.send.bind(ws);
-        let subStarted = false;
-        
-        const startSub = () => {
-            if (subStarted) return;
-            subStarted = true;
-            console.log('[HOOK] PO WebSocket detected, waiting for session (40)...');
-        };
-
-        ws.addEventListener('message', function(event) {
-            const msg = event.data;
-            // Ждем 40 message для инициализации (Step 1)
-            if (msg === '40') {
-                console.log('[HOOK] Session initialized (40), starting workflow...');
-                setTimeout(() => doSubscribe(origSend), 2000);
+    window.WebSocket = function(u, p) {
+        const ws = p ? new Orig(u, p) : new Orig(u);
+        if (!u.includes('api') && !u.includes('po.market')) return ws;
+        const oS = ws.send.bind(ws);
+        ws.addEventListener('message', e => {
+            if (e.data.startsWith('42["auth"')) {
+                if (window._poActive) return;
+                window._poActive = true;
+                setTimeout(() => autoRun({send: oS}), 4000);
             }
         });
-
-        ws.send = function(data) {
-            origSend(data);
-            if (!subStarted) {
-                const sData = String(data);
-                if (sData.includes('auth') || sData.includes('ssid') || sData.includes('42["')) {
-                    startSub();
-                }
+        ws.send = d => {
+            oS(d);
+            if (d.startsWith('42["auth"')) {
+                if (window._poActive) return;
+                window._poActive = true;
+                setTimeout(() => autoRun({send: oS}), 4000);
             }
         };
-
-        // На случай если отправку не поймали
-        setTimeout(startSub, 20000);
-
         return ws;
     };
-    window.WebSocket.prototype = OrigWS.prototype;
-    console.log('[HOOK] Assets list prepared (' + ASSETS.length + ')');
 })();
 """
 
-async def run_browser(loop: asyncio.AbstractEventLoop):
+async def run():
     async with async_playwright() as pw:
-        user_data_dir = os.path.join(os.path.dirname(__file__), ".chromium_session")
+        # Папка .session для сохранения логина
         browser = await pw.chromium.launch_persistent_context(
-            user_data_dir=user_data_dir,
+            user_data_dir=os.path.join(os.path.dirname(__file__), ".session"),
             headless=False,
             args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
-            ignore_https_errors=True,
+            viewport={"width": 1280, "height": 720}
         )
-        page = browser.pages[0] if browser.pages else await browser.new_page()
+        page = browser.pages[0]
+        page.on("console", lambda m: print(f"🌐 [BR] {m.text}") if "[SPY]" in m.text else None)
+        page.on("websocket", on_ws)
+        await page.add_init_script(HOOK)
+        logging.info("🚀 Открываем Pocket Option...")
+        await page.goto("https://pocketoption.com/ru/cabinet/demo-quick-high-low/")
         
-        # Пересылаем консоль браузера в лог (уровень debug)
-        page.on("console", lambda msg: logging.info(f"🌐 [BROWSER] {msg.text}") if "[HOOK]" in msg.text else logging.debug(f"🌐 [BROWSER] {msg.text}"))
-        
-        await page.add_init_script(WS_HOOK_JS)
-        page.on("websocket", handle_po_websocket)
-        logging.info(f"🌐 Открываем {POCKET_URL}...")
-        await page.goto(POCKET_URL, wait_until="domcontentloaded")
-        while True:
-            await asyncio.sleep(10)
-            if page.is_closed(): break
-
-def get_local_ip():
-    try:
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(("8.8.8.8", 80))
-        ip = s.getsockname()[0]
-        s.close()
-        return ip
-    except Exception: return "127.0.0.1"
+        while not page.is_closed():
+            if "login" in page.url.lower():
+                logging.warning("⚠️ ВНИМАНИЕ: Нужно войти в аккаунт!")
+            await asyncio.sleep(15)
 
 async def main():
-    global _main_loop
-    _main_loop = asyncio.get_event_loop()
-    local_ip = get_local_ip()
-    server = await websockets.serve(ws_handler, "0.0.0.0", 8765)
-    
-    print("\n" + "╔" + "═"*60 + "╗")
-    print(f"║ 🚀 СЕРВЕР КОТИРОВОК ЗАПУЩЕН                                ║")
-    print(f"║                                                            ║")
-    print(f"║ 1. ЗАПУСТИТЕ ВЕБ-СЕРВЕР: python web_server.py              ║")
-    print(f"║ 2. ДЛЯ ПК: http://localhost:8080/?ip=127.0.0.1             ║")
-    print(f"║                                                            ║")
-    print(f"║ 📱 ДЛЯ ТЕЛЕГРАМ (Android/iOS):                             ║")
-    print(f"║    Чтобы работало в Mini App, нужен защищенный туннель:    ║")
-    print(f"║    1. Скачайте ngrok (ngrok.com)                           ║")
-    print(f"║    2. Запустите: ngrok http 8765                           ║")
-    print(f"║    3. Скопируйте Forwarding URL (начинается на https://)   ║")
-    print(f"║    4. В Mini App замените https:// на wss://               ║")
-    print(f"║    Пример: ?ip=wss://your-id.ngrok-free.app                ║")
-    print("╚" + "═"*60 + "╝\n")
-    
-    await run_browser(_main_loop)
+    global _loop
+    _loop = asyncio.get_event_loop()
+    print("\n🚀 ULTRA-AUTO BRIDGE RUNNING (ALL ASSETS)\n")
+    await run()
 
 if __name__ == "__main__":
-    if os.name == 'nt':
-        asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt: pass
+    if os.name == 'nt': asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+    asyncio.run(main())

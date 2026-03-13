@@ -1,0 +1,13 @@
+[Unit]
+Description=PocketAI Quotes Server
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/root/bot
+ExecStart=/root/bot/venv/bin/python quotes_server.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
