@@ -1,0 +1,29 @@
+[33mcommit 4d02aaf148d64713a3fe7816a1bb877824c40ec2[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: zandan53alex-droid <zandan53.alex@gmail.com>
+Date:   Fri Mar 13 22:11:08 2026 +0300
+
+    Initial commit: TRADE APP BOT rebranded
+
+[33mcommit 655e7bd0c30275bb655fa8c18273af966542fc2a[m[33m ([m[1;31morigin/master[m[33m)[m
+Author: zandan53alex-droid <zandan53.alex@gmail.com>
+Date:   Thu Mar 12 14:09:54 2026 +0300
+
+    Исправление путей иконок и сброс кэша v76
+
+[33mcommit bae93c2e21989768770913b7a67c686a0eec6c01[m
+Author: zandan53alex-droid <zandan53.alex@gmail.com>
+Date:   Thu Mar 12 13:55:22 2026 +0300
+
+    Сброс кэша для обновления
+
+[33mcommit 6bb20ae32cd9d2f908ccf2b1bf614eb1645d3a0b[m
+Author: zandan53alex-droid <zandan53.alex@gmail.com>
+Date:   Thu Mar 12 13:45:35 2026 +0300
+
+    Восстановление состояния приложения (10:00 11 марта)
+
+[33mcommit 4d5184d2fa968649b63ef1dc8247305802bdceec[m
+Author: zandan53alex-droid <zandan53.alex@gmail.com>
+Date:   Wed Mar 11 17:34:01 2026 +0300
+
+    Fix HTTPS, resolve white screen, and sync code with VPS
