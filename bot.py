@@ -70,10 +70,10 @@ async def notify_admins(bot: Bot, event_name: str, user: User, amount: Optional[
         now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         username_str = f"@{user.username}" if user.username else "отсутствует"
         
-        icon = "🟢" if "депозит" in event_name.lower() else "🔵"
-        msg = f"{icon} <b>Событие: {event_name.upper()}</b>\n\n"
+        icon = "✅"
+        msg = f"{icon} <b>Событие: {event_name}</b>\n\n"
         if "старт" not in event_name.lower():
-            msg += f"👤 <b>Trader ID:</b> <code>{user.trader_id or 'не привязан'}</code>\n"
+            msg += f"👤 <b>Trader ID:</b> <code>{user.trader_id or '{trader_id}'}</code>\n"
         msg += (
             f"👤 <b>Имя:</b> {user.full_name or 'скрыто'}\n"
             f"🔗 <b>Username:</b> {username_str}\n"
@@ -272,6 +272,11 @@ async def cb_instructions(c: CallbackQuery, bot: Bot):
     async with get_session() as session:
         u = await get_or_create_user(session, c.from_user.id)
         await send_screen(bot, u, 'instruction', 'instruction_title', 'instruction_text', kb_instruction(user_lang(u)), session)
+    await c.answer()
+
+@router.callback_query(F.data == "btn_register")
+async def cb_reg_from_instruction(c: CallbackQuery, bot: Bot):
+    await evaluate_and_route(bot, c.from_user.id, manual=True)
     await c.answer()
 
 @router.chat_member(ChatMemberUpdatedFilter(member_status_changed=JOIN_TRANSITION))

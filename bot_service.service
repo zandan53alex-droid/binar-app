@@ -1,5 +1,5 @@
 [Unit]
-Description=TRADE APP BOT Telegram Bot
+Description=BAU TRADE BOT Telegram Bot
 After=network.target
 
 [Service]

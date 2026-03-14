@@ -48,7 +48,12 @@ def kb_main(lang: str, is_platinum: bool, can_open: bool, support_url: str | Non
     if can_open:
         url = settings.MINI_APP_PLATINUM if is_platinum else settings.MINI_APP
         label = t(lang, "btn_open_vip_miniapp") if is_platinum else t(lang, "btn_open_miniapp")
-        safe_url = url if url and url.startswith("https") else "https://google.com"
+        # Fallback to PUBLIC_BASE if MINI_APP is missing, otherwise use simple host
+        if not url:
+            base = settings.PUBLIC_BASE or f"https://{settings.MINI_APP}" # very simple fallback
+            url = f"{base}/?vip=true" if is_platinum else base
+        
+        safe_url = url if url and url.startswith("http") else "https://t.me" # telegram fallback is safer
         rows.append([InlineKeyboardButton(text=label, web_app=WebAppInfo(url=safe_url))])
     else:
         rows.append([InlineKeyboardButton(text=t(lang, "btn_get_signal"), callback_data="get_signal")])
@@ -107,7 +112,11 @@ def kb_deposit(lang: str, url: str | None = None) -> InlineKeyboardMarkup:
 
 def kb_access(lang: str, vip: bool) -> InlineKeyboardMarkup:
     url = settings.MINI_APP_PLATINUM if vip else settings.MINI_APP
-    safe_url = url if url and url.startswith("https") else "https://google.com"
+    if not url:
+        base = settings.PUBLIC_BASE or ""
+        url = f"{base}/?vip=true" if vip else base
+    
+    safe_url = url if url and url.startswith("http") else "https://t.me"
     label = t(lang, "btn_open_vip_miniapp") if vip else t(lang, "btn_open_miniapp")
     return InlineKeyboardMarkup(inline_keyboard=[
         [InlineKeyboardButton(text=label, web_app=WebAppInfo(url=safe_url))],

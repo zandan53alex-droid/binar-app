@@ -61,8 +61,8 @@ class Settings:
 
     # --- ВАШИ ССЫЛКИ НА MINI APP ---
     # Если в .env пусто, используется ваша ссылка по умолчанию:
-    MINI_APP: str = (os.getenv("MINI_APP") or "https://185.174.138.19.sslip.io/").strip()
-    MINI_APP_PLATINUM: str = (os.getenv("MINI_APP_PLATINUM") or "https://185.174.138.19.sslip.io/?vip=true").strip()
+    MINI_APP: str = (os.getenv("MINI_APP") or "").strip()
+    MINI_APP_PLATINUM: str = (os.getenv("MINI_APP_PLATINUM") or "").strip()
 
     # Дефолтные значения параметров
     CHANNEL_ID: int = 0

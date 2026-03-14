@@ -322,7 +322,7 @@ const TRANSLATIONS = {
         safeBetPrefix: 'Safe first bet at ',
         safeBetSuffix: '% risk:',
         statuses: [
-            'Initializing TRADE APP BOT...',
+            'Initializing BAU TRADE BOT...',
             'Analyzing current volatility...',
             'Checking cluster volumes...',
             'Searching for optimal entry...',
@@ -782,7 +782,7 @@ function initApp() {
         setupLocalization();
         setupEventListeners();
         renderAssets();
-        startPriceUpdates(); // Try connecting to the quote server
+        // startPriceUpdates(); // Try connecting to the quote server
     } catch (e) { console.error(e); }
 }
 
@@ -1290,7 +1290,7 @@ function startPriceUpdates() {
         let currentUrl = "";
         if (paramIp && (paramIp.startsWith('ws://') || paramIp.startsWith('wss://'))) {
             currentUrl = paramIp;
-        } else if (host === "185.174.138.19.sslip.io" || host === "vm3997023.firstbyte.club") {
+        } else if (host.includes('.sslip.io')) {
             // Production: use wss through nginx proxy
             currentUrl = `wss://${host}/ws`;
         } else if (paramIp && (paramIp.includes('ngrok') || paramIp.includes('cloudflare') || paramIp.includes('.app'))) {
